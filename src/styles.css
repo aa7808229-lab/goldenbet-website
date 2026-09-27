@@ -936,3 +936,20 @@ main {
     grid-template-columns: 1fr;
   }
 }
+@media (max-width: 700px) {
+  .header-actions .gold-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-actions .outline-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-actions {
+    margin-left: 0;
+  }
+}
