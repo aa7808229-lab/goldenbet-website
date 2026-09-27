@@ -10,6 +10,7 @@ import { LanguageContext } from "./main";
 import { t } from "./translations";
 import AdminDashboard from "./AdminDashboard";
 import { marketGroups } from "./markets";
+import PaymentCard from "./PaymentCard";
 
 /* =========================
    SPORTS
@@ -1488,26 +1489,7 @@ function Balance() {
 ========================= */
 
 function Deposit() {
-  return (
-    <div className="page section">
-      <div className="page-heading">
-        <h1>
-          Deposit
-        </h1>
-      </div>
-
-      <div className="payment-grid">
-        <button>Korek</button>
-        <button>Zain</button>
-        <button>Zain Cash</button>
-        <button>Asiacell</button>
-        <button>FIB</button>
-        <button>FastPay</button>
-        <button>Qi Card</button>
-        <button>Bank / Card</button>
-      </div>
-    </div>
-  );
+  return <PaymentCard />;
 }
 
 /* =========================
