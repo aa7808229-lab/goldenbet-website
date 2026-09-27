@@ -1524,3 +1524,239 @@ a {
     width: 100%;
   }
 }
+/* =========================
+   GOLDENBET PAYMENT CENTER
+========================= */
+
+.payment-page {
+  width: 100%;
+}
+
+.payment-card {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 28px;
+  border: 1px solid #5b4815;
+  border-radius: 24px;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(245, 197, 66, 0.12),
+      transparent 35%
+    ),
+    linear-gradient(145deg, #171717, #070707);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
+}
+
+.payment-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.payment-brand {
+  color: var(--gold);
+  font-size: 25px;
+  font-weight: 950;
+  letter-spacing: 2px;
+}
+
+.payment-title {
+  margin-top: 5px;
+  color: #fff;
+  font-size: 27px;
+  font-weight: 850;
+}
+
+.payment-country {
+  margin-top: 5px;
+  color: #888;
+}
+
+.payment-badge {
+  padding: 8px 12px;
+  border: 1px solid rgba(245, 197, 66, 0.4);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(245, 197, 66, 0.08);
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.payment-method-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.payment-method-card {
+  min-height: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #2e2e2e;
+  border-radius: 13px;
+  background: #101010;
+  color: #ddd;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.payment-method-card:hover,
+.payment-method-card.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(245, 197, 66, 0.07);
+}
+
+.payment-method-icon {
+  font-size: 22px;
+}
+
+.payment-account-card {
+  margin-top: 20px;
+  padding: 18px;
+  display: grid;
+  gap: 13px;
+  border: 1px solid #343434;
+  border-radius: 15px;
+  background: #0b0b0b;
+}
+
+.payment-account-card > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+}
+
+.payment-account-card span {
+  color: #777;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.payment-account-card strong {
+  color: #fff;
+  text-align: right;
+}
+
+.payment-account-card .payment-number {
+  color: var(--gold);
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.payment-account-card p {
+  margin-top: 3px;
+  padding-top: 12px;
+  border-top: 1px solid #222;
+  color: #777;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.payment-form {
+  margin-top: 20px;
+  display: grid;
+  gap: 13px;
+}
+
+.payment-form label {
+  display: grid;
+  gap: 7px;
+  color: #aaa;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.payment-form input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #333;
+  border-radius: 10px;
+  background: #080808;
+  color: #fff;
+  padding: 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.payment-form input:focus {
+  border-color: var(--gold);
+}
+
+.receipt-selected {
+  padding: 11px 13px;
+  border: 1px solid rgba(25, 195, 125, 0.25);
+  border-radius: 9px;
+  background: rgba(25, 195, 125, 0.07);
+  color: var(--green);
+  font-size: 12px;
+}
+
+.receipt-button {
+  min-height: 50px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--gold);
+  color: #080808;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.receipt-button:hover {
+  background: #ffd85c;
+}
+
+.payment-message {
+  margin-top: 14px;
+  padding: 13px;
+  border: 1px solid rgba(245, 197, 66, 0.3);
+  border-radius: 10px;
+  background: rgba(245, 197, 66, 0.07);
+  color: #eee;
+  line-height: 1.5;
+}
+
+.payment-note {
+  margin-top: 15px;
+  padding: 13px;
+  border-radius: 10px;
+  background: #111;
+  color: #999;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+  .payment-card {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .payment-card-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .payment-method-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .payment-account-card > div {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .payment-account-card strong {
+    text-align: left;
+  }
+}
