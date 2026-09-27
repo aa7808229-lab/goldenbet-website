@@ -9,6 +9,7 @@ import {
 
 import { LanguageContext } from "./main";
 import { t } from "./translations";
+import AdminDashboard from "./AdminDashboard";
 
 const sports = [
   ["⚽", "Football"],
@@ -198,7 +199,9 @@ function BetSlip() {
   const [stake, setStake] = useState("");
 
   const totalOdds = useMemo(() => {
-    return bets.reduce((total, bet) => total * Number(bet.odds), 1).toFixed(2);
+    return bets
+      .reduce((total, bet) => total * Number(bet.odds), 1)
+      .toFixed(2);
   }, [bets]);
 
   const potentialReturn =
@@ -277,10 +280,12 @@ function Home() {
       <section className="hero">
         <div className="hero-content">
           <span className="eyebrow">WELCOME TO GOLDENBET</span>
+
           <h1>
             Your World of
             <span> Sports & Casino</span>
           </h1>
+
           <p>
             Sports betting, casino games and live entertainment in one premium
             GoldenBet platform.
@@ -317,7 +322,10 @@ function Home() {
 
           <div className="match-grid">
             {matches.map((match) => (
-              <MatchCard match={match} key={`${match.home}-${match.away}`} />
+              <MatchCard
+                match={match}
+                key={`${match.home}-${match.away}`}
+              />
             ))}
           </div>
 
@@ -375,9 +383,17 @@ function MatchCard({ match }) {
       </div>
 
       <div className="odds-row">
-        <button>1 <b>{match.odds[0]}</b></button>
-        <button>X <b>{match.odds[1]}</b></button>
-        <button>2 <b>{match.odds[2]}</b></button>
+        <button>
+          1 <b>{match.odds[0]}</b>
+        </button>
+
+        <button>
+          X <b>{match.odds[1]}</b>
+        </button>
+
+        <button>
+          2 <b>{match.odds[2]}</b>
+        </button>
       </div>
 
       <Link to="/sports/football" className="match-details">
@@ -391,10 +407,12 @@ function GameCard({ name, icon, category }) {
   return (
     <div className="game-card">
       <div className="game-icon">{icon}</div>
+
       <div>
         <strong>{name}</strong>
         <span>{category}</span>
       </div>
+
       <button>PLAY</button>
     </div>
   );
@@ -409,7 +427,9 @@ function Sports() {
             to={
               name === "All Sports"
                 ? "/sports/all"
-                : `/sports/${name.toLowerCase().replaceAll(" ", "-")}`
+                : `/sports/${name
+                    .toLowerCase()
+                    .replaceAll(" ", "-")}`
             }
             className="sport-card"
             key={name}
@@ -426,12 +446,13 @@ function Sports() {
 
 function SportPage({ sport }) {
   const sportName =
-    sport.charAt(0).toUpperCase() + sport.slice(1).replaceAll("-", " ");
+    sport.charAt(0).toUpperCase() +
+    sport.slice(1).replaceAll("-", " ");
 
   return (
     <PageLayout
       title={`${getSportIcon(sport)} ${sportName}`}
-      subtitle={`Leagues, matches, markets and odds`}
+      subtitle="Leagues, matches, markets and odds"
     >
       <div className="sub-menu">
         <button className="active">All Matches</button>
@@ -455,9 +476,18 @@ function SportPage({ sport }) {
           </div>
 
           <div className="market-buttons">
-            <button>1 <b>1.80</b></button>
-            <button>X <b>3.40</b></button>
-            <button>2 <b>4.20</b></button>
+            <button>
+              1 <b>1.80</b>
+            </button>
+
+            <button>
+              X <b>3.40</b>
+            </button>
+
+            <button>
+              2 <b>4.20</b>
+            </button>
+
             <button>+25 Markets</button>
           </div>
         </div>
@@ -470,9 +500,18 @@ function SportPage({ sport }) {
           </div>
 
           <div className="market-buttons">
-            <button>1 <b>2.10</b></button>
-            <button>X <b>3.20</b></button>
-            <button>2 <b>3.10</b></button>
+            <button>
+              1 <b>2.10</b>
+            </button>
+
+            <button>
+              X <b>3.20</b>
+            </button>
+
+            <button>
+              2 <b>3.10</b>
+            </button>
+
             <button>+30 Markets</button>
           </div>
         </div>
@@ -480,6 +519,7 @@ function SportPage({ sport }) {
 
       <div className="info-panel">
         <h3>Markets & Odds</h3>
+
         <p>
           Match markets will be connected to the sportsbook feed/API when the
           real sports provider is integrated.
@@ -491,8 +531,10 @@ function SportPage({ sport }) {
 
 function getSportIcon(sport) {
   const found = sports.find(
-    ([, name]) => name.toLowerCase().replaceAll(" ", "-") === sport
+    ([, name]) =>
+      name.toLowerCase().replaceAll(" ", "-") === sport
   );
+
   return found ? found[0] : "🏆";
 }
 
@@ -525,7 +567,10 @@ function Live() {
 
       <div className="match-grid">
         {matches.slice(0, 3).map((match) => (
-          <MatchCard match={match} key={`${match.home}-${match.away}`} />
+          <MatchCard
+            match={match}
+            key={`${match.home}-${match.away}`}
+          />
         ))}
       </div>
     </PageLayout>
@@ -570,7 +615,9 @@ function Casino() {
         ) : (
           <div className="info-panel">
             <h3>{category}</h3>
-            <p>Games will appear here after the provider integration.</p>
+            <p>
+              Games will appear here after the provider integration.
+            </p>
           </div>
         )}
       </div>
@@ -594,7 +641,9 @@ function LiveCasino() {
       <div className="live-casino-hero">
         <div>
           <span className="eyebrow">LIVE CASINO</span>
+
           <h2>Real-time casino entertainment</h2>
+
           <p>
             Live Roulette, Blackjack, Baccarat, Poker and Game Shows.
           </p>
@@ -626,6 +675,7 @@ function LiveCasino() {
 
       <div className="info-panel">
         <h3>Provider Integration</h3>
+
         <p>
           Evolution, Ezugi, Pragmatic Play Live and other providers will be
           connected after official commercial, licensing and technical
@@ -651,7 +701,12 @@ function GoldenGames() {
           ["Golden Cards", "🃏"],
           ["Golden Jackpot", "💰"],
         ].map(([name, icon]) => (
-          <GameCard key={name} name={name} icon={icon} category="Golden Games" />
+          <GameCard
+            key={name}
+            name={name}
+            icon={icon}
+            category="Golden Games"
+          />
         ))}
       </div>
     </PageLayout>
@@ -660,7 +715,10 @@ function GoldenGames() {
 
 function Promotions() {
   return (
-    <PageLayout title="🎁 Promotions" subtitle="GoldenBet promotions">
+    <PageLayout
+      title="🎁 Promotions"
+      subtitle="GoldenBet promotions"
+    >
       <div className="promo-grid">
         <div className="promo-card">
           <span>🎉</span>
@@ -689,7 +747,10 @@ function Promotions() {
 
 function AccountPage({ title, children }) {
   return (
-    <PageLayout title={`👤 ${title}`} subtitle="GoldenBet Account">
+    <PageLayout
+      title={`👤 ${title}`}
+      subtitle="GoldenBet Account"
+    >
       <div className="account-layout">
         <aside className="account-menu">
           <Link to="/profile">👤 Profile</Link>
@@ -709,7 +770,10 @@ function AccountPage({ title, children }) {
 
 function Login() {
   return (
-    <PageLayout title="🔐 Login" subtitle="Welcome back to GoldenBet">
+    <PageLayout
+      title="🔐 Login"
+      subtitle="Welcome back to GoldenBet"
+    >
       <AuthForm type="login" />
     </PageLayout>
   );
@@ -717,7 +781,10 @@ function Login() {
 
 function Register() {
   return (
-    <PageLayout title="👤 Register" subtitle="Create your GoldenBet account">
+    <PageLayout
+      title="👤 Register"
+      subtitle="Create your GoldenBet account"
+    >
       <AuthForm type="register" />
     </PageLayout>
   );
@@ -737,28 +804,47 @@ function AuthForm({ type }) {
       {type === "register" && (
         <label>
           Username
-          <input type="text" required placeholder="Username" />
+          <input
+            type="text"
+            required
+            placeholder="Username"
+          />
         </label>
       )}
 
       <label>
         Email
-        <input type="email" required placeholder="email@example.com" />
+        <input
+          type="email"
+          required
+          placeholder="email@example.com"
+        />
       </label>
 
       <label>
         Password
-        <input type="password" required placeholder="Password" />
+        <input
+          type="password"
+          required
+          placeholder="Password"
+        />
       </label>
 
       {type === "register" && (
         <label>
           Confirm Password
-          <input type="password" required placeholder="Confirm password" />
+          <input
+            type="password"
+            required
+            placeholder="Confirm password"
+          />
         </label>
       )}
 
-      <button className="gold-button full-button" type="submit">
+      <button
+        className="gold-button full-button"
+        type="submit"
+      >
         {type === "login" ? "Login" : "Create Account"}
       </button>
 
@@ -776,6 +862,7 @@ function Profile() {
     <AccountPage title="Profile">
       <div className="profile-card">
         <div className="avatar">G</div>
+
         <div>
           <h2>GoldenBet User</h2>
           <p>user@goldenbet.com</p>
@@ -794,10 +881,17 @@ function Balance() {
       </div>
 
       <div className="two-columns">
-        <Link to="/deposit" className="gold-button">
+        <Link
+          to="/deposit"
+          className="gold-button"
+        >
           💳 Deposit
         </Link>
-        <Link to="/withdraw" className="outline-button">
+
+        <Link
+          to="/withdraw"
+          className="outline-button"
+        >
           💸 Withdraw
         </Link>
       </div>
@@ -817,16 +911,20 @@ function SimpleAccountPage({ title, text }) {
 }
 
 function Settings() {
-  const { language, setLanguage } = useContext(LanguageContext);
+  const { language, setLanguage } =
+    useContext(LanguageContext);
 
   return (
     <AccountPage title="Settings">
       <div className="settings-card">
         <label>
           Language
+
           <select
             value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+            onChange={(e) =>
+              setLanguage(e.target.value)
+            }
           >
             <option value="en">English</option>
             <option value="ku">کوردی</option>
@@ -851,7 +949,9 @@ function PageLayout({ title, subtitle, children }) {
         </div>
       </section>
 
-      <main className="container page-content">{children}</main>
+      <main className="container page-content">
+        {children}
+      </main>
     </>
   );
 }
@@ -862,29 +962,65 @@ function App() {
       <Header />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={<Home />}
+        />
 
-        <Route path="/sports" element={<Sports />} />
+        <Route
+          path="/sports"
+          element={<Sports />}
+        />
+
         <Route
           path="/sports/:sport"
           element={<SportRoute />}
         />
 
-        <Route path="/live" element={<Live />} />
+        <Route
+          path="/live"
+          element={<Live />}
+        />
 
-        <Route path="/casino" element={<Casino />} />
+        <Route
+          path="/casino"
+          element={<Casino />}
+        />
 
-        <Route path="/live-casino" element={<LiveCasino />} />
+        <Route
+          path="/live-casino"
+          element={<LiveCasino />}
+        />
 
-        <Route path="/golden-games" element={<GoldenGames />} />
+        <Route
+          path="/golden-games"
+          element={<GoldenGames />}
+        />
 
-        <Route path="/promotions" element={<Promotions />} />
+        <Route
+          path="/promotions"
+          element={<Promotions />}
+        />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/balance" element={<Balance />} />
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        <Route
+          path="/profile"
+          element={<Profile />}
+        />
+
+        <Route
+          path="/balance"
+          element={<Balance />}
+        />
 
         <Route
           path="/deposit"
@@ -926,7 +1062,16 @@ function App() {
           }
         />
 
-        <Route path="/settings" element={<Settings />} />
+        <Route
+          path="/settings"
+          element={<Settings />}
+        />
+
+        {/* SUPER ADMIN */}
+        <Route
+          path="/super-admin"
+          element={<AdminDashboard />}
+        />
       </Routes>
 
       <Footer />
@@ -936,7 +1081,11 @@ function App() {
 
 function SportRoute() {
   const location = useLocation();
-  const sport = location.pathname.split("/").filter(Boolean)[1] || "all";
+
+  const sport =
+    location.pathname
+      .split("/")
+      .filter(Boolean)[1] || "all";
 
   return <SportPage sport={sport} />;
 }
@@ -948,6 +1097,7 @@ function Footer() {
         <div>
           <div className="brand footer-brand">
             <span className="brand-mark">G</span>
+
             <span>
               <strong>Golden</strong>
               <b>Bet</b>
@@ -961,24 +1111,54 @@ function Footer() {
 
         <div>
           <h4>Sports</h4>
-          <Link to="/sports">All Sports</Link>
-          <Link to="/sports/football">Football</Link>
-          <Link to="/sports/tennis">Tennis</Link>
-          <Link to="/sports/basketball">Basketball</Link>
+
+          <Link to="/sports">
+            All Sports
+          </Link>
+
+          <Link to="/sports/football">
+            Football
+          </Link>
+
+          <Link to="/sports/tennis">
+            Tennis
+          </Link>
+
+          <Link to="/sports/basketball">
+            Basketball
+          </Link>
         </div>
 
         <div>
           <h4>Casino</h4>
-          <Link to="/casino">Casino</Link>
-          <Link to="/live-casino">Live Casino</Link>
-          <Link to="/golden-games">Golden Games</Link>
+
+          <Link to="/casino">
+            Casino
+          </Link>
+
+          <Link to="/live-casino">
+            Live Casino
+          </Link>
+
+          <Link to="/golden-games">
+            Golden Games
+          </Link>
         </div>
 
         <div>
           <h4>Account</h4>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
-          <Link to="/balance">Balance</Link>
+
+          <Link to="/login">
+            Login
+          </Link>
+
+          <Link to="/register">
+            Register
+          </Link>
+
+          <Link to="/balance">
+            Balance
+          </Link>
         </div>
       </div>
 
