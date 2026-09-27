@@ -1,225 +1,357 @@
 import React, { useContext, useMemo, useState } from "react";
-import {
-  Routes,
-  Route,
-  NavLink,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
-
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { LanguageContext } from "./main";
-import { languages, t } from "./translations";
+import { t } from "./translations";
 
 const matches = [
   {
     id: 1,
-    home: "Arsenal",
-    away: "Chelsea",
     league: "Premier League",
     time: "18:30",
-    odds: ["1.85", "3.60", "4.20"],
+    home: "Arsenal",
+    away: "Chelsea",
+    odds: ["1.72", "3.80", "4.40"],
+    live: false,
   },
   {
     id: 2,
+    league: "La Liga",
+    time: "20:00",
     home: "Barcelona",
     away: "Real Madrid",
-    league: "La Liga",
-    time: "21:00",
-    odds: ["2.10", "3.40", "3.10"],
+    odds: ["2.10", "3.60", "2.90"],
+    live: true,
   },
   {
     id: 3,
-    home: "Inter",
-    away: "AC Milan",
     league: "Serie A",
-    time: "20:45",
-    odds: ["1.75", "3.70", "4.80"],
+    time: "21:45",
+    home: "Inter Milan",
+    away: "AC Milan",
+    odds: ["1.85", "3.50", "3.90"],
+    live: false,
   },
   {
     id: 4,
+    league: "Bundesliga",
+    time: "22:00",
     home: "Bayern",
     away: "Dortmund",
-    league: "Bundesliga",
-    time: "19:30",
-    odds: ["1.55", "4.20", "5.50"],
-  },
-  {
-    id: 5,
-    home: "PSG",
-    away: "Lyon",
-    league: "Ligue 1",
-    time: "22:00",
-    odds: ["1.60", "4.00", "5.20"],
+    odds: ["1.55", "4.60", "5.20"],
+    live: false,
   },
 ];
 
-function Layout({ children }) {
+const casinoGames = [
+  { name: "Royal Roulette", icon: "🎡" },
+  { name: "Blackjack VIP", icon: "🃏" },
+  { name: "Golden Slots", icon: "🎰" },
+  { name: "Lucky Baccarat", icon: "♠️" },
+  { name: "Jackpot Gold", icon: "💰" },
+  { name: "Live Casino", icon: "🎥" },
+];
+
+function Header() {
   const { language, setLanguage } = useContext(LanguageContext);
-  const navigate = useNavigate();
 
   return (
-    <div className="app">
-      <header className="header">
-        <div className="brand" onClick={() => navigate("/")}>
-          <span className="brand-icon">G</span>
+    <header className="site-header">
+      <div className="header-inner">
+        <Link to="/" className="brand">
+          <span className="brand-mark">G</span>
           <span>
-            Golden<span>Bet</span>
+            <strong>GOLDEN</strong>
+            <small>BET</small>
           </span>
-        </div>
+        </Link>
 
-        <nav className="desktop-nav">
-          <NavLink to="/" className="nav-link">
-            {t(language, "home")}
-          </NavLink>
-
-          <NavLink to="/football" className="nav-link">
-            {t(language, "football")}
-          </NavLink>
-
-          <NavLink to="/live" className="nav-link">
-            {t(language, "live")}
-          </NavLink>
-
-          <NavLink to="/leagues" className="nav-link">
-            {t(language, "leagues")}
-          </NavLink>
-
-          <NavLink to="/search" className="nav-link">
-            {t(language, "search")}
-          </NavLink>
+        <nav className="main-nav">
+          <Link to="/">{t(language, "home")}</Link>
+          <Link to="/football">⚽ {t(language, "football")}</Link>
+          <Link to="/live">🔴 {t(language, "live")}</Link>
+          <Link to="/casino">🎰 Casino</Link>
+          <Link to="/leagues">{t(language, "leagues")}</Link>
         </nav>
 
         <div className="header-actions">
           <select
-            className="language-select"
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
+            className="language-select"
           >
-            {languages.map((item) => (
-              <option key={item.code} value={item.code}>
-                {item.name}
-              </option>
-            ))}
+            <option value="en">EN</option>
+            <option value="ku">کوردی</option>
+            <option value="ar">العربية</option>
+            <option value="fa">فارسی</option>
+            <option value="tr">TR</option>
+            <option value="es">ES</option>
+            <option value="fr">FR</option>
+            <option value="de">DE</option>
+            <option value="ru">RU</option>
+            <option value="it">IT</option>
+            <option value="pt">PT</option>
           </select>
 
-          <button
-            className="outline-button"
-            onClick={() => navigate("/login")}
-          >
+          <Link to="/login" className="outline-button">
             {t(language, "login")}
-          </button>
+          </Link>
 
-          <button
-            className="gold-button"
-            onClick={() => navigate("/register")}
-          >
+          <Link to="/register" className="gold-button">
             {t(language, "register")}
-          </button>
+          </Link>
         </div>
-      </header>
-
-      <main>{children}</main>
-
-      <footer className="footer">
-        <div>
-          <strong>GoldenBet</strong>
-          <p>{t(language, "footerText")}</p>
-        </div>
-
-        <p>{t(language, "allRights")}</p>
-      </footer>
-    </div>
+      </div>
+    </header>
   );
 }
 
-function MatchCard({ match }) {
-  const { language } = useContext(LanguageContext);
-
+function MatchCard({ match, onAdd }) {
   return (
     <div className="match-card">
       <div className="match-top">
         <span>{match.league}</span>
-        <span>🕐 {match.time}</span>
+        {match.live ? (
+          <span className="live-badge">LIVE</span>
+        ) : (
+          <span>{match.time}</span>
+        )}
       </div>
 
       <div className="teams">
         <div>
-          <div className="team-logo">
-            {match.home.charAt(0)}
-          </div>
+          <div className="team-icon">⚽</div>
           <strong>{match.home}</strong>
         </div>
 
-        <span className="vs">{t(language, "vs")}</span>
+        <span className="vs">VS</span>
 
         <div>
-          <div className="team-logo">
-            {match.away.charAt(0)}
-          </div>
+          <div className="team-icon">⚽</div>
           <strong>{match.away}</strong>
         </div>
       </div>
 
-      <div className="odds">
-        <button>
-          <span>1</span>
-          <span>{match.odds[0]}</span>
+      <div className="odds-row">
+        <button onClick={() => onAdd(match, "1", match.odds[0])}>
+          <small>1</small>
+          {match.odds[0]}
         </button>
 
-        <button>
-          <span>X</span>
-          <span>{match.odds[1]}</span>
+        <button onClick={() => onAdd(match, "X", match.odds[1])}>
+          <small>X</small>
+          {match.odds[1]}
         </button>
 
-        <button>
-          <span>2</span>
-          <span>{match.odds[2]}</span>
+        <button onClick={() => onAdd(match, "2", match.odds[2])}>
+          <small>2</small>
+          {match.odds[2]}
         </button>
       </div>
     </div>
   );
 }
 
+function BetSlip({ selections, setSelections }) {
+  const totalOdds = selections.reduce(
+    (total, item) => total * Number(item.odds),
+    1
+  );
+
+  const remove = (id) => {
+    setSelections(selections.filter((item) => item.id !== id));
+  };
+
+  return (
+    <aside className="betslip">
+      <div className="betslip-header">
+        <div>
+          <span className="gold-text">GOLDEN</span>
+          <strong> BET SLIP</strong>
+        </div>
+        <span className="slip-count">{selections.length}</span>
+      </div>
+
+      {selections.length === 0 ? (
+        <div className="empty-slip">
+          <div className="empty-icon">🎟️</div>
+          <h3>Your Bet Slip</h3>
+          <p>Select odds from any match to add your prediction here.</p>
+        </div>
+      ) : (
+        <>
+          <div className="slip-items">
+            {selections.map((item) => (
+              <div className="slip-item" key={item.id}>
+                <div>
+                  <strong>
+                    {item.home} vs {item.away}
+                  </strong>
+                  <small>
+                    Selection: {item.selection} · Odds {item.odds}
+                  </small>
+                </div>
+
+                <button onClick={() => remove(item.id)}>×</button>
+              </div>
+            ))}
+          </div>
+
+          <div className="slip-summary">
+            <div>
+              <span>Total Odds</span>
+              <strong>{totalOdds.toFixed(2)}</strong>
+            </div>
+
+            <div>
+              <span>Stake</span>
+              <strong>$10.00</strong>
+            </div>
+
+            <div className="potential">
+              <span>Potential Win</span>
+              <strong>${(10 * totalOdds).toFixed(2)}</strong>
+            </div>
+          </div>
+
+          <button className="place-bet">PLACE BET</button>
+        </>
+      )}
+    </aside>
+  );
+}
+
 function Home() {
-  const { language } = useContext(LanguageContext);
-  const navigate = useNavigate();
+  const [selections, setSelections] = useState([]);
+
+  const addSelection = (match, selection, odds) => {
+    setSelections((current) => {
+      const filtered = current.filter((item) => item.matchId !== match.id);
+
+      return [
+        ...filtered,
+        {
+          id: `${match.id}-${selection}`,
+          matchId: match.id,
+          home: match.home,
+          away: match.away,
+          selection,
+          odds,
+        },
+      ];
+    });
+  };
 
   return (
     <>
       <section className="hero">
         <div className="hero-content">
-          <span className="gold-label">GOLDENBET</span>
+          <span className="hero-label">✦ PREMIUM SPORTSBOOK</span>
 
-          <h1>{t(language, "heroTitle")}</h1>
+          <h1>
+            BET SMART.
+            <br />
+            <span>WIN GOLD.</span>
+          </h1>
 
-          <p>{t(language, "heroText")}</p>
+          <p>
+            Experience the next generation of sports betting with live odds,
+            premium markets and a powerful betting experience.
+          </p>
 
-          <button
-            className="hero-button"
-            onClick={() => navigate("/football")}
-          >
-            {t(language, "explore")}
-          </button>
+          <div className="hero-buttons">
+            <Link to="/football" className="gold-button large">
+              ⚽ Explore Sports
+            </Link>
+
+            <Link to="/register" className="outline-button large">
+              Create Account
+            </Link>
+          </div>
+
+          <div className="hero-stats">
+            <div>
+              <strong>500+</strong>
+              <span>Leagues</span>
+            </div>
+            <div>
+              <strong>10K+</strong>
+              <span>Markets</span>
+            </div>
+            <div>
+              <strong>24/7</strong>
+              <span>Live Betting</span>
+            </div>
+          </div>
         </div>
 
-        <div className="hero-ball">⚽</div>
+        <div className="hero-visual">
+          <div className="gold-circle"></div>
+          <div className="hero-card">
+            <span>LIVE MATCH</span>
+            <strong>BARCELONA</strong>
+            <div className="hero-score">2 : 1</div>
+            <strong>REAL MADRID</strong>
+            <div className="hero-odds">
+              <b>1.85</b>
+              <b>3.50</b>
+              <b>4.20</b>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="page">
+      <section className="content-section">
         <div className="section-heading">
-          <h2>{t(language, "popularMatches")}</h2>
+          <div>
+            <span className="section-kicker">TOP MARKETS</span>
+            <h2>Popular Matches</h2>
+          </div>
 
-          <button
-            className="text-button"
-            onClick={() => navigate("/football")}
-          >
-            {t(language, "football")} →
-          </button>
+          <Link to="/football" className="view-all">
+            View all →
+          </Link>
         </div>
 
-        <div className="match-grid">
-          {matches.slice(0, 4).map((match) => (
-            <MatchCard key={match.id} match={match} />
+        <div className="sports-layout">
+          <div className="matches-grid">
+            {matches.map((match) => (
+              <MatchCard
+                key={match.id}
+                match={match}
+                onAdd={addSelection}
+              />
+            ))}
+          </div>
+
+          <BetSlip
+            selections={selections}
+            setSelections={setSelections}
+          />
+        </div>
+      </section>
+
+      <section className="content-section">
+        <div className="section-heading">
+          <div>
+            <span className="section-kicker">ENTERTAINMENT</span>
+            <h2>Casino</h2>
+          </div>
+
+          <Link to="/casino" className="view-all">
+            Explore Casino →
+          </Link>
+        </div>
+
+        <div className="casino-grid">
+          {casinoGames.map((game) => (
+            <div className="casino-card" key={game.name}>
+              <div className="casino-icon">{game.icon}</div>
+              <div>
+                <span>GOLDEN</span>
+                <h3>{game.name}</h3>
+              </div>
+              <button>PLAY</button>
+            </div>
           ))}
         </div>
       </section>
@@ -228,389 +360,420 @@ function Home() {
 }
 
 function Football() {
-  const { language } = useContext(LanguageContext);
+  const [selections, setSelections] = useState([]);
+
+  const addSelection = (match, selection, odds) => {
+    setSelections((current) => [
+      ...current.filter((x) => x.matchId !== match.id),
+      {
+        id: `${match.id}-${selection}`,
+        matchId: match.id,
+        home: match.home,
+        away: match.away,
+        selection,
+        odds,
+      },
+    ]);
+  };
 
   return (
-    <section className="page">
-      <div className="page-title">
-        <h1>{t(language, "football")}</h1>
-        <p>{t(language, "upcomingMatches")}</p>
-      </div>
+    <Page title="Football" subtitle="All football matches and markets">
+      <div className="sports-layout">
+        <div className="matches-grid">
+          {matches.map((match) => (
+            <MatchCard
+              key={match.id}
+              match={match}
+              onAdd={addSelection}
+            />
+          ))}
+        </div>
 
-      <div className="match-grid">
-        {matches.map((match) => (
-          <MatchCard key={match.id} match={match} />
-        ))}
+        <BetSlip
+          selections={selections}
+          setSelections={setSelections}
+        />
       </div>
-    </section>
+    </Page>
   );
 }
 
 function Live() {
-  const { language } = useContext(LanguageContext);
+  const liveMatches = matches.filter((match) => match.live);
 
   return (
-    <section className="page">
-      <div className="page-title">
-        <h1>{t(language, "live")}</h1>
-        <p>{t(language, "liveNow")}</p>
+    <Page title="Live Matches" subtitle="Watch and bet on live action">
+      <div className="live-banner">
+        <span className="live-badge">LIVE</span>
+        <strong>Live Betting</strong>
+        <span>Markets are updated in real time.</span>
       </div>
 
-      <div className="empty-panel panel">
-        <div className="empty-icon">🔴</div>
-        <h2>{t(language, "live")}</h2>
-        <p>{t(language, "noMatches")}</p>
+      <div className="matches-grid">
+        {liveMatches.map((match) => (
+          <MatchCard
+            key={match.id}
+            match={match}
+            onAdd={() => {}}
+          />
+        ))}
       </div>
-    </section>
+    </Page>
+  );
+}
+
+function Casino() {
+  return (
+    <Page title="Casino" subtitle="Premium casino entertainment">
+      <div className="casino-grid large">
+        {casinoGames.map((game) => (
+          <div className="casino-card big" key={game.name}>
+            <div className="casino-icon">{game.icon}</div>
+            <span>GOLDEN CASINO</span>
+            <h3>{game.name}</h3>
+            <button>ENTER GAME</button>
+          </div>
+        ))}
+      </div>
+    </Page>
   );
 }
 
 function Leagues() {
-  const { language } = useContext(LanguageContext);
-
   const leagues = [
-    ["⚽", t(language, "premierLeague")],
-    ["🇪🇸", t(language, "laLiga")],
-    ["🇮🇹", t(language, "serieA")],
-    ["🇩🇪", t(language, "bundesliga")],
-    ["🇫🇷", t(language, "ligue1")],
+    ["🇬🇧", "Premier League", "England"],
+    ["🇪🇸", "La Liga", "Spain"],
+    ["🇮🇹", "Serie A", "Italy"],
+    ["🇩🇪", "Bundesliga", "Germany"],
+    ["🇫🇷", "Ligue 1", "France"],
+    ["🌍", "Champions League", "Europe"],
   ];
 
   return (
-    <section className="page">
-      <div className="page-title">
-        <h1>{t(language, "leagues")}</h1>
-        <p>{t(language, "popularLeagues")}</p>
-      </div>
-
-      <div className="league-grid">
-        {leagues.map(([icon, name]) => (
+    <Page title="Leagues" subtitle="Explore football leagues">
+      <div className="leagues-grid">
+        {leagues.map(([flag, name, country]) => (
           <div className="league-card" key={name}>
-            <div className="league-icon">{icon}</div>
-            <h3>{name}</h3>
-            <p>GoldenBet</p>
+            <span className="league-flag">{flag}</span>
+            <div>
+              <strong>{name}</strong>
+              <small>{country}</small>
+            </div>
+            <span>→</span>
           </div>
         ))}
       </div>
-    </section>
+    </Page>
   );
 }
 
-function Search() {
-  const { language } = useContext(LanguageContext);
-  const [query, setQuery] = useState("");
-
-  const filtered = useMemo(() => {
-    const value = query.toLowerCase().trim();
-
-    if (!value) return matches;
-
-    return matches.filter(
-      (match) =>
-        match.home.toLowerCase().includes(value) ||
-        match.away.toLowerCase().includes(value) ||
-        match.league.toLowerCase().includes(value)
-    );
-  }, [query]);
-
+function Login() {
   return (
-    <section className="page">
-      <div className="page-title">
-        <h1>{t(language, "search")}</h1>
-      </div>
-
-      <input
-        className="search-input"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder={t(language, "searchPlaceholder")}
-      />
-
-      <div className="match-grid">
-        {filtered.map((match) => (
-          <MatchCard key={match.id} match={match} />
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
-        <div className="empty-panel panel">
-          <div className="empty-icon">🔎</div>
-          <p>{t(language, "noMatches")}</p>
-        </div>
-      )}
-    </section>
+    <AuthCard
+      title="Welcome Back"
+      subtitle="Login to your GoldenBet account"
+      button="LOGIN"
+      footerText="Don't have an account?"
+      footerLink="Register"
+      footerTo="/register"
+    />
   );
 }
 
-function Auth({ register = false }) {
-  const { language } = useContext(LanguageContext);
-  const navigate = useNavigate();
-
-  const [form, setForm] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (register) {
-      if (form.password !== form.confirmPassword) {
-        alert("Passwords do not match");
-        return;
-      }
-
-      localStorage.setItem(
-        "goldenbet-user",
-        JSON.stringify({
-          username: form.username,
-          email: form.email,
-        })
-      );
-
-      navigate("/profile");
-      return;
-    }
-
-    const savedUser = JSON.parse(
-      localStorage.getItem("goldenbet-user") || "null"
-    );
-
-    if (savedUser) {
-      navigate("/profile");
-    } else {
-      alert("Please create an account first.");
-    }
-  };
-
+function Register() {
   return (
-    <section className="auth-page">
+    <AuthCard
+      title="Create Account"
+      subtitle="Join GoldenBet today"
+      button="CREATE ACCOUNT"
+      footerText="Already have an account?"
+      footerLink="Login"
+      footerTo="/login"
+      register
+    />
+  );
+}
+
+function AuthCard({
+  title,
+  subtitle,
+  button,
+  footerText,
+  footerLink,
+  footerTo,
+  register = false,
+}) {
+  return (
+    <main className="auth-page">
       <div className="auth-card">
-        <div className="auth-logo">G</div>
+        <div className="auth-logo">
+          <span>G</span>
+        </div>
 
-        <h1>
-          {t(
-            language,
-            register ? "registerTitle" : "loginTitle"
-          )}
-        </h1>
+        <span className="section-kicker">GOLDENBET</span>
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
 
-        <p>
-          {t(
-            language,
-            register ? "registerText" : "loginText"
-          )}
-        </p>
-
-        <form onSubmit={handleSubmit}>
-          {register && (
-            <input
-              className="form-input"
-              name="username"
-              value={form.username}
-              onChange={handleChange}
-              placeholder={t(language, "username")}
-              required
-            />
-          )}
-
+        {register && (
           <input
+            type="text"
+            placeholder="Full Name"
             className="form-input"
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder={t(language, "email")}
-            required
           />
+        )}
 
+        {register && (
           <input
+            type="text"
+            placeholder="Username"
             className="form-input"
+          />
+        )}
+
+        <input
+          type="email"
+          placeholder="Email Address"
+          className="form-input"
+        />
+
+        {register && (
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            className="form-input"
+          />
+        )}
+
+        <input
+          type="password"
+          placeholder="Password"
+          className="form-input"
+        />
+
+        {register && (
+          <input
             type="password"
-            name="password"
-            value={form.password}
-            onChange={handleChange}
-            placeholder={t(language, "password")}
-            required
+            placeholder="Confirm Password"
+            className="form-input"
           />
+        )}
 
-          {register && (
-            <input
-              className="form-input"
-              type="password"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              placeholder={t(language, "confirmPassword")}
-              required
-            />
-          )}
+        {register && (
+          <label className="terms">
+            <input type="checkbox" />
+            <span>I agree to the Terms & Conditions</span>
+          </label>
+        )}
 
-          <button className="gold-button full-button" type="submit">
-            {t(
-              language,
-              register ? "submitRegister" : "submitLogin"
-            )}
-          </button>
-        </form>
+        <button className="gold-button auth-button">{button}</button>
+
+        <div className="auth-divider">
+          <span>OR</span>
+        </div>
+
+        <p className="auth-footer">
+          {footerText} <Link to={footerTo}>{footerLink}</Link>
+        </p>
       </div>
-    </section>
+    </main>
   );
 }
 
 function Profile() {
-  const { language } = useContext(LanguageContext);
-  const navigate = useNavigate();
-
-  const savedUser = JSON.parse(
-    localStorage.getItem("goldenbet-user") || "null"
-  );
-
-  if (!savedUser) {
-    return (
-      <section className="page">
-        <div className="panel simple-panel">
-          <div>
-            <div className="large-icon">👤</div>
-            <h2>{t(language, "login")}</h2>
-            <button
-              className="gold-button"
-              onClick={() => navigate("/login")}
-            >
-              {t(language, "login")}
-            </button>
-          </div>
+  return (
+    <Page title="My Profile" subtitle="Manage your GoldenBet account">
+      <div className="dashboard-grid">
+        <div className="dashboard-card profile-card">
+          <div className="profile-avatar">G</div>
+          <h2>GoldenBet User</h2>
+          <p>user@goldenbet.com</p>
+          <button className="gold-button">Edit Profile</button>
         </div>
-      </section>
-    );
-  }
 
-  return (
-    <section className="page">
-      <div className="page-title">
-        <h1>{t(language, "profile")}</h1>
-      </div>
+        <div className="dashboard-card">
+          <span>AVAILABLE BALANCE</span>
+          <strong className="big-number">$0.00</strong>
+          <Link to="/deposit" className="gold-button">
+            Deposit
+          </Link>
+        </div>
 
-      <div className="panel">
-        <h2>{savedUser.username}</h2>
-        <p>{savedUser.email}</p>
-
-        <br />
-
-        <button
-          className="gold-button"
-          onClick={() => navigate("/balance")}
-        >
-          {t(language, "balance")}
-        </button>
-      </div>
-    </section>
-  );
-}
-
-function SimplePage({ titleKey, icon }) {
-  const { language } = useContext(LanguageContext);
-
-  return (
-    <section className="page">
-      <div className="page-title">
-        <h1>{t(language, titleKey)}</h1>
-      </div>
-
-      <div className="panel simple-panel">
-        <div>
-          <div className="large-icon">{icon}</div>
-          <h2>{t(language, titleKey)}</h2>
-          <p>GoldenBet</p>
+        <div className="dashboard-card">
+          <span>ACTIVE BETS</span>
+          <strong className="big-number">0</strong>
+          <Link to="/my-bets" className="outline-button">
+            My Bets
+          </Link>
         </div>
       </div>
-    </section>
+    </Page>
   );
 }
 
-function Settings() {
-  const { language, setLanguage } = useContext(LanguageContext);
-
+function Balance() {
   return (
-    <section className="page">
-      <div className="page-title">
-        <h1>{t(language, "settingsTitle")}</h1>
-      </div>
+    <Page title="Wallet" subtitle="Manage your balance">
+      <div className="wallet-card">
+        <span>AVAILABLE BALANCE</span>
+        <strong>$0.00</strong>
 
-      <div className="panel settings-panel">
-        <h3>{t(language, "language")}</h3>
-
-        <select
-          className="language-large"
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-        >
-          {languages.map((item) => (
-            <option key={item.code} value={item.code}>
-              {item.name}
-            </option>
-          ))}
-        </select>
+        <div className="wallet-actions">
+          <Link to="/deposit" className="gold-button">
+            + Deposit
+          </Link>
+          <Link to="/withdraw" className="outline-button">
+            Withdraw
+          </Link>
+        </div>
       </div>
-    </section>
+    </Page>
   );
 }
 
-function App() {
+function SimplePage({ title, subtitle }) {
+  return (
+    <Page title={title} subtitle={subtitle}>
+      <div className="empty-page">
+        <div>✦</div>
+        <h2>{title}</h2>
+        <p>This section is ready for the GoldenBet backend.</p>
+      </div>
+    </Page>
+  );
+}
+
+function Page({ title, subtitle, children }) {
+  return (
+    <main className="page">
+      <div className="page-heading">
+        <span className="section-kicker">GOLDENBET</span>
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
+      </div>
+
+      {children}
+    </main>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="footer">
+      <div>
+        <div className="brand footer-brand">
+          <span className="brand-mark">G</span>
+          <span>
+            <strong>GOLDEN</strong>
+            <small>BET</small>
+          </span>
+        </div>
+        <p>Premium sports betting and entertainment platform.</p>
+      </div>
+
+      <div>
+        <h4>Sports</h4>
+        <Link to="/football">Football</Link>
+        <Link to="/live">Live</Link>
+        <Link to="/leagues">Leagues</Link>
+      </div>
+
+      <div>
+        <h4>Casino</h4>
+        <Link to="/casino">Casino</Link>
+        <Link to="/casino">Live Casino</Link>
+      </div>
+
+      <div>
+        <h4>Account</h4>
+        <Link to="/login">Login</Link>
+        <Link to="/register">Register</Link>
+        <Link to="/profile">Profile</Link>
+      </div>
+
+      <div className="footer-bottom">
+        © 2026 GoldenBet. All rights reserved.
+      </div>
+    </footer>
+  );
+}
+
+export default function App() {
   const location = useLocation();
 
+  const showLayout = useMemo(() => {
+    return location.pathname !== "/login" && location.pathname !== "/register";
+  }, [location.pathname]);
+
   return (
-    <Layout>
-      <Routes location={location}>
+    <div className="app">
+      {showLayout && <Header />}
+
+      <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/football" element={<Football />} />
         <Route path="/live" element={<Live />} />
+        <Route path="/casino" element={<Casino />} />
         <Route path="/leagues" element={<Leagues />} />
-        <Route path="/search" element={<Search />} />
 
-        <Route path="/login" element={<Auth />} />
-        <Route path="/register" element={<Auth register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         <Route path="/profile" element={<Profile />} />
 
         <Route
           path="/balance"
-          element={<SimplePage titleKey="balanceTitle" icon="💰" />}
+          element={
+            <Balance />
+          }
         />
 
         <Route
           path="/deposit"
-          element={<SimplePage titleKey="depositTitle" icon="💳" />}
+          element={
+            <SimplePage
+              title="Deposit"
+              subtitle="Add funds to your wallet"
+            />
+          }
         />
 
         <Route
           path="/withdraw"
-          element={<SimplePage titleKey="withdrawTitle" icon="🏦" />}
+          element={
+            <SimplePage
+              title="Withdraw"
+              subtitle="Withdraw your available balance"
+            />
+          }
         />
 
         <Route
           path="/my-bets"
-          element={<SimplePage titleKey="myBetsTitle" icon="🎟️" />}
+          element={
+            <SimplePage
+              title="My Bets"
+              subtitle="View your betting history"
+            />
+          }
         />
 
-        <Route path="/settings" element={<Settings />} />
+        <Route
+          path="/settings"
+          element={
+            <SimplePage
+              title="Settings"
+              subtitle="Manage your preferences"
+            />
+          }
+        />
 
         <Route
           path="*"
           element={<Home />}
         />
       </Routes>
-    </Layout>
+
+      {showLayout && <Footer />}
+    </div>
   );
 }
-
-export default App;
