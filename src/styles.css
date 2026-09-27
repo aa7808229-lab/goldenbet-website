@@ -1,1271 +1,938 @@
-import { BrowserRouter, Link, NavLink, Route, Routes, useNavigate, useParams } from 'react-router-dom';
-import { useMemo, useState } from 'react';
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-const COUNTRY_OPTIONS = [
-  { code: 'US', name: 'United States', flag: '🇺🇸' },
-  { code: 'UK', name: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'DE', name: 'Germany', flag: '🇩🇪' },
-  { code: 'TR', name: 'Türkiye', flag: '🇹🇷' },
-  { code: 'IQ', name: 'Iraq', flag: '🇮🇶' },
-  { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦' },
-  { code: 'AE', name: 'UAE', flag: '🇦🇪' },
-];
+:root {
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 
-const CURRENCY_OPTIONS = [
-  { code: 'USD', label: '$ USD' },
-  { code: 'EUR', label: '€ EUR' },
-  { code: 'TRY', label: '₺ TRY' },
-  { code: 'IQD', label: 'ع.د IQD' },
-  { code: 'SAR', label: '﷼ SAR' },
-];
+  color: #f5f5f5;
+  background: #08090c;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
 
-const LANGUAGE_OPTIONS = [
-  { code: 'en', label: 'EN' },
-  { code: 'ku', label: 'KU' },
-  { code: 'ar', label: 'AR' },
-  { code: 'tr', label: 'TR' },
-  { code: 'fa', label: 'FA' },
-];
+html {
+  scroll-behavior: smooth;
+}
 
-const footballMatches = [
-  {
-    id: 'arsenal-liverpool',
-    league: 'Premier League',
-    stage: 'Matchday 8',
-    homeTeam: 'Arsenal',
-    awayTeam: 'Liverpool',
-    homeScore: 2,
-    awayScore: 1,
-    status: 'FT',
-    time: 'Finished',
-    venue: 'Emirates Stadium',
-    live: false,
-    odds: { home: 1.72, draw: 3.65, away: 4.5 },
-    stats: {
-      possession: '61%',
-      shots: 14,
-      shotsOnTarget: 7,
-      corners: 6,
-      passes: 521,
-      xg: 1.87,
-    },
-    summary: 'Arsenal controlled the first half and held off a late Liverpool surge.',
-  },
-  {
-    id: 'real-madrid-barcelona',
-    league: 'La Liga',
-    stage: 'El Clásico',
-    homeTeam: 'Real Madrid',
-    awayTeam: 'Barcelona',
-    homeScore: 1,
-    awayScore: 1,
-    status: 'HT',
-    time: '45+2',
-    venue: 'Santiago Bernabéu',
-    live: true,
-    odds: { home: 2.15, draw: 3.25, away: 2.85 },
-    stats: {
-      possession: '54%',
-      shots: 9,
-      shotsOnTarget: 4,
-      corners: 3,
-      passes: 488,
-      xg: 1.32,
-    },
-    summary: 'A tight classic with both teams testing the keeper from range.',
-  },
-  {
-    id: 'bayern-munich-leverkusen',
-    league: 'Bundesliga',
-    stage: 'Matchday 7',
-    homeTeam: 'Bayern Munich',
-    awayTeam: 'Bayer Leverkusen',
-    homeScore: 3,
-    awayScore: 2,
-    status: 'FT',
-    time: 'Finished',
-    venue: 'Allianz Arena',
-    live: false,
-    odds: { home: 1.48, draw: 4.5, away: 6.4 },
-    stats: {
-      possession: '57%',
-      shots: 17,
-      shotsOnTarget: 9,
-      corners: 8,
-      passes: 635,
-      xg: 2.48,
-    },
-    summary: 'Bayern stayed aggressive in transition and scored twice after the break.',
-  },
-  {
-    id: 'psg-marseille',
-    league: 'Ligue 1',
-    stage: 'Top 4 Battle',
-    homeTeam: 'Paris Saint-Germain',
-    awayTeam: 'Marseille',
-    homeScore: 0,
-    awayScore: 0,
-    status: 'Live',
-    time: '67\'',
-    venue: 'Parc des Princes',
-    live: true,
-    odds: { home: 1.64, draw: 3.8, away: 5.2 },
-    stats: {
-      possession: '58%',
-      shots: 10,
-      shotsOnTarget: 3,
-      corners: 4,
-      passes: 472,
-      xg: 1.12,
-    },
-    summary: 'A tactical derby with PSG dominating set pieces but lacking a final touch.',
-  },
-  {
-    id: 'inter-milan-ac-milan',
-    league: 'Serie A',
-    stage: 'Derby d’Italia',
-    homeTeam: 'Inter Milan',
-    awayTeam: 'AC Milan',
-    homeScore: 2,
-    awayScore: 3,
-    status: 'FT',
-    time: 'Finished',
-    venue: 'San Siro',
-    live: false,
-    odds: { home: 2.06, draw: 3.4, away: 3.15 },
-    stats: {
-      possession: '49%',
-      shots: 13,
-      shotsOnTarget: 6,
-      corners: 5,
-      passes: 501,
-      xg: 1.76,
-    },
-    summary: 'Milan found a late winner after a confident midfield performance.',
-  },
-  {
-    id: 'mancity-chelsea',
-    league: 'Premier League',
-    stage: 'Matchday 9',
-    homeTeam: 'Manchester City',
-    awayTeam: 'Chelsea',
-    homeScore: 4,
-    awayScore: 1,
-    status: 'FT',
-    time: 'Finished',
-    venue: 'Etihad Stadium',
-    live: false,
-    odds: { home: 1.38, draw: 5.1, away: 8.7 },
-    stats: {
-      possession: '67%',
-      shots: 18,
-      shotsOnTarget: 10,
-      corners: 9,
-      passes: 685,
-      xg: 3.11,
-    },
-    summary: 'City controlled the midfield and punished Chelsea on the break.',
-  },
-  {
-    id: 'feyenoord-ajax',
-    league: 'Eredivisie',
-    stage: 'Dutch Derby',
-    homeTeam: 'Feyenoord',
-    awayTeam: 'Ajax',
-    homeScore: 2,
-    awayScore: 2,
-    status: 'Live',
-    time: '82\'',
-    venue: 'De Kuip',
-    live: true,
-    odds: { home: 2.12, draw: 3.25, away: 3.05 },
-    stats: {
-      possession: '52%',
-      shots: 11,
-      shotsOnTarget: 5,
-      corners: 7,
-      passes: 489,
-      xg: 1.58,
-    },
-    summary: 'A competitive derby with both sides pressing aggressively in the final third.',
-  },
-  {
-    id: 'atletico-madrid-sevilla',
-    league: 'La Liga',
-    stage: 'Matchday 10',
-    homeTeam: 'Atlético Madrid',
-    awayTeam: 'Sevilla',
-    homeScore: 1,
-    awayScore: 0,
-    status: 'FT',
-    time: 'Finished',
-    venue: 'Metropolitano',
-    live: false,
-    odds: { home: 1.9, draw: 3.3, away: 4.15 },
-    stats: {
-      possession: '55%',
-      shots: 12,
-      shotsOnTarget: 5,
-      corners: 3,
-      passes: 462,
-      xg: 1.48,
-    },
-    summary: 'Atleti kept Sevilla boxed in and converted a late set-piece opportunity.',
-  },
-];
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(212, 175, 55, 0.08),
+      transparent 35%
+    ),
+    #08090c;
+}
 
-const leagueData = [
-  { id: 'premier', name: 'Premier League', region: 'England', teams: 20, matches: '380' },
-  { id: 'laliga', name: 'La Liga', region: 'Spain', teams: 20, matches: '380' },
-  { id: 'bundesliga', name: 'Bundesliga', region: 'Germany', teams: 18, matches: '306' },
-  { id: 'seriea', name: 'Serie A', region: 'Italy', teams: 20, matches: '380' },
-  { id: 'ligue1', name: 'Ligue 1', region: 'France', teams: 18, matches: '306' },
-  { id: 'ucl', name: 'UEFA Champions League', region: 'Europe', teams: 36, matches: '125' },
-];
+button,
+input,
+select {
+  font: inherit;
+}
 
-const myBets = [
-  { id: 'bet-101', match: 'Arsenal vs Liverpool', selection: 'Home Win', odds: 1.72, stake: 40, result: 'Won', amount: 68.8 },
-  { id: 'bet-102', match: 'Real Madrid vs Barcelona', selection: 'Draw', odds: 3.25, stake: 25, result: 'Pending', amount: 81.25 },
-  { id: 'bet-103', match: 'Bayern Munich vs Leverkusen', selection: 'Home Win', odds: 1.48, stake: 30, result: 'Won', amount: 44.4 },
-];
+button {
+  cursor: pointer;
+}
 
-const translations = {
-  en: {
-    home: 'Home',
-    football: 'Football',
-    liveMatches: 'Live Matches',
-    leagues: 'Leagues',
-    matchDetails: 'Match Details',
-    search: 'Search',
-    login: 'Login',
-    register: 'Register',
-    profile: 'Profile',
-    balance: 'Balance',
-    deposit: 'Deposit',
-    withdraw: 'Withdraw',
-    bettingSlip: 'Betting Slip',
-    myBets: 'My Bets',
-    settings: 'Settings',
-    country: 'Country',
-    currency: 'Currency',
-    language: 'Language',
-    searchPlaceholder: 'Search clubs, leagues or matches',
-    noResults: 'No matches found',
-    addToSlip: 'Add to Slip',
-    viewDetails: 'View Details',
-    totalOdds: 'Total Odds',
-    stake: 'Stake',
-    potentialReturn: 'Potential Return',
-    clearSlip: 'Clear Slip',
-    remove: 'Remove',
-    depositOnly: 'Demo deposit only — no real payment processing',
-    withdrawOnly: 'Demo withdrawal only — no real bank transactions',
-    live: 'Live',
-    heroTitle: 'Premium football betting experience',
-    heroText: 'Back your favorite teams with live odds, trusted markets and seamless mobile access.',
-    viewMatches: 'View Matches',
-    exploreLeagues: 'Explore Leagues',
-    winRate: 'Win Rate',
-    totalBets: 'Total Bets',
-    wallet: 'Wallet',
-    todayMatches: 'Today’s Matches',
-    featuredLeagues: 'Featured Leagues',
-    slipSummary: 'Slip Summary',
-    balanceSummary: 'Balance Summary',
-    noSelections: 'No selections yet',
-    recentBets: 'Recent Bets',
-    depositDemo: 'Demo deposit',
-    withdrawDemo: 'Demo withdrawal',
-    settingsTitle: 'Account Settings',
-    profileTitle: 'Player Profile',
-    myBalance: 'My Balance',
-    loginTitle: 'Welcome back',
-    registerTitle: 'Create account',
-  },
-  ku: {
-    home: 'ماڵەوە',
-    football: 'فوتبال',
-    liveMatches: 'لیگەرەکانی ڕاستەوخۆ',
-    leagues: 'لیگ',
-    matchDetails: 'زانیاریی مەشق',
-    search: 'گەڕان',
-    login: 'چونەژوور',
-    register: 'تۆمارکردن',
-    profile: 'پڕۆفایل',
-    balance: 'باڵانس',
-    deposit: 'پەیامدان',
-    withdraw: 'بەربەست',
-    bettingSlip: 'کێشەی قازانج',
-    myBets: 'بەختەکانم',
-    settings: 'ڕێکخستنەکان',
-    country: 'وڵات',
-    currency: 'دراو',
-    language: 'زمان',
-    searchPlaceholder: 'گەڕان بە تیم، لیگ یان مەشق',
-    noResults: 'هیچ مەشقێك نەدۆزرایەوە',
-    addToSlip: 'زیادکردن بۆ کێشە',
-    viewDetails: 'بینینی زانیاری',
-    totalOdds: 'کۆی رێژەکان',
-    stake: 'بەها',
-    potentialReturn: 'گەڕانەوەی دڵنیابوو',
-    clearSlip: 'پاککردنەوەی کێشە',
-    remove: 'لابردن',
-    depositOnly: 'تەنها دیمۆ پەیامدان — هیچ هەڵبژاردنێکی ڕاستەوخۆ نییە',
-    withdrawOnly: 'تەنها دیمۆ وەربگر — هیچ گواستنەوەی بانکی نەبێت',
-    live: 'ڕاستەوخۆ',
-    heroTitle: 'تجربەیەکی پڕ لە باڵای futbol',
-    heroText: 'لە تیمەکانی دڵخوازت ھەڵبژێرە و لە ئاوەڵەکانێکی ڕاستەوخۆ بەدەست بێنە.',
-    viewMatches: 'بینینی مەشقەکان',
-    exploreLeagues: 'بینینی لیگەکان',
-    winRate: 'ڕێژەی بردن',
-    totalBets: 'کۆی بەختەکان',
-    wallet: 'کیفە',
-    todayMatches: 'مەشقەکانی ئەمڕۆ',
-    featuredLeagues: 'لیگە نایابەکان',
-    slipSummary: 'کۆکراوەی کێشە',
-    balanceSummary: 'کۆکراوەی باڵانس',
-    noSelections: 'هێشتا هیچ هەڵبژاردنێك نییە',
-    recentBets: 'بەختەکانی نزیك',
-    depositDemo: 'پەیامدانی دیمۆ',
-    withdrawDemo: 'بەربەستکردنی دیمۆ',
-    settingsTitle: 'ڕێکخستنی هەژمار',
-    profileTitle: 'پڕۆفایلی یاریزان',
-    myBalance: 'باڵانسی من',
-    loginTitle: 'بەخێربێیت',
-    registerTitle: 'هەژمار دروست بکە',
-  },
-  ar: {
-    home: 'الرئيسية',
-    football: 'كرة القدم',
-    liveMatches: 'مباريات مباشرة',
-    leagues: 'الدوريات',
-    matchDetails: 'تفاصيل المباراة',
-    search: 'بحث',
-    login: 'تسجيل الدخول',
-    register: 'إنشاء حساب',
-    profile: 'الملف الشخصي',
-    balance: 'الرصيد',
-    deposit: 'إيداع',
-    withdraw: 'سحب',
-    bettingSlip: 'سجل المراهنة',
-    myBets: 'مراهناتي',
-    settings: 'الإعدادات',
-    country: 'الدولة',
-    currency: 'العملة',
-    language: 'اللغة',
-    searchPlaceholder: 'ابحث عن الأندية أو البطولات أو المباريات',
-    noResults: 'لا توجد مباريات',
-    addToSlip: 'أضف إلى السجل',
-    viewDetails: 'عرض التفاصيل',
-    totalOdds: 'إجمالي الاحتمالات',
-    stake: 'المبلغ',
-    potentialReturn: 'العائد المحتمل',
-    clearSlip: 'مسح السجل',
-    remove: 'حذف',
-    depositOnly: 'إيداع تجريبي فقط — لا توجد معالجة دفع حقيقية',
-    withdrawOnly: 'سحب تجريبي فقط — لا توجد معاملات بنكية حقيقية',
-    live: 'مباشر',
-    heroTitle: 'تجربة مراهنة كرة قدم فاخرة',
-    heroText: 'اختر فرقك المفضلة وتابعنها بأسعار مباشرة ومجالات موثوقة.',
-    viewMatches: 'عرض المباريات',
-    exploreLeagues: 'استكشف البطولات',
-    winRate: 'نسبة الفوز',
-    totalBets: 'إجمالي المراهنات',
-    wallet: 'المحفظة',
-    todayMatches: 'مباريات اليوم',
-    featuredLeagues: 'الدوريات المميزة',
-    slipSummary: 'ملخص السجل',
-    balanceSummary: 'ملخص الرصيد',
-    noSelections: 'لا توجد اختيارات حتى الآن',
-    recentBets: 'آخر المراهنات',
-    depositDemo: 'إيداع تجريبي',
-    withdrawDemo: 'سحب تجريبي',
-    settingsTitle: 'إعدادات الحساب',
-    profileTitle: 'ملف اللاعب',
-    myBalance: 'رصيدي',
-    loginTitle: 'مرحباً بعودتك',
-    registerTitle: 'إنشاء حساب',
-  },
-  tr: {
-    home: 'Ana Sayfa',
-    football: 'Futbol',
-    liveMatches: 'Canlı Maçlar',
-    leagues: 'Ligler',
-    matchDetails: 'Maç Detayları',
-    search: 'Ara',
-    login: 'Giriş',
-    register: 'Kayıt Ol',
-    profile: 'Profil',
-    balance: 'Bakiye',
-    deposit: 'Yatır',
-    withdraw: 'Çek',
-    bettingSlip: 'Bahis Kuponu',
-    myBets: 'Bahislerim',
-    settings: 'Ayarlar',
-    country: 'Ülke',
-    currency: 'Para Birimi',
-    language: 'Dil',
-    searchPlaceholder: 'Kulüp, lig veya maç ara',
-    noResults: 'Hiç maç bulunamadı',
-    addToSlip: 'Kupona Ekle',
-    viewDetails: 'Detaya Bak',
-    totalOdds: 'Toplam Oran',
-    stake: 'Miktar',
-    potentialReturn: 'Potansiyel Getiri',
-    clearSlip: 'Kuponu Temizle',
-    remove: 'Kaldır',
-    depositOnly: 'Yalnızca demo yatırım — gerçek ödeme işleme yok',
-    withdrawOnly: 'Yalnızca demo çekim — gerçek banka işlemi yok',
-    live: 'Canlı',
-    heroTitle: 'Ödüllü futbol bahis deneyimi',
-    heroText: 'Favori takımlarına canlı oranlarla güvenli ve mobil dostu bir deneyim sunuyoruz.',
-    viewMatches: 'Maçları Gör',
-    exploreLeagues: 'Ligleri Keşfet',
-    winRate: 'Kazanma Oranı',
-    totalBets: 'Toplam Bahis',
-    wallet: 'Cüzdan',
-    todayMatches: 'Bugünkü Maçlar',
-    featuredLeagues: 'Öne Çıkan Ligler',
-    slipSummary: 'Kupon Özeti',
-    balanceSummary: 'Bakiye Özeti',
-    noSelections: 'Henüz seçim yok',
-    recentBets: 'Son Bahisler',
-    depositDemo: 'Demo yatırım',
-    withdrawDemo: 'Demo çekim',
-    settingsTitle: 'Hesap Ayarları',
-    profileTitle: 'Oyuncu Profili',
-    myBalance: 'Bakiyem',
-    loginTitle: 'Tekrar hoş geldin',
-    registerTitle: 'Hesap oluştur',
-  },
-  fa: {
-    home: 'خانه',
-    football: 'فوتبال',
-    liveMatches: 'بازی‌های زنده',
-    leagues: 'لیگ‌ها',
-    matchDetails: 'جزئیات بازی',
-    search: 'جستجو',
-    login: 'ورود',
-    register: 'ثبت‌نام',
-    profile: 'پروفایل',
-    balance: 'موجودی',
-    deposit: 'واریز',
-    withdraw: 'برداشت',
-    bettingSlip: 'کدوم شانس',
-    myBets: 'بازی‌های من',
-    settings: 'تنظیمات',
-    country: 'کشور',
-    currency: 'واحد پول',
-    language: 'زبان',
-    searchPlaceholder: 'جستجوی تیم، لیگ یا بازی',
-    noResults: 'هیچ بازی یافت نشد',
-    addToSlip: 'افزودن به سلیپ',
-    viewDetails: 'مشاهده جزئیات',
-    totalOdds: 'جمع ضریب',
-    stake: 'مبلغ',
-    potentialReturn: 'بازگشت احتمالی',
-    clearSlip: 'پاک کردن سلیپ',
-    remove: 'حذف',
-    depositOnly: 'فقط واریز آزمایشی — بدون پرداخت واقعی',
-    withdrawOnly: 'فقط برداشت آزمایشی — بدون تراکنش بانکی واقعی',
-    live: 'زنده',
-    heroTitle: 'تجربه حرفه‌ای شرط‌بندی فوتبال',
-    heroText: 'تیم مورد علاقه خود را با ضرایب زنده و بازارهای مطمئن دنبال کنید.',
-    viewMatches: 'مشاهده بازی‌ها',
-    exploreLeagues: 'کشف لیگ‌ها',
-    winRate: 'نرخ برد',
-    totalBets: 'کل شرط‌ها',
-    wallet: 'کیف پول',
-    todayMatches: 'بازی‌های امروز',
-    featuredLeagues: 'لیگ‌های ویژه',
-    slipSummary: 'خلاصه سلیپ',
-    balanceSummary: 'خلاصه موجودی',
-    noSelections: 'هنوز انتخابی وجود ندارد',
-    recentBets: 'آخرین شرط‌ها',
-    depositDemo: 'واریز آزمایشی',
-    withdrawDemo: 'برداشت آزمایشی',
-    settingsTitle: 'تنظیمات حساب',
-    profileTitle: 'پروفایل بازیکن',
-    myBalance: 'موجودی من',
-    loginTitle: 'خوش آمدید',
-    registerTitle: 'ساخت حساب',
-  },
-};
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-function Header({ language, setLanguage, countryCode, setCountryCode, currency, setCurrency, searchQuery, setSearchQuery, betSlip, t, isRTL }) {
-  const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
+/* =========================
+   APP
+========================= */
 
-  const navItems = [
-    { label: t.home, to: '/' },
-    { label: t.football, to: '/football' },
-    { label: t.liveMatches, to: '/live' },
-    { label: t.leagues, to: '/leagues' },
-    { label: t.search, to: '/search' },
-    { label: t.myBets, to: '/my-bets' },
-  ];
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-  const handleSearch = (event) => {
-    event.preventDefault();
-    navigate('/search');
-  };
+main {
+  flex: 1;
+}
 
-  return (
-    <header className="topbar">
-      <div className="brand-block">
-        <Link to="/" className="brand" aria-label="GoldenBet home">
-          <span className="brand-mark">G</span>
-          <span>GoldenBet</span>
-        </Link>
-      </div>
+/* =========================
+   HEADER
+========================= */
 
-      <div className="toolbar">
-        <label className="selector">
-          <span>{t.country}</span>
-          <select
-            value={countryCode}
-            onChange={(event) => setCountryCode(event.target.value)}
-          >
-            {COUNTRY_OPTIONS.map((country) => (
-              <option key={country.code} value={country.code}>
-                {country.flag} {country.code}
-              </option>
-            ))}
-          </select>
-        </label>
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: 74px;
+  padding: 14px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
 
-        <label className="selector">
-          <span>{t.currency}</span>
-          <select value={currency} onChange={(event) => setCurrency(event.target.value)}>
-            {CURRENCY_OPTIONS.map((item) => (
-              <option key={item.code} value={item.code}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-        </label>
+  background: rgba(8, 9, 12, 0.92);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  backdrop-filter: blur(18px);
+}
 
-        <label className="selector">
-          <span>{t.language}</span>
-          <select value={language} onChange={(event) => setLanguage(event.target.value)}>
-            {LANGUAGE_OPTIONS.map((item) => (
-              <option key={item.code} value={item.code}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  font-weight: 900;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+}
 
-      <nav className={`primary-nav ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-            onClick={() => setMenuOpen(false)}
-            end={item.to === '/'}
-          >
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
+.brand > span:last-child span {
+  color: #d4af37;
+}
 
-      <div className="header-actions">
-        <form className="search-form" onSubmit={handleSearch}>
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder={t.searchPlaceholder}
-            aria-label={t.search}
-          />
-          <button type="submit">{t.search}</button>
-        </form>
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
 
-        <div className="header-buttons">
-          <NavLink to="/balance" className="mini-link">
-            {t.balance} · {currency}
-          </NavLink>
-          <NavLink to="/bet-slip" className="mini-link badge-link">
-            {t.bettingSlip}
-            <span className="badge">{betSlip.length}</span>
-          </NavLink>
-          <NavLink to="/login" className="auth-link">
-            {t.login}
-          </NavLink>
-        </div>
+  color: #08090c;
+  background: linear-gradient(
+    135deg,
+    #f7e7a8,
+    #d4af37,
+    #9f7f19
+  );
 
-        <button
-          type="button"
-          className="menu-toggle"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-label="Open menu"
-        >
-          ☰
-        </button>
-      </div>
-    </header>
+  font-weight: 900;
+  box-shadow:
+    0 8px 25px rgba(212, 175, 55, 0.2);
+}
+
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex: 1;
+}
+
+.nav-link {
+  position: relative;
+  padding: 8px 2px;
+  color: #a7a7ad;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #d4af37;
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 2px;
+  border-radius: 5px;
+  background: #d4af37;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.language-select,
+.language-large {
+  min-height: 40px;
+  padding: 0 12px;
+  color: #eeeeee;
+  background: #111318;
+  border: 1px solid #292b31;
+  border-radius: 10px;
+  outline: none;
+}
+
+.language-select:focus,
+.language-large:focus {
+  border-color: #d4af37;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.gold-button,
+.outline-button,
+.hero-button {
+  border-radius: 10px;
+  padding: 11px 17px;
+  font-weight: 800;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.gold-button,
+.hero-button {
+  border: 1px solid #d4af37;
+  color: #08090c;
+  background: linear-gradient(
+    135deg,
+    #f7e7a8,
+    #d4af37
   );
 }
 
-function MatchCard({ match, onAddToSlip, t }) {
-  const showBottomOdds = [
-    { label: '1', value: match.odds.home, market: 'Home' },
-    { label: 'X', value: match.odds.draw, market: 'Draw' },
-    { label: '2', value: match.odds.away, market: 'Away' },
-  ];
-
-  return (
-    <article className="match-card">
-      <div className="match-topline">
-        <div>
-          <p className="league-name">{match.league}</p>
-          <p className="stage-label">{match.stage}</p>
-        </div>
-        <span className={`status-pill ${match.live ? 'live' : ''}`}>
-          {match.live ? t.live : match.status}
-        </span>
-      </div>
-
-      <div className="teams-row">
-        <div className="team-box">
-          <div className="badge gold">{match.homeTeam.slice(0, 2).toUpperCase()}</div>
-          <span>{match.homeTeam}</span>
-        </div>
-        <span className="score">{match.homeScore} : {match.awayScore}</span>
-        <div className="team-box away">
-          <div className="badge navy">{match.awayTeam.slice(0, 2).toUpperCase()}</div>
-          <span>{match.awayTeam}</span>
-        </div>
-      </div>
-
-      <div className="match-meta">
-        <span>{match.venue}</span>
-        <span>{match.time}</span>
-      </div>
-
-      <div className="odd-grid">
-        {showBottomOdds.map((odd) => (
-          <button
-            key={`${match.id}-${odd.market}`}
-            type="button"
-            className="odd-button"
-            onClick={() => onAddToSlip(match, odd.market, odd.value)}
-          >
-            <span>{odd.label}</span>
-            <strong>{odd.value.toFixed(2)}</strong>
-          </button>
-        ))}
-      </div>
-
-      <div className="match-actions">
-        <Link to={`/match/${match.id}`} className="ghost-link">
-          {t.viewDetails}
-        </Link>
-        <button type="button" className="primary-button" onClick={() => onAddToSlip(match, 'Home', match.odds.home)}>
-          {t.addToSlip}
-        </button>
-      </div>
-    </article>
-  );
+.gold-button:hover,
+.hero-button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 28px rgba(212, 175, 55, 0.22);
 }
 
-function HomePage({ matches, onAddToSlip, t }) {
-  const featured = matches.slice(0, 3);
-
-  return (
-    <div className="page-content">
-      <section className="hero-panel">
-        <div className="hero-copy">
-          <p className="eyebrow">GoldenBet</p>
-          <h1>{t.heroTitle}</h1>
-          <p>{t.heroText}</p>
-          <div className="hero-actions">
-            <Link to="/football" className="primary-button large">{t.viewMatches}</Link>
-            <Link to="/leagues" className="secondary-button large">{t.exploreLeagues}</Link>
-          </div>
-        </div>
-
-        <div className="hero-panel-card">
-          <div className="top-card-row">
-            <span>{t.balanceSummary}</span>
-            <span className="chip">+12.4%</span>
-          </div>
-          <div className="wallet-number">$5,240.00</div>
-          <div className="mini-stats">
-            <div>
-              <span>{t.winRate}</span>
-              <strong>68%</strong>
-            </div>
-            <div>
-              <span>{t.totalBets}</span>
-              <strong>1,245</strong>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="stats-grid">
-        <article className="stat-box">
-          <span>{t.totalBets}</span>
-          <strong>2,418</strong>
-        </article>
-        <article className="stat-box">
-          <span>{t.liveMatches}</span>
-          <strong>18</strong>
-        </article>
-        <article className="stat-box">
-          <span>{t.wallet}</span>
-          <strong>$5,240</strong>
-        </article>
-        <article className="stat-box">
-          <span>{t.winRate}</span>
-          <strong>68%</strong>
-        </article>
-      </section>
-
-      <section className="content-block">
-        <div className="section-heading">
-          <h2>{t.todayMatches}</h2>
-          <Link to="/football">{t.football}</Link>
-        </div>
-        <div className="match-grid">
-          {featured.map((match) => (
-            <MatchCard key={match.id} match={match} onAddToSlip={onAddToSlip} t={t} />
-          ))}
-        </div>
-      </section>
-
-      <section className="content-block">
-        <div className="section-heading">
-          <h2>{t.featuredLeagues}</h2>
-          <Link to="/leagues">{t.leagues}</Link>
-        </div>
-        <div className="league-grid">
-          {leagueData.slice(0, 4).map((league) => (
-            <div key={league.id} className="league-card">
-              <span className="league-badge">{league.region}</span>
-              <h3>{league.name}</h3>
-              <p>{league.teams} teams</p>
-              <p>{league.matches} matches</p>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
+.outline-button {
+  color: #d4af37;
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.5);
 }
 
-function FootballPage({ matches, onAddToSlip, t }) {
-  return (
-    <div className="page-content">
-      <div className="section-heading top-space">
-        <h2>{t.football}</h2>
-      </div>
-      <div className="match-grid wide-grid">
-        {matches.map((match) => (
-          <MatchCard key={match.id} match={match} onAddToSlip={onAddToSlip} t={t} />
-        ))}
-      </div>
-    </div>
-  );
+.outline-button:hover {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: #d4af37;
 }
 
-function LiveMatchesPage({ matches, onAddToSlip, t }) {
-  const liveMatches = matches.filter((match) => match.live);
-
-  return (
-    <div className="page-content">
-      <div className="section-heading top-space">
-        <h2>{t.liveMatches}</h2>
-      </div>
-      <div className="match-grid wide-grid">
-        {liveMatches.length > 0 ? (
-          liveMatches.map((match) => <MatchCard key={match.id} match={match} onAddToSlip={onAddToSlip} t={t} />)
-        ) : (
-          <div className="empty-state">No live matches right now.</div>
-        )}
-      </div>
-    </div>
-  );
+.text-button {
+  border: 0;
+  background: transparent;
+  color: #d4af37;
+  font-weight: 700;
+  padding: 8px;
 }
 
-function LeaguesPage({ t }) {
-  return (
-    <div className="page-content">
-      <div className="section-heading top-space">
-        <h2>{t.leagues}</h2>
-      </div>
-      <div className="league-grid full-grid">
-        {leagueData.map((league) => (
-          <div key={league.id} className="league-card large-league">
-            <span className="league-badge">{league.region}</span>
-            <h3>{league.name}</h3>
-            <div className="league-meta">{league.teams} teams</div>
-            <div className="league-meta">{league.matches} matches</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+.full-button {
+  width: 100%;
 }
 
-function MatchDetailPage({ matches, onAddToSlip, t }) {
-  const { matchId } = useParams();
-  const match = matches.find((item) => item.id === matchId);
+/* =========================
+   HERO
+========================= */
 
-  if (!match) {
-    return <div className="page-content"><div className="empty-state">Match not found.</div></div>;
+.hero {
+  position: relative;
+  min-height: 470px;
+  padding: 80px 8%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 9, 12, 1) 0%,
+      rgba(8, 9, 12, 0.86) 50%,
+      rgba(8, 9, 12, 0.55) 100%
+    ),
+    radial-gradient(
+      circle at 80% 50%,
+      rgba(212, 175, 55, 0.16),
+      transparent 40%
+    );
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  right: 4%;
+  top: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+}
+
+.gold-label {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #d4af37;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.hero h1 {
+  max-width: 760px;
+  font-size: clamp(42px, 7vw, 82px);
+  line-height: 0.98;
+  font-weight: 950;
+  letter-spacing: -3px;
+  margin-bottom: 22px;
+}
+
+.hero p {
+  max-width: 650px;
+  margin-bottom: 28px;
+  color: #aaaab1;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.hero-button {
+  padding: 14px 24px;
+  font-size: 15px;
+}
+
+.hero-ball {
+  position: relative;
+  z-index: 2;
+  width: 270px;
+  height: 270px;
+  display: grid;
+  place-items: center;
+
+  font-size: 145px;
+
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 35% 25%,
+      rgba(255, 255, 255, 0.12),
+      transparent 30%
+    ),
+    rgba(212, 175, 55, 0.05);
+
+  border: 1px solid rgba(212, 175, 55, 0.2);
+
+  box-shadow:
+    0 0 90px rgba(212, 175, 55, 0.08);
+}
+
+/* =========================
+   PAGES
+========================= */
+
+.page {
+  width: min(1200px, 90%);
+  margin: 0 auto;
+  padding: 70px 0;
+}
+
+.page-title {
+  margin-bottom: 35px;
+}
+
+.page-title h1 {
+  margin-bottom: 10px;
+  font-size: clamp(32px, 5vw, 52px);
+}
+
+.page-title p {
+  color: #96969d;
+  line-height: 1.6;
+}
+
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.section-heading h2 {
+  font-size: 28px;
+}
+
+/* =========================
+   MATCHES
+========================= */
+
+.match-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.match-card {
+  padding: 20px;
+  border: 1px solid #24262c;
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.012)
+    );
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.match-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(212, 175, 55, 0.42);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.22);
+}
+
+.match-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  color: #8e8e96;
+  font-size: 12px;
+  margin-bottom: 24px;
+}
+
+.teams {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.teams > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+}
+
+.team-logo {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+  color: #d4af37;
+  background: #17191f;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.teams strong {
+  font-size: 14px;
+}
+
+.vs {
+  color: #77777e;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.odds {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.odds button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  padding: 11px 12px;
+
+  color: #ddd;
+  background: #101217;
+  border: 1px solid #292b31;
+  border-radius: 9px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  transition: 0.2s ease;
+}
+
+.odds button:hover {
+  color: #d4af37;
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.06);
+}
+
+.odds span {
+  color: #d4af37;
+}
+
+/* =========================
+   LEAGUES
+========================= */
+
+.league-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.league-card {
+  padding: 28px 18px;
+  text-align: center;
+
+  border: 1px solid #24262c;
+  border-radius: 18px;
+  background: #101217;
+
+  transition: 0.2s ease;
+}
+
+.league-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 175, 55, 0.45);
+}
+
+.league-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.08);
+
+  font-size: 28px;
+}
+
+.league-card h3 {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.league-card p {
+  color: #77777f;
+  font-size: 12px;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-input {
+  width: 100%;
+  height: 54px;
+  padding: 0 18px;
+  margin-bottom: 28px;
+
+  color: #ffffff;
+  background: #111318;
+  border: 1px solid #292b31;
+  border-radius: 12px;
+
+  outline: none;
+  font-size: 15px;
+}
+
+.search-input::placeholder {
+  color: #666871;
+}
+
+.search-input:focus {
+  border-color: #d4af37;
+  box-shadow:
+    0 0 0 3px rgba(212, 175, 55, 0.08);
+}
+
+/* =========================
+   AUTH
+========================= */
+
+.auth-page {
+  min-height: calc(100vh - 150px);
+  display: grid;
+  place-items: center;
+  padding: 70px 20px;
+}
+
+.auth-card {
+  width: min(460px, 100%);
+  padding: 38px;
+
+  background: #101217;
+  border: 1px solid #292b31;
+  border-radius: 22px;
+
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.3);
+
+  text-align: center;
+}
+
+.auth-logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 18px;
+
+  color: #08090c;
+  background: linear-gradient(
+    135deg,
+    #f7e7a8,
+    #d4af37
+  );
+
+  font-size: 28px;
+  font-weight: 950;
+}
+
+.auth-card h1 {
+  margin-bottom: 10px;
+  font-size: 30px;
+}
+
+.auth-card > p {
+  margin-bottom: 25px;
+  color: #85858d;
+  line-height: 1.6;
+}
+
+.form-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 15px;
+  margin-bottom: 12px;
+
+  color: #fff;
+  background: #0b0c10;
+
+  border: 1px solid #292b31;
+  border-radius: 10px;
+
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #d4af37;
+}
+
+.auth-card .gold-button {
+  margin-top: 8px;
+}
+
+/* =========================
+   PANELS
+========================= */
+
+.panel {
+  padding: 35px;
+  background: #101217;
+  border: 1px solid #292b31;
+  border-radius: 18px;
+}
+
+.simple-panel {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.large-icon {
+  font-size: 55px;
+  margin-bottom: 10px;
+}
+
+.simple-panel h2 {
+  margin-bottom: 8px;
+}
+
+.simple-panel p {
+  color: #77777f;
+}
+
+.empty-panel {
+  text-align: center;
+  min-height: 220px;
+}
+
+.empty-icon {
+  font-size: 45px;
+  margin-bottom: 12px;
+}
+
+.settings-panel {
+  max-width: 600px;
+}
+
+.settings-panel h3 {
+  margin-bottom: 15px;
+}
+
+.language-large {
+  width: 100%;
+  min-height: 52px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+  margin-top: auto;
+  padding: 35px 5%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  color: #77777f;
+  background: #07080b;
+  border-top: 1px solid #1d1f24;
+}
+
+.footer strong {
+  color: #d4af37;
+  font-size: 20px;
+}
+
+.footer p {
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+/* =========================
+   RTL
+========================= */
+
+[dir="rtl"] .hero {
+  background:
+    linear-gradient(
+      -90deg,
+      rgba(8, 9, 12, 1) 0%,
+      rgba(8, 9, 12, 0.86) 50%,
+      rgba(8, 9, 12, 0.55) 100%
+    ),
+    radial-gradient(
+      circle at 20% 50%,
+      rgba(212, 175, 55, 0.16),
+      transparent 40%
+    );
+}
+
+[dir="rtl"] .hero::before {
+  right: auto;
+  left: 4%;
+}
+
+[dir="rtl"] .hero-ball {
+  order: -1;
+}
+
+[dir="rtl"] .search-input,
+[dir="rtl"] .form-input {
+  text-align: right;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1000px) {
+  .desktop-nav {
+    gap: 14px;
   }
 
-  return (
-    <div className="page-content">
-      <div className="detail-panel">
-        <div className="detail-header">
-          <div>
-            <p className="eyebrow">{match.league}</p>
-            <h2>{match.homeTeam} vs {match.awayTeam}</h2>
-          </div>
-          <span className={`status-pill ${match.live ? 'live' : ''}`}>{match.live ? t.live : match.status}</span>
-        </div>
+  .header-actions .outline-button {
+    display: none;
+  }
 
-        <div className="score-panel">
-          <div className="score-team">
-            <span>{match.homeTeam}</span>
-            <strong>{match.homeScore}</strong>
-          </div>
-          <div className="score-separator">:</div>
-          <div className="score-team away-score">
-            <strong>{match.awayScore}</strong>
-            <span>{match.awayTeam}</span>
-          </div>
-        </div>
+  .league-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-        <div className="detail-summary">
-          <div>
-            <span>Venue</span>
-            <strong>{match.venue}</strong>
-          </div>
-          <div>
-            <span>Minute</span>
-            <strong>{match.time}</strong>
-          </div>
-          <div>
-            <span>Stage</span>
-            <strong>{match.stage}</strong>
-          </div>
-        </div>
-
-        <div className="statistics-grid">
-          <div className="stat-tile"><span>Possession</span><strong>{match.stats.possession}</strong></div>
-          <div className="stat-tile"><span>Shots</span><strong>{match.stats.shots}</strong></div>
-          <div className="stat-tile"><span>On target</span><strong>{match.stats.shotsOnTarget}</strong></div>
-          <div className="stat-tile"><span>Corners</span><strong>{match.stats.corners}</strong></div>
-          <div className="stat-tile"><span>Passes</span><strong>{match.stats.passes}</strong></div>
-          <div className="stat-tile"><span>xG</span><strong>{match.stats.xg}</strong></div>
-        </div>
-
-        <div className="odds-section">
-          <h3>Markets</h3>
-          <div className="detail-odds">
-            <button type="button" className="odd-button large-odd" onClick={() => onAddToSlip(match, 'Home', match.odds.home)}>
-              <span>1</span>
-              <strong>{match.odds.home.toFixed(2)}</strong>
-            </button>
-            <button type="button" className="odd-button large-odd" onClick={() => onAddToSlip(match, 'Draw', match.odds.draw)}>
-              <span>X</span>
-              <strong>{match.odds.draw.toFixed(2)}</strong>
-            </button>
-            <button type="button" className="odd-button large-odd" onClick={() => onAddToSlip(match, 'Away', match.odds.away)}>
-              <span>2</span>
-              <strong>{match.odds.away.toFixed(2)}</strong>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  .hero-ball {
+    width: 210px;
+    height: 210px;
+    font-size: 110px;
+  }
 }
 
-function SearchPage({ searchQuery, setSearchQuery, matches, onAddToSlip, t }) {
-  const filteredMatches = matches.filter((match) => {
-    if (!searchQuery.trim()) {
-      return true;
-    }
+/* =========================
+   MOBILE
+========================= */
 
-    const query = searchQuery.toLowerCase();
-    return (
-      match.homeTeam.toLowerCase().includes(query) ||
-      match.awayTeam.toLowerCase().includes(query) ||
-      match.league.toLowerCase().includes(query) ||
-      match.stage.toLowerCase().includes(query)
-    );
-  });
+@media (max-width: 700px) {
+  .header {
+    min-height: auto;
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 
-  return (
-    <div className="page-content">
-      <div className="section-heading top-space">
-        <h2>{t.search}</h2>
-      </div>
+  .brand {
+    font-size: 21px;
+  }
 
-      <div className="search-panel">
-        <input
-          type="search"
-          value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value)}
-          placeholder={t.searchPlaceholder}
-          aria-label={t.search}
-        />
-      </div>
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+  }
 
-      <div className="match-grid wide-grid">
-        {filteredMatches.length > 0 ? (
-          filteredMatches.map((match) => <MatchCard key={match.id} match={match} onAddToSlip={onAddToSlip} t={t} />)
-        ) : (
-          <div className="empty-state">{t.noResults}</div>
-        )}
-      </div>
-    </div>
-  );
+  .desktop-nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 3px;
+  }
+
+  .nav-link {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  .header-actions {
+    margin-left: auto;
+  }
+
+  .header-actions .gold-button {
+    display: none;
+  }
+
+  .language-select {
+    min-height: 36px;
+    max-width: 105px;
+    font-size: 12px;
+  }
+
+  .hero {
+    min-height: 560px;
+    padding: 55px 7%;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 12vw, 58px);
+    letter-spacing: -2px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .hero-ball {
+    width: 145px;
+    height: 145px;
+    font-size: 75px;
+  }
+
+  .page {
+    width: 92%;
+    padding: 48px 0;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .section-heading h2 {
+    font-size: 24px;
+  }
+
+  .match-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .league-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .auth-card {
+    padding: 28px 20px;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
-function LoginPage({ t }) {
-  return (
-    <div className="page-content auth-page">
-      <div className="auth-card">
-        <h2>{t.loginTitle}</h2>
-        <form className="auth-form">
-          <label>
-            <span>Email</span>
-            <input type="email" placeholder="player@goldenbet.com" />
-          </label>
-          <label>
-            <span>Password</span>
-            <input type="password" placeholder="••••••••" />
-          </label>
-          <button type="submit" className="primary-button full-width">{t.login}</button>
-        </form>
-        <Link to="/register" className="ghost-link">{t.register}</Link>
-      </div>
-    </div>
-  );
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 430px) {
+  .header-actions {
+    gap: 5px;
+  }
+
+  .language-select {
+    max-width: 92px;
+  }
+
+  .page-title h1 {
+    font-size: 34px;
+  }
+
+  .teams {
+    gap: 8px;
+  }
+
+  .teams strong {
+    font-size: 12px;
+  }
+
+  .team-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .odds button {
+    padding: 10px 7px;
+    font-size: 11px;
+  }
+
+  .league-grid {
+    grid-template-columns: 1fr;
+  }
 }
-
-function RegisterPage({ t }) {
-  return (
-    <div className="page-content auth-page">
-      <div className="auth-card">
-        <h2>{t.registerTitle}</h2>
-        <form className="auth-form">
-          <label>
-            <span>Full Name</span>
-            <input type="text" placeholder="Ammar Ali" />
-          </label>
-          <label>
-            <span>Email</span>
-            <input type="email" placeholder="name@example.com" />
-          </label>
-          <label>
-            <span>Password</span>
-            <input type="password" placeholder="Create a password" />
-          </label>
-          <button type="submit" className="primary-button full-width">{t.register}</button>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-function ProfilePage({ t }) {
-  return (
-    <div className="page-content">
-      <div className="section-heading top-space">
-        <h2>{t.profileTitle}</h2>
-      </div>
-      <div className="profile-grid">
-        <div className="profile-card">
-          <div className="avatar">GA</div>
-          <h3>Ghaleb A.</h3>
-          <p>Premium Member</p>
-        </div>
-        <div className="profile-card details-card">
-          <div><span>Member Since</span><strong>May 2023</strong></div>
-          <div><span>Region</span><strong>Europe</strong></div>
-          <div><span>Favorite League</span><strong>Premier League</strong></div>
-          <div><span>VIP Level</span><strong>Gold</strong></div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function BalancePage({ t, currency }) {
-  return (
-    <div className="page-content financial-page">
-      <div className="section-heading top-space">
-        <h2>{t.myBalance}</h2>
-      </div>
-      <div className="money-card">
-        <span>{t.balance}</span>
-        <strong>{currency} 5,240.00</strong>
-      </div>
-      <div className="financial-grid">
-        <Link to="/deposit" className="secondary-button wide-button">{t.deposit}</Link>
-        <Link to="/withdraw" className="secondary-button wide-button">{t.withdraw}</Link>
-      </div>
-    </div>
-  );
-}
-
-function DepositPage({ t }) {
-  return (
-    <div className="page-content financial-page">
-      <div className="section-heading top-space">
-        <h2>{t.deposit}</h2>
-      </div>
-      <div className="money-card">
-        <p>{t.depositOnly}</p>
-        <form className="auth-form compact-form">
-          <label>
-            <span>{t.depositDemo}</span>
-            <input type="number" defaultValue="100" />
-          </label>
-          <label>
-            <span>Method</span>
-            <select defaultValue="card">
-              <option value="card">Demo Card</option>
-              <option value="wallet">Crypto Demo</option>
-            </select>
-          </label>
-          <button type="submit" className="primary-button full-width">{t.depositDemo}</button>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-function WithdrawPage({ t }) {
-  return (
-    <div className="page-content financial-page">
-      <div className="section-heading top-space">
-        <h2>{t.withdraw}</h2>
-      </div>
-      <div className="money-card">
-        <p>{t.withdrawOnly}</p>
-        <form className="auth-form compact-form">
-          <label>
-            <span>{t.withdrawDemo}</span>
-            <input type="number" defaultValue="50" />
-          </label>
-          <label>
-            <span>Destination</span>
-            <select defaultValue="bank">
-              <option value="bank">Demo Bank</option>
-              <option value="wallet">Demo Wallet</option>
-            </select>
-          </label>
-          <button type="submit" className="primary-button full-width">{t.withdrawDemo}</button>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-function BetSlipPage({ betSlip, removeSelection, clearSlip, totalOdds, stake, setStake, potentialReturn, t }) {
-  return (
-    <div className="page-content">
-      <div className="section-heading top-space">
-        <h2>{t.bettingSlip}</h2>
-      </div>
-
-      <div className="slip-layout">
-        <div className="slip-card">
-          {betSlip.length > 0 ? (
-            betSlip.map((item) => (
-              <div key={item.id} className="slip-item">
-                <div>
-                  <strong>{item.title}</strong>
-                  <p>{item.market} · {item.odds.toFixed(2)}</p>
-                </div>
-                <button type="button" className="text-button" onClick={() => removeSelection(item.id)}>
-                  {t.remove}
-                </button>
-              </div>
-            ))
-          ) : (
-            <div className="empty-state">{t.noSelections}</div>
-          )}
-        </div>
-
-        <aside className="slip-summary-card">
-          <h3>{t.slipSummary}</h3>
-          <div className="summary-row">
-            <span>{t.totalOdds}</span>
-            <strong>{totalOdds.toFixed(2)}</strong>
-          </div>
-          <label>
-            <span>{t.stake}</span>
-            <input type="number" min="1" value={stake} onChange={(event) => setStake(event.target.value)} />
-          </label>
-          <div className="summary-row strong-row">
-            <span>{t.potentialReturn}</span>
-            <strong>{potentialReturn.toFixed(2)}</strong>
-          </div>
-          <button type="button" className="primary-button full-width" onClick={clearSlip}>{t.clearSlip}</button>
-        </aside>
-      </div>
-    </div>
-  );
-}
-
-function MyBetsPage({ t }) {
-  return (
-    <div className="page-content">
-      <div className="section-heading top-space">
-        <h2>{t.myBets}</h2>
-      </div>
-      <div className="bet-table">
-        {myBets.map((bet) => (
-          <div key={bet.id} className="bet-row">
-            <div>
-              <strong>{bet.match}</strong>
-              <p>{bet.selection}</p>
-            </div>
-            <div>
-              <span>Odds</span>
-              <strong>{bet.odds.toFixed(2)}</strong>
-            </div>
-            <div>
-              <span>Stake</span>
-              <strong>{bet.stake}</strong>
-            </div>
-            <div>
-              <span>Result</span>
-              <strong>{bet.result}</strong>
-            </div>
-            <div>
-              <span>Return</span>
-              <strong>{bet.amount.toFixed(2)}</strong>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SettingsPage({ t }) {
-  return (
-    <div className="page-content">
-      <div className="section-heading top-space">
-        <h2>{t.settingsTitle}</h2>
-      </div>
-      <div className="settings-list">
-        <div className="setting-item">
-          <span>{t.language}</span>
-          <button type="button" className="secondary-button">Change</button>
-        </div>
-        <div className="setting-item">
-          <span>{t.currency}</span>
-          <button type="button" className="secondary-button">Update</button>
-        </div>
-        <div className="setting-item">
-          <span>Notifications</span>
-          <button type="button" className="secondary-button">Enabled</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function App() {
-  const [language, setLanguage] = useState('en');
-  const [countryCode, setCountryCode] = useState('US');
-  const [currency, setCurrency] = useState('USD');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [stake, setStake] = useState('25');
-  const [betSlip, setBetSlip] = useState([]);
-
-  const isRTL = ['ku', 'ar', 'fa'].includes(language);
-  const t = translations[language] || translations.en;
-
-  const totalOdds = useMemo(() => {
-    if (!betSlip.length) {
-      return 1;
-    }
-    return betSlip.reduce((total, item) => total * item.odds, 1);
-  }, [betSlip]);
-
-  const potentialReturn = Number(stake || 0) * totalOdds;
-
-  const addToSlip = (match, market, odds) => {
-    const numericOdds = Number(odds);
-    const entry = {
-      id: `${match.id}-${market}`,
-      title: `${match.homeTeam} vs ${match.awayTeam}`,
-      market,
-      odds: numericOdds,
-    };
-
-    setBetSlip((current) => {
-      const exists = current.some((item) => item.id === entry.id);
-      if (exists) {
-        return current;
-      }
-      return [...current, entry];
-    });
-  };
-
-  const removeSelection = (id) => {
-    setBetSlip((current) => current.filter((item) => item.id !== id));
-  };
-
-  const clearSlip = () => {
-    setBetSlip([]);
-  };
-
-  return (
-    <BrowserRouter>
-      <div className={`app-shell ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
-        <Header
-          language={language}
-          setLanguage={setLanguage}
-          countryCode={countryCode}
-          setCountryCode={setCountryCode}
-          currency={currency}
-          setCurrency={setCurrency}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          betSlip={betSlip}
-          t={t}
-          isRTL={isRTL}
-        />
-
-        <main className="page-shell">
-          <Routes>
-            <Route path="/" element={<HomePage matches={footballMatches} onAddToSlip={addToSlip} t={t} />} />
-            <Route path="/football" element={<FootballPage matches={footballMatches} onAddToSlip={addToSlip} t={t} />} />
-            <Route path="/live" element={<LiveMatchesPage matches={footballMatches} onAddToSlip={addToSlip} t={t} />} />
-            <Route path="/leagues" element={<LeaguesPage t={t} />} />
-            <Route path="/match/:matchId" element={<MatchDetailPage matches={footballMatches} onAddToSlip={addToSlip} t={t} />} />
-            <Route path="/search" element={<SearchPage searchQuery={searchQuery} setSearchQuery={setSearchQuery} matches={footballMatches} onAddToSlip={addToSlip} t={t} />} />
-            <Route path="/login" element={<LoginPage t={t} />} />
-            <Route path="/register" element={<RegisterPage t={t} />} />
-            <Route path="/profile" element={<ProfilePage t={t} />} />
-            <Route path="/balance" element={<BalancePage t={t} currency={currency} />} />
-            <Route path="/deposit" element={<DepositPage t={t} />} />
-            <Route path="/withdraw" element={<WithdrawPage t={t} />} />
-            <Route path="/bet-slip" element={<BetSlipPage betSlip={betSlip} removeSelection={removeSelection} clearSlip={clearSlip} totalOdds={totalOdds} stake={stake} setStake={setStake} potentialReturn={potentialReturn} t={t} />} />
-            <Route path="/betting-slip" element={<BetSlipPage betSlip={betSlip} removeSelection={removeSelection} clearSlip={clearSlip} totalOdds={totalOdds} stake={stake} setStake={setStake} potentialReturn={potentialReturn} t={t} />} />
-            <Route path="/my-bets" element={<MyBetsPage t={t} />} />
-            <Route path="/settings" element={<SettingsPage t={t} />} />
-            <Route path="*" element={<div className="page-content"><div className="empty-state">Page not found.</div></div>} />
-          </Routes>
-        </main>
-      </div>
-    </BrowserRouter>
-  );
-}
-
-export default App;
