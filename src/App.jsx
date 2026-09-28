@@ -1,4 +1,10 @@
-import { useContext, useMemo, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import {
   Link,
   Route,
@@ -11,6 +17,7 @@ import { t } from "./translations";
 import AdminDashboard from "./AdminDashboard";
 import { marketGroups } from "./markets";
 import PaymentCard from "./PaymentCard";
+import { supabase } from "../lib/supabase";
 
 /* =========================
    SPORTS
@@ -71,21 +78,69 @@ const liveCasinoCategories = [
 ];
 
 const casinoGames = [
-  { name: "Golden Fortune", category: "Slots", image: "🎰" },
-  { name: "Golden Roulette", category: "Roulette", image: "🎡" },
-  { name: "Golden Blackjack", category: "Blackjack", image: "🃏" },
-  { name: "Golden Crash", category: "Crash Games", image: "🚀" },
-  { name: "Golden Jackpot", category: "Jackpot", image: "💰" },
-  { name: "Golden Dice", category: "Table Games", image: "🎲" },
+  {
+    name: "Golden Fortune",
+    category: "Slots",
+    image: "🎰",
+  },
+  {
+    name: "Golden Roulette",
+    category: "Roulette",
+    image: "🎡",
+  },
+  {
+    name: "Golden Blackjack",
+    category: "Blackjack",
+    image: "🃏",
+  },
+  {
+    name: "Golden Crash",
+    category: "Crash Games",
+    image: "🚀",
+  },
+  {
+    name: "Golden Jackpot",
+    category: "Jackpot",
+    image: "💰",
+  },
+  {
+    name: "Golden Dice",
+    category: "Table Games",
+    image: "🎲",
+  },
 ];
 
 const liveGames = [
-  { name: "Live Roulette", provider: "Evolution", image: "🎡" },
-  { name: "Live Blackjack", provider: "Evolution", image: "🃏" },
-  { name: "Live Baccarat", provider: "Ezugi", image: "♠️" },
-  { name: "Live Game Show", provider: "Pragmatic Play Live", image: "🎤" },
-  { name: "Live Dragon Tiger", provider: "Evolution", image: "🐉" },
-  { name: "Live Sic Bo", provider: "Ezugi", image: "🎲" },
+  {
+    name: "Live Roulette",
+    provider: "Evolution",
+    image: "🎡",
+  },
+  {
+    name: "Live Blackjack",
+    provider: "Evolution",
+    image: "🃏",
+  },
+  {
+    name: "Live Baccarat",
+    provider: "Ezugi",
+    image: "♠️",
+  },
+  {
+    name: "Live Game Show",
+    provider: "Pragmatic Play Live",
+    image: "🎤",
+  },
+  {
+    name: "Live Dragon Tiger",
+    provider: "Evolution",
+    image: "🐉",
+  },
+  {
+    name: "Live Sic Bo",
+    provider: "Ezugi",
+    image: "🎲",
+  },
 ];
 
 const goldenGames = [
@@ -145,6 +200,49 @@ export default function App() {
     useContext(LanguageContext);
 
   const [bets, setBets] = useState([]);
+  const [session, setSession] = useState(null);
+  const [authLoading, setAuthLoading] =
+    useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadSession() {
+      const {
+        data,
+        error,
+      } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error(
+          "Session error:",
+          error
+        );
+      }
+
+      if (mounted) {
+        setSession(data?.session ?? null);
+        setAuthLoading(false);
+      }
+    }
+
+    loadSession();
+
+    const {
+      data: authListener,
+    } = supabase.auth.onAuthStateChange(
+      (_event, newSession) => {
+        setSession(newSession);
+        setAuthLoading(false);
+      }
+    );
+
+    return () => {
+      mounted = false;
+
+      authListener?.subscription?.unsubscribe();
+    };
+  }, []);
 
   function addBet(bet) {
     setBets((current) => {
@@ -164,7 +262,10 @@ export default function App() {
       }
 
       if (current.length >= 20) {
-        alert("Maximum 20 selections allowed.");
+        alert(
+          "Maximum 20 selections allowed."
+        );
+
         return current;
       }
 
@@ -174,12 +275,40 @@ export default function App() {
 
   function removeBet(id) {
     setBets((current) =>
-      current.filter((item) => item.id !== id)
+      current.filter(
+        (item) => item.id !== id
+      )
     );
   }
 
   function clearBets() {
     setBets([]);
+  }
+
+  async function logout() {
+    const { error } =
+      await supabase.auth.signOut();
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    setSession(null);
+  }
+
+  if (authLoading) {
+    return (
+      <div className="app">
+        <div className="page section">
+          <div className="empty-state">
+            <h2>
+              Loading GoldenBet...
+            </h2>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -188,6 +317,8 @@ export default function App() {
         language={language}
         setLanguage={setLanguage}
         betCount={bets.length}
+        session={session}
+        logout={logout}
       />
 
       <main>
@@ -261,27 +392,47 @@ export default function App() {
 
           <Route
             path="/profile"
-            element={<Profile />}
+            element={
+              <Profile
+                session={session}
+              />
+            }
           />
 
           <Route
             path="/balance"
-            element={<Balance />}
+            element={
+              <Balance
+                session={session}
+              />
+            }
           />
 
           <Route
             path="/deposit"
-            element={<Deposit />}
+            element={
+              <Deposit
+                session={session}
+              />
+            }
           />
 
           <Route
             path="/withdraw"
-            element={<Withdraw />}
+            element={
+              <Withdraw
+                session={session}
+              />
+            }
           />
 
           <Route
             path="/my-bets"
-            element={<MyBets />}
+            element={
+              <MyBets
+                session={session}
+              />
+            }
           />
 
           <Route
@@ -314,14 +465,23 @@ function Header({
   language,
   setLanguage,
   betCount,
+  session,
+  logout,
 }) {
+  const userEmail =
+    session?.user?.email || "";
+
   return (
     <header className="header">
       <div className="header-inner">
-        <Link to="/" className="logo">
+        <Link
+          to="/"
+          className="logo"
+        >
           <span className="logo-gold">
             GOLDEN
           </span>
+
           <span className="logo-white">
             BET
           </span>
@@ -361,36 +521,91 @@ function Header({
           <select
             value={language}
             onChange={(e) =>
-              setLanguage(e.target.value)
+              setLanguage(
+                e.target.value
+              )
             }
             className="language-select"
           >
-            <option value="en">English</option>
-            <option value="ku">کوردی</option>
-            <option value="ar">العربية</option>
-            <option value="fa">فارسی</option>
-            <option value="tr">Türkçe</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="ru">Русский</option>
-            <option value="it">Italiano</option>
-            <option value="pt">Português</option>
+            <option value="en">
+              English
+            </option>
+
+            <option value="ku">
+              کوردی
+            </option>
+
+            <option value="ar">
+              العربية
+            </option>
+
+            <option value="fa">
+              فارسی
+            </option>
+
+            <option value="tr">
+              Türkçe
+            </option>
+
+            <option value="es">
+              Español
+            </option>
+
+            <option value="fr">
+              Français
+            </option>
+
+            <option value="de">
+              Deutsch
+            </option>
+
+            <option value="ru">
+              Русский
+            </option>
+
+            <option value="it">
+              Italiano
+            </option>
+
+            <option value="pt">
+              Português
+            </option>
           </select>
 
-          <Link
-            to="/login"
-            className="btn btn-outline"
-          >
-            Login
-          </Link>
+          {session ? (
+            <>
+              <Link
+                to="/profile"
+                className="btn btn-outline"
+              >
+                👤{" "}
+                {userEmail || "Profile"}
+              </Link>
 
-          <Link
-            to="/register"
-            className="btn btn-gold"
-          >
-            Register
-          </Link>
+              <button
+                className="btn btn-gold"
+                onClick={logout}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="btn btn-outline"
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/register"
+                className="btn btn-gold"
+              >
+                Register
+              </Link>
+            </>
+          )}
 
           <div className="bet-slip-top">
             🧾 {betCount}/20
@@ -485,10 +700,11 @@ function MatchCard({
   bets,
   addBet,
 }) {
-  const selectedCount = bets.filter(
-    (bet) =>
-      bet.matchId === match.id
-  ).length;
+  const selectedCount =
+    bets.filter(
+      (bet) =>
+        bet.matchId === match.id
+    ).length;
 
   return (
     <div className="match-card">
@@ -546,9 +762,6 @@ function MatchPage({
   bets,
   addBet,
 }) {
-  const [matchId, setMatchId] =
-    useState(null);
-
   const path =
     window.location.pathname;
 
@@ -568,10 +781,11 @@ function MatchPage({
     );
   }
 
-  const selectedCount = bets.filter(
-    (bet) =>
-      bet.matchId === match.id
-  ).length;
+  const selectedCount =
+    bets.filter(
+      (bet) =>
+        bet.matchId === match.id
+    ).length;
 
   return (
     <div className="page section">
@@ -621,7 +835,8 @@ function MatchPage({
           to="/"
           className="btn btn-gold"
         >
-          🧾 Open Bet Slip ({bets.length}/20)
+          🧾 Open Bet Slip (
+          {bets.length}/20)
         </Link>
       </div>
     </div>
@@ -642,7 +857,9 @@ function MarketGroup({
   return (
     <div
       className={`market-group ${
-        compact ? "compact-market" : ""
+        compact
+          ? "compact-market"
+          : ""
       }`}
     >
       <div className="market-group-title">
@@ -651,17 +868,19 @@ function MarketGroup({
         </h3>
       </div>
 
-      {group.markets.map((market) => (
-        <Market
-          key={market.id}
-          market={market}
-          group={group}
-          match={match}
-          bets={bets}
-          addBet={addBet}
-          compact={compact}
-        />
-      ))}
+      {group.markets.map(
+        (market) => (
+          <Market
+            key={market.id}
+            market={market}
+            group={group}
+            match={match}
+            bets={bets}
+            addBet={addBet}
+            compact={compact}
+          />
+        )
+      )}
     </div>
   );
 }
@@ -676,17 +895,21 @@ function Market({
   match,
   bets,
   addBet,
-  compact,
 }) {
-  const selected = (selectionKey) =>
+  const selected = (
+    selectionKey
+  ) =>
     bets.some(
       (bet) =>
         bet.matchId === match.id &&
         bet.marketId === market.id &&
-        bet.selectionKey === selectionKey
+        bet.selectionKey ===
+          selectionKey
     );
 
-  function selectMarket(selection) {
+  function selectMarket(
+    selection
+  ) {
     addBet({
       id: `${match.id}-${market.id}-${selection.key}`,
       matchId: match.id,
@@ -718,12 +941,16 @@ function Market({
             <button
               key={selection.key}
               className={`market-selection ${
-                selected(selection.key)
+                selected(
+                  selection.key
+                )
                   ? "selected"
                   : ""
               }`}
               onClick={() =>
-                selectMarket(selection)
+                selectMarket(
+                  selection
+                )
               }
             >
               <span>
@@ -753,19 +980,21 @@ function BetSlip({
   const [stake, setStake] =
     useState("");
 
-  const totalOdds = useMemo(() => {
-    if (!bets.length) {
-      return "0.00";
-    }
+  const totalOdds =
+    useMemo(() => {
+      if (!bets.length) {
+        return "0.00";
+      }
 
-    return bets
-      .reduce(
-        (total, bet) =>
-          total * Number(bet.odds),
-        1
-      )
-      .toFixed(2);
-  }, [bets]);
+      return bets
+        .reduce(
+          (total, bet) =>
+            total *
+            Number(bet.odds),
+          1
+        )
+        .toFixed(2);
+    }, [bets]);
 
   const potentialReturn =
     Number(stake) > 0
@@ -1022,8 +1251,9 @@ function Live() {
       </div>
 
       <div className="live-grid">
-        {matches.slice(0, 3).map(
-          (match) => (
+        {matches
+          .slice(0, 3)
+          .map((match) => (
             <div
               className="live-card"
               key={match.id}
@@ -1048,8 +1278,7 @@ function Live() {
                 {match.away}
               </h3>
             </div>
-          )
-        )}
+          ))}
       </div>
     </div>
   );
@@ -1141,7 +1370,8 @@ function LiveCasino() {
       ? liveGames
       : liveGames.filter(
           (game) =>
-            game.provider === category
+            game.provider ===
+            category
         );
 
   return (
@@ -1300,12 +1530,52 @@ function Promotions() {
 }
 
 /* =========================
-   AUTH
+   LOGIN
 ========================= */
 
 function Login() {
   const navigate =
     useNavigate();
+
+  const [email, setEmail] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  async function handleLogin(e) {
+    e.preventDefault();
+
+    setError("");
+    setLoading(true);
+
+    const {
+      error: loginError,
+    } =
+      await supabase.auth.signInWithPassword(
+        {
+          email,
+          password,
+        }
+      );
+
+    setLoading(false);
+
+    if (loginError) {
+      setError(
+        loginError.message
+      );
+      return;
+    }
+
+    navigate("/");
+  }
 
   return (
     <div className="auth-page">
@@ -1314,29 +1584,47 @@ function Login() {
           Login
         </h1>
 
+        {error && (
+          <p className="auth-error">
+            {error}
+          </p>
+        )}
+
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            navigate("/");
-          }}
+          onSubmit={handleLogin}
         >
           <input
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(e) =>
+              setEmail(
+                e.target.value
+              )
+            }
             required
           />
 
           <input
             type="password"
             placeholder="Password"
+            value={password}
+            onChange={(e) =>
+              setPassword(
+                e.target.value
+              )
+            }
             required
           />
 
           <button
             className="btn btn-gold"
             type="submit"
+            disabled={loading}
           >
-            Login
+            {loading
+              ? "Logging in..."
+              : "Login"}
           </button>
         </form>
 
@@ -1351,9 +1639,94 @@ function Login() {
   );
 }
 
+/* =========================
+   REGISTER
+========================= */
+
 function Register() {
   const navigate =
     useNavigate();
+
+  const [username, setUsername] =
+    useState("");
+
+  const [email, setEmail] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
+
+  const [
+    confirmPassword,
+    setConfirmPassword,
+  ] = useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  const [success, setSuccess] =
+    useState("");
+
+  async function handleRegister(e) {
+    e.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    if (
+      password !==
+      confirmPassword
+    ) {
+      setError(
+        "Passwords do not match."
+      );
+      return;
+    }
+
+    if (password.length < 6) {
+      setError(
+        "Password must be at least 6 characters."
+      );
+      return;
+    }
+
+    setLoading(true);
+
+    const {
+      data,
+      error: signUpError,
+    } =
+      await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+          },
+        },
+      });
+
+    setLoading(false);
+
+    if (signUpError) {
+      setError(
+        signUpError.message
+      );
+      return;
+    }
+
+    if (data?.session) {
+      navigate("/");
+      return;
+    }
+
+    setSuccess(
+      "Registration successful. Please check your email to confirm your account."
+    );
+  }
 
   return (
     <div className="auth-page">
@@ -1362,41 +1735,79 @@ function Register() {
           Register
         </h1>
 
+        {error && (
+          <p className="auth-error">
+            {error}
+          </p>
+        )}
+
+        {success && (
+          <p className="auth-success">
+            {success}
+          </p>
+        )}
+
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            navigate("/");
-          }}
+          onSubmit={handleRegister}
         >
           <input
             type="text"
             placeholder="Username"
+            value={username}
+            onChange={(e) =>
+              setUsername(
+                e.target.value
+              )
+            }
             required
           />
 
           <input
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(e) =>
+              setEmail(
+                e.target.value
+              )
+            }
             required
           />
 
           <input
             type="password"
             placeholder="Password"
+            value={password}
+            onChange={(e) =>
+              setPassword(
+                e.target.value
+              )
+            }
             required
           />
 
           <input
             type="password"
             placeholder="Confirm Password"
+            value={
+              confirmPassword
+            }
+            onChange={(e) =>
+              setConfirmPassword(
+                e.target.value
+              )
+            }
             required
           />
 
           <button
             className="btn btn-gold"
             type="submit"
+            disabled={loading}
           >
-            Register
+            {loading
+              ? "Creating account..."
+              : "Register"}
           </button>
         </form>
 
@@ -1415,7 +1826,83 @@ function Register() {
    PROFILE
 ========================= */
 
-function Profile() {
+function Profile({
+  session,
+}) {
+  const [profile, setProfile] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  useEffect(() => {
+    async function loadProfile() {
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("profiles")
+        .select(
+          "username, full_name, avatar_url, balance"
+        )
+        .eq(
+          "id",
+          session.user.id
+        )
+        .maybeSingle();
+
+      if (error) {
+        console.error(
+          "Profile error:",
+          error
+        );
+      }
+
+      setProfile(data);
+      setLoading(false);
+    }
+
+    loadProfile();
+  }, [session]);
+
+  if (!session) {
+    return (
+      <div className="page section">
+        <div className="empty-state">
+          <h2>
+            Please login first.
+          </h2>
+
+          <Link
+            to="/login"
+            className="btn btn-gold"
+          >
+            Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="page section">
+        Loading profile...
+      </div>
+    );
+  }
+
+  const username =
+    profile?.username ||
+    session.user.user_metadata
+      ?.username ||
+    "GoldenBet User";
+
   return (
     <div className="page section">
       <div className="page-heading">
@@ -1430,11 +1917,19 @@ function Profile() {
         </div>
 
         <h2>
-          GoldenBet User
+          {username}
         </h2>
 
         <p>
-          user@goldenbet.com
+          {session.user.email}
+        </p>
+
+        <p>
+          Balance:{" "}
+          {Number(
+            profile?.balance || 0
+          ).toLocaleString()}{" "}
+          IQD
         </p>
 
         <Link
@@ -1452,7 +1947,70 @@ function Profile() {
    BALANCE
 ========================= */
 
-function Balance() {
+function Balance({
+  session,
+}) {
+  const [balance, setBalance] =
+    useState(0);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  useEffect(() => {
+    async function loadBalance() {
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("profiles")
+        .select("balance")
+        .eq(
+          "id",
+          session.user.id
+        )
+        .maybeSingle();
+
+      if (error) {
+        console.error(
+          "Balance error:",
+          error
+        );
+      }
+
+      setBalance(
+        Number(data?.balance || 0)
+      );
+
+      setLoading(false);
+    }
+
+    loadBalance();
+  }, [session]);
+
+  if (!session) {
+    return (
+      <div className="page section">
+        <div className="empty-state">
+          <h2>
+            Please login first.
+          </h2>
+
+          <Link
+            to="/login"
+            className="btn btn-gold"
+          >
+            Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="page section">
       <div className="balance-card">
@@ -1461,7 +2019,9 @@ function Balance() {
         </span>
 
         <strong>
-          0 IQD
+          {loading
+            ? "Loading..."
+            : `${balance.toLocaleString()} IQD`}
         </strong>
 
         <div className="balance-actions">
@@ -1488,7 +2048,28 @@ function Balance() {
    DEPOSIT
 ========================= */
 
-function Deposit() {
+function Deposit({
+  session,
+}) {
+  if (!session) {
+    return (
+      <div className="page section">
+        <div className="empty-state">
+          <h2>
+            Please login first.
+          </h2>
+
+          <Link
+            to="/login"
+            className="btn btn-gold"
+          >
+            Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return <PaymentCard />;
 }
 
@@ -1496,27 +2077,113 @@ function Deposit() {
    WITHDRAW
 ========================= */
 
-function Withdraw() {
+function Withdraw({
+  session,
+}) {
+  const [amount, setAmount] =
+    useState("");
+
+  const [method, setMethod] =
+    useState("Korek");
+
+  if (!session) {
+    return (
+      <div className="page section">
+        <div className="empty-state">
+          <h2>
+            Please login first.
+          </h2>
+
+          <Link
+            to="/login"
+            className="btn btn-gold"
+          >
+            Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  function requestWithdrawal(e) {
+    e.preventDefault();
+
+    if (
+      !amount ||
+      Number(amount) <= 0
+    ) {
+      alert(
+        "Please enter a valid amount."
+      );
+      return;
+    }
+
+    alert(
+      `Withdrawal request prepared.\nAmount: ${amount} IQD\nMethod: ${method}`
+    );
+  }
+
   return (
     <div className="page section">
       <div className="form-card">
-        <input
-          type="number"
-          placeholder="Amount"
-        />
+        <form
+          onSubmit={
+            requestWithdrawal
+          }
+        >
+          <input
+            type="number"
+            min="1"
+            placeholder="Amount"
+            value={amount}
+            onChange={(e) =>
+              setAmount(
+                e.target.value
+              )
+            }
+            required
+          />
 
-        <select>
-          <option>Korek</option>
-          <option>Zain</option>
-          <option>Zain Cash</option>
-          <option>Asiacell</option>
-          <option>FIB</option>
-          <option>FastPay</option>
-        </select>
+          <select
+            value={method}
+            onChange={(e) =>
+              setMethod(
+                e.target.value
+              )
+            }
+          >
+            <option>
+              Korek
+            </option>
 
-        <button className="btn btn-gold">
-          Request Withdrawal
-        </button>
+            <option>
+              Zain
+            </option>
+
+            <option>
+              Zain Cash
+            </option>
+
+            <option>
+              Asiacell
+            </option>
+
+            <option>
+              FIB
+            </option>
+
+            <option>
+              FastPay
+            </option>
+          </select>
+
+          <button
+            className="btn btn-gold"
+            type="submit"
+          >
+            Request Withdrawal
+          </button>
+        </form>
       </div>
     </div>
   );
@@ -1526,23 +2193,163 @@ function Withdraw() {
    MY BETS
 ========================= */
 
-function MyBets() {
+function MyBets({
+  session,
+}) {
+  const [bets, setBets] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  useEffect(() => {
+    async function loadBets() {
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("bets")
+        .select(
+          "id, stake, total_odds, potential_win, status, selections, created_at"
+        )
+        .eq(
+          "user_id",
+          session.user.id
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false,
+          }
+        );
+
+      if (error) {
+        console.error(
+          "Bets error:",
+          error
+        );
+      }
+
+      setBets(data || []);
+      setLoading(false);
+    }
+
+    loadBets();
+  }, [session]);
+
+  if (!session) {
+    return (
+      <div className="page section">
+        <div className="empty-state">
+          <h2>
+            Please login first.
+          </h2>
+
+          <Link
+            to="/login"
+            className="btn btn-gold"
+          >
+            Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="page section">
+        Loading bets...
+      </div>
+    );
+  }
+
   return (
     <div className="page section">
-      <div className="empty-state">
-        🧾
-
-        <h3>
-          No bets yet
-        </h3>
-
-        <Link
-          to="/sports"
-          className="btn btn-gold"
-        >
-          Browse Sports
-        </Link>
+      <div className="page-heading">
+        <h1>
+          My Bets
+        </h1>
       </div>
+
+      {!bets.length ? (
+        <div className="empty-state">
+          🧾
+
+          <h3>
+            No bets yet
+          </h3>
+
+          <Link
+            to="/sports"
+            className="btn btn-gold"
+          >
+            Browse Sports
+          </Link>
+        </div>
+      ) : (
+        <div className="bet-history-list">
+          {bets.map((bet) => (
+            <div
+              className="bet-history-card"
+              key={bet.id}
+            >
+              <div>
+                <strong>
+                  Bet #{bet.id}
+                </strong>
+
+                <p>
+                  Status:{" "}
+                  {bet.status}
+                </p>
+              </div>
+
+              <div>
+                <span>
+                  Stake
+                </span>
+
+                <strong>
+                  {Number(
+                    bet.stake || 0
+                  ).toLocaleString()}{" "}
+                  IQD
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Odds
+                </span>
+
+                <strong>
+                  {bet.total_odds}
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Potential Win
+                </span>
+
+                <strong>
+                  {Number(
+                    bet.potential_win ||
+                      0
+                  ).toLocaleString()}{" "}
+                  IQD
+                </strong>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -1557,6 +2364,7 @@ function Settings() {
       <div className="settings-card">
         <label>
           Notifications
+
           <input
             type="checkbox"
             defaultChecked
@@ -1565,6 +2373,7 @@ function Settings() {
 
         <label>
           Dark Mode
+
           <input
             type="checkbox"
             defaultChecked
