@@ -295,6 +295,7 @@ export default function App() {
     }
 
     setSession(null);
+    setBets([]);
   }
 
   if (authLoading) {
@@ -331,6 +332,7 @@ export default function App() {
                 addBet={addBet}
                 removeBet={removeBet}
                 clearBets={clearBets}
+                session={session}
               />
             }
           />
@@ -625,6 +627,7 @@ function Home({
   addBet,
   removeBet,
   clearBets,
+  session,
 }) {
   return (
     <div className="page">
@@ -684,6 +687,7 @@ function Home({
             bets={bets}
             removeBet={removeBet}
             clearBets={clearBets}
+            session={session}
           />
         </div>
       </section>
@@ -925,7 +929,7 @@ function Market({
       selectionKey: selection.key,
       selection: selection.name,
       label: selection.label,
-      odds: selection.odds,
+      odds: Number(selection.odds),
     });
   }
 
@@ -976,9 +980,13 @@ function BetSlip({
   bets,
   removeBet,
   clearBets,
+  session,
 }) {
   const [stake, setStake] =
     useState("");
+
+  const [placing, setPlacing] =
+    useState(false);
 
   const totalOdds =
     useMemo(() => {
@@ -986,14 +994,15 @@ function BetSlip({
         return "0.00";
       }
 
-      return bets
-        .reduce(
+      const value =
+        bets.reduce(
           (total, bet) =>
             total *
             Number(bet.odds),
           1
-        )
-        .toFixed(2);
+        );
+
+      return value.toFixed(2);
     }, [bets]);
 
   const potentialReturn =
@@ -1004,7 +1013,7 @@ function BetSlip({
         ).toFixed(2)
       : "0.00";
 
-  function placeBet() {
+  async function placeBet() {
     if (!bets.length) {
       alert(
         "Please select at least one market."
@@ -1022,9 +1031,135 @@ function BetSlip({
       return;
     }
 
-    alert(
-      `Selections: ${bets.length}\nTotal Odds: ${totalOdds}\nStake: ${stake}\nPotential Return: ${potentialReturn}`
-    );
+    if (!session?.user?.id) {
+      alert(
+        "Please login first."
+      );
+      return;
+    }
+
+    const stakeAmount =
+      Number(stake);
+
+    const oddsAmount =
+      Number(totalOdds);
+
+    const returnAmount =
+      Number(potentialReturn);
+
+    if (
+      !Number.isFinite(
+        stakeAmount
+      ) ||
+      !Number.isFinite(
+        oddsAmount
+      ) ||
+      !Number.isFinite(
+        returnAmount
+      )
+    ) {
+      alert(
+        "Invalid bet amount."
+      );
+      return;
+    }
+
+    setPlacing(true);
+
+    try {
+      const matchNames =
+        [
+          ...new Set(
+            bets.map(
+              (bet) =>
+                `${bet.home} vs ${bet.away}`
+            )
+          ),
+        ].join(" | ");
+
+      const selections = bets.map(
+        (bet) => ({
+          matchId: bet.matchId,
+          match: bet.match,
+          home: bet.home,
+          away: bet.away,
+          league: bet.league,
+          time: bet.time,
+          groupId: bet.groupId,
+          groupTitle:
+            bet.groupTitle,
+          marketId: bet.marketId,
+          marketTitle:
+            bet.marketTitle,
+          selectionKey:
+            bet.selectionKey,
+          selection:
+            bet.selection,
+          label: bet.label,
+          odds: Number(
+            bet.odds
+          ),
+        })
+      );
+
+      const {
+        error,
+      } = await supabase
+        .from("bets")
+        .insert({
+          user_id:
+            session.user.id,
+
+          match_name:
+            matchNames,
+
+          selection:
+            selections,
+
+          stake:
+            stakeAmount,
+
+          total_odds:
+            oddsAmount,
+
+          potential_win:
+            returnAmount,
+
+          status:
+            "pending",
+        });
+
+      if (error) {
+        console.error(
+          "Place bet error:",
+          error
+        );
+
+        alert(
+          `Bet failed: ${error.message}`
+        );
+
+        return;
+      }
+
+      alert(
+        `Bet placed successfully!\n\nSelections: ${bets.length}\nTotal Odds: ${totalOdds}\nStake: ${stakeAmount}\nPotential Return: ${returnAmount}`
+      );
+
+      setStake("");
+      clearBets();
+    } catch (error) {
+      console.error(
+        "Unexpected bet error:",
+        error
+      );
+
+      alert(
+        "Something went wrong while placing the bet."
+      );
+    } finally {
+      setPlacing(false);
+    }
   }
 
   return (
@@ -1044,6 +1179,7 @@ function BetSlip({
           <button
             className="clear-bets"
             onClick={clearBets}
+            disabled={placing}
           >
             Clear
           </button>
@@ -1108,6 +1244,7 @@ function BetSlip({
                         bet.id
                       )
                     }
+                    disabled={placing}
                   >
                     ×
                   </button>
@@ -1146,6 +1283,7 @@ function BetSlip({
             <input
               type="number"
               min="0"
+              step="0.01"
               value={stake}
               onChange={(e) =>
                 setStake(
@@ -1153,6 +1291,7 @@ function BetSlip({
                 )
               }
               placeholder="0"
+              disabled={placing}
             />
           </div>
 
@@ -1169,9 +1308,27 @@ function BetSlip({
           <button
             className="place-bet-btn"
             onClick={placeBet}
+            disabled={placing}
           >
-            Place Bet
+            {placing
+              ? "Placing Bet..."
+              : "Place Bet"}
           </button>
+
+          {!session && (
+            <p
+              style={{
+                marginTop: "10px",
+                textAlign: "center",
+              }}
+            >
+              Please{" "}
+              <Link to="/login">
+                login
+              </Link>{" "}
+              before placing a bet.
+            </p>
+          )}
         </>
       )}
     </aside>
@@ -1848,7 +2005,7 @@ function Profile({
       } = await supabase
         .from("profiles")
         .select(
-          "username, full_name, avatar_url, balance"
+          "username, full_name, avatar_text, balance"
         )
         .eq(
           "id",
@@ -1913,7 +2070,8 @@ function Profile({
 
       <div className="profile-card">
         <div className="profile-avatar">
-          👤
+          {profile?.avatar_text ||
+            "👤"}
         </div>
 
         <h2>
@@ -2215,7 +2373,7 @@ function MyBets({
       } = await supabase
         .from("bets")
         .select(
-          "id, stake, total_odds, potential_win, status, selections, created_at"
+          "id, match_name, selection, stake, total_odds, potential_win, status, created_at"
         )
         .eq(
           "user_id",
@@ -2303,6 +2461,10 @@ function MyBets({
                 <strong>
                   Bet #{bet.id}
                 </strong>
+
+                <p>
+                  {bet.match_name}
+                </p>
 
                 <p>
                   Status:{" "}
