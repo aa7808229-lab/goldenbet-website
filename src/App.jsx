@@ -20,7 +20,7 @@ import PaymentCard from "./PaymentCard";
 import { supabase } from "../lib/supabase";
 
 /* =========================================================
-   SPORTS
+   GOLDENBET DATA
 ========================================================= */
 
 const sports = [
@@ -401,7 +401,7 @@ const goldenGames = [
 ];
 
 /* =========================================================
-   MATCHES
+   FOOTBALL MATCHES
 ========================================================= */
 
 const matches = [
@@ -409,6 +409,8 @@ const matches = [
     id: 1,
     home: "Real Madrid",
     away: "Barcelona",
+    homeCode: "RMA",
+    awayCode: "BAR",
     time: "21:00",
     date: "Today",
     league: "La Liga",
@@ -418,6 +420,8 @@ const matches = [
     id: 2,
     home: "Arsenal",
     away: "Chelsea",
+    homeCode: "ARS",
+    awayCode: "CHE",
     time: "20:30",
     date: "Today",
     league: "Premier League",
@@ -427,6 +431,8 @@ const matches = [
     id: 3,
     home: "Inter Milan",
     away: "AC Milan",
+    homeCode: "INT",
+    awayCode: "ACM",
     time: "21:45",
     date: "Today",
     league: "Serie A",
@@ -436,6 +442,8 @@ const matches = [
     id: 4,
     home: "Bayern Munich",
     away: "Dortmund",
+    homeCode: "BAY",
+    awayCode: "BVB",
     time: "22:00",
     date: "Today",
     league: "Bundesliga",
@@ -445,6 +453,8 @@ const matches = [
     id: 5,
     home: "Al-Shorta",
     away: "Al-Zawraa",
+    homeCode: "ALS",
+    awayCode: "ALZ",
     time: "19:30",
     date: "Today",
     league: "Iraq Stars League",
@@ -454,10 +464,100 @@ const matches = [
     id: 6,
     home: "Duhok",
     away: "Erbil",
+    homeCode: "DUH",
+    awayCode: "ERB",
     time: "20:00",
     date: "Today",
     league: "Kurdistan Premier League",
     country: "Iraq",
+  },
+  {
+    id: 7,
+    home: "Liverpool",
+    away: "Manchester City",
+    homeCode: "LIV",
+    awayCode: "MCI",
+    time: "20:00",
+    date: "Today",
+    league: "Premier League",
+    country: "England",
+  },
+  {
+    id: 8,
+    home: "Manchester United",
+    away: "Tottenham",
+    homeCode: "MUN",
+    awayCode: "TOT",
+    time: "21:00",
+    date: "Today",
+    league: "Premier League",
+    country: "England",
+  },
+  {
+    id: 9,
+    home: "Juventus",
+    away: "Napoli",
+    homeCode: "JUV",
+    awayCode: "NAP",
+    time: "21:45",
+    date: "Today",
+    league: "Serie A",
+    country: "Italy",
+  },
+  {
+    id: 10,
+    home: "PSG",
+    away: "Marseille",
+    homeCode: "PSG",
+    awayCode: "OM",
+    time: "22:00",
+    date: "Today",
+    league: "Ligue 1",
+    country: "France",
+  },
+  {
+    id: 11,
+    home: "Galatasaray",
+    away: "Fenerbahce",
+    homeCode: "GAL",
+    awayCode: "FEN",
+    time: "20:00",
+    date: "Today",
+    league: "Super Lig",
+    country: "Turkey",
+  },
+  {
+    id: 12,
+    home: "Al-Hilal",
+    away: "Al-Nassr",
+    homeCode: "HIL",
+    awayCode: "NAS",
+    time: "21:00",
+    date: "Today",
+    league: "Saudi Pro League",
+    country: "Saudi Arabia",
+  },
+  {
+    id: 13,
+    home: "Ajax",
+    away: "PSV",
+    homeCode: "AJA",
+    awayCode: "PSV",
+    time: "19:45",
+    date: "Today",
+    league: "Eredivisie",
+    country: "Netherlands",
+  },
+  {
+    id: 14,
+    home: "Benfica",
+    away: "Porto",
+    homeCode: "BEN",
+    awayCode: "POR",
+    time: "21:15",
+    date: "Today",
+    league: "Primeira Liga",
+    country: "Portugal",
   },
 ];
 
@@ -492,6 +592,80 @@ function getStatusLabel(status) {
 }
 
 /* =========================================================
+   TEAM LOGO
+========================================================= */
+
+function TeamLogo({
+  name,
+  code,
+  src,
+  size = 48,
+}) {
+  const [failed, setFailed] =
+    useState(false);
+
+  const initials =
+    code ||
+    name
+      .split(" ")
+      .map((word) => word[0])
+      .slice(0, 3)
+      .join("")
+      .toUpperCase();
+
+  if (src && !failed) {
+    return (
+      <img
+        src={src}
+        alt={name}
+        title={name}
+        onError={() =>
+          setFailed(true)
+        }
+        style={{
+          width: size,
+          height: size,
+          objectFit: "contain",
+          borderRadius: "14px",
+          background: "#111",
+          border:
+            "1px solid rgba(212,175,55,.45)",
+          padding: "5px",
+          flex: "0 0 auto",
+        }}
+      />
+    );
+  }
+
+  return (
+    <div
+      title={name}
+      aria-label={name}
+      style={{
+        width: size,
+        height: size,
+        borderRadius:
+          "14px 14px 18px 18px",
+        background:
+          "linear-gradient(145deg, rgba(212,175,55,.32), rgba(8,8,8,.98))",
+        border:
+          "1px solid rgba(212,175,55,.55)",
+        display: "grid",
+        placeItems: "center",
+        color: "#f6d66a",
+        fontWeight: 900,
+        fontSize: size * 0.25,
+        boxShadow:
+          "0 0 18px rgba(212,175,55,.15)",
+        flex: "0 0 auto",
+      }}
+    >
+      {initials}
+    </div>
+  );
+}
+
+/* =========================================================
    APP
 ========================================================= */
 
@@ -502,8 +676,10 @@ export default function App() {
   } = useContext(LanguageContext);
 
   const [bets, setBets] = useState([]);
-  const [session, setSession] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  const [session, setSession] =
+    useState(null);
+  const [authLoading, setAuthLoading] =
+    useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -512,7 +688,8 @@ export default function App() {
       const {
         data,
         error,
-      } = await supabase.auth.getSession();
+      } =
+        await supabase.auth.getSession();
 
       if (error) {
         console.error(
@@ -549,18 +726,24 @@ export default function App() {
 
   function addBet(bet) {
     setBets((current) => {
-      const sameMarket = current.find(
-        (item) =>
-          item.matchId === bet.matchId &&
-          item.marketId === bet.marketId
-      );
+      const sameMarket =
+        current.find(
+          (item) =>
+            item.matchId ===
+              bet.matchId &&
+            item.marketId ===
+              bet.marketId
+        );
 
       if (sameMarket) {
-        return current.map((item) =>
-          item.matchId === bet.matchId &&
-          item.marketId === bet.marketId
-            ? bet
-            : item
+        return current.map(
+          (item) =>
+            item.matchId ===
+              bet.matchId &&
+            item.marketId ===
+              bet.marketId
+              ? bet
+              : item
         );
       }
 
@@ -840,11 +1023,11 @@ function Header({
           </Link>
 
           <Link to="/golden-games">
-            Golden Games
+            💎 Golden Games
           </Link>
 
           <Link to="/promotions">
-            Promotions
+            🎁 Promotions
           </Link>
         </nav>
 
@@ -910,8 +1093,7 @@ function Header({
                 to="/profile"
                 className="btn btn-outline profile-button"
               >
-                👤{" "}
-                {userEmail || "Profile"}
+                👤 Profile
               </Link>
 
               <Link
@@ -962,13 +1144,25 @@ function Home({
   clearBets,
   session,
 }) {
+  const [search, setSearch] =
+    useState("");
+
+  const filteredMatches =
+    matches.filter((match) =>
+      `${match.home} ${match.away} ${match.league} ${match.country}`
+        .toLowerCase()
+        .includes(
+          search.toLowerCase()
+        )
+    );
+
   return (
     <div className="page">
       <section
         className="hero"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.70)), url('/goldenbet-hero.jpg')",
+            "linear-gradient(rgba(0,0,0,.42), rgba(0,0,0,.78)), url('/goldenbet-hero.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -1021,16 +1215,47 @@ function Home({
           </Link>
         </div>
 
+        <div
+          style={{
+            marginBottom: "20px",
+          }}
+        >
+          <input
+            type="search"
+            value={search}
+            onChange={(e) =>
+              setSearch(
+                e.target.value
+              )
+            }
+            placeholder="🔎 Search team, league or country..."
+            style={{
+              width: "100%",
+              maxWidth: "520px",
+            }}
+          />
+        </div>
+
         <div className="home-layout">
           <div className="matches-grid">
-            {matches.map((match) => (
-              <MatchCard
-                key={match.id}
-                match={match}
-                bets={bets}
-                addBet={addBet}
-              />
-            ))}
+            {filteredMatches.map(
+              (match) => (
+                <MatchCard
+                  key={match.id}
+                  match={match}
+                  bets={bets}
+                  addBet={addBet}
+                />
+              )
+            )}
+
+            {!filteredMatches.length && (
+              <div className="empty-state">
+                <h3>
+                  No matches found
+                </h3>
+              </div>
+            )}
           </div>
 
           <BetSlip
@@ -1093,18 +1318,64 @@ function MatchCard({
         </span>
       </div>
 
-      <div className="match-teams">
-        <strong>
-          {match.home}
-        </strong>
+      <div
+        className="match-teams"
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "1fr auto 1fr",
+          alignItems: "center",
+          gap: "12px",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <TeamLogo
+            name={match.home}
+            code={match.homeCode}
+            size={50}
+          />
 
-        <span className="vs">
+          <strong>
+            {match.home}
+          </strong>
+        </div>
+
+        <span
+          className="vs"
+          style={{
+            fontWeight: 900,
+            color: "#d4af37",
+          }}
+        >
           VS
         </span>
 
-        <strong>
-          {match.away}
-        </strong>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <TeamLogo
+            name={match.away}
+            code={match.awayCode}
+            size={50}
+          />
+
+          <strong>
+            {match.away}
+          </strong>
+        </div>
       </div>
 
       <div className="match-markets-preview">
@@ -1181,19 +1452,6 @@ function MatchCard({
                 >
                   @ {bet.odds}
                 </span>
-
-                {status !==
-                  "pending" && (
-                  <strong
-                    style={{
-                      marginLeft: "6px",
-                    }}
-                  >
-                    {getStatusLabel(
-                      status
-                    )}
-                  </strong>
-                )}
               </div>
             );
           })}
@@ -1243,10 +1501,9 @@ function MatchPage({
   const path =
     window.location.pathname;
 
-  const id =
-    Number(
-      path.split("/").pop()
-    );
+  const id = Number(
+    path.split("/").pop()
+  );
 
   const match =
     matches.find(
@@ -1293,11 +1550,70 @@ function MatchPage({
           {match.league}
         </div>
 
-        <h1>
-          {match.home}
-          <span> VS </span>
-          {match.away}
-        </h1>
+        <div
+          style={{
+            display: "flex",
+            justifyContent:
+              "center",
+            alignItems: "center",
+            gap: "25px",
+            flexWrap: "wrap",
+            margin:
+              "20px 0",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection:
+                "column",
+              alignItems:
+                "center",
+              gap: "8px",
+            }}
+          >
+            <TeamLogo
+              name={match.home}
+              code={match.homeCode}
+              size={72}
+            />
+
+            <h2>
+              {match.home}
+            </h2>
+          </div>
+
+          <div
+            style={{
+              color: "#d4af37",
+              fontSize: "22px",
+              fontWeight: 900,
+            }}
+          >
+            VS
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection:
+                "column",
+              alignItems:
+                "center",
+              gap: "8px",
+            }}
+          >
+            <TeamLogo
+              name={match.away}
+              code={match.awayCode}
+              size={72}
+            />
+
+            <h2>
+              {match.away}
+            </h2>
+          </div>
+        </div>
 
         <div className="match-detail-time">
           📅 {match.date}
@@ -1493,10 +1809,9 @@ function Market({
       label:
         selection.label,
 
-      odds:
-        Number(
-          selection.odds
-        ),
+      odds: Number(
+        selection.odds
+      ),
 
       result: "pending",
     });
@@ -1573,28 +1888,32 @@ function BetSlip({
           group = {
             matchId:
               bet.matchId,
-
             match:
               bet.match,
-
             home:
               bet.home,
-
             away:
               bet.away,
-
+            homeCode:
+              matches.find(
+                (m) =>
+                  m.id ===
+                  bet.matchId
+              )?.homeCode,
+            awayCode:
+              matches.find(
+                (m) =>
+                  m.id ===
+                  bet.matchId
+              )?.awayCode,
             league:
               bet.league,
-
             country:
               bet.country,
-
             time:
               bet.time,
-
             date:
               bet.date,
-
             selections: [],
           };
 
@@ -1733,19 +2052,14 @@ function BetSlip({
         .insert({
           user_id:
             session.user.id,
-
           match_name:
             matchNames,
-
           stake:
             stakeAmount,
-
           total_odds:
             oddsAmount,
-
           potential_win:
             returnAmount,
-
           status:
             "pending",
         });
@@ -1855,14 +2169,26 @@ function BetSlip({
                     style={{
                       display:
                         "flex",
-                      justifyContent:
-                        "space-between",
                       alignItems:
-                        "flex-start",
-                      gap: "8px",
+                        "center",
+                      gap: "10px",
                     }}
                   >
-                    <div>
+                    <TeamLogo
+                      name={
+                        group.home
+                      }
+                      code={
+                        group.homeCode
+                      }
+                      size={36}
+                    />
+
+                    <div
+                      style={{
+                        flex: 1,
+                      }}
+                    >
                       <div
                         style={{
                           fontWeight:
@@ -1888,19 +2214,15 @@ function BetSlip({
                       </small>
                     </div>
 
-                    <span
-                      style={{
-                        whiteSpace:
-                          "nowrap",
-                      }}
-                    >
-                      {
-                        group
-                          .selections
-                          .length
-                      }{" "}
-                      selections
-                    </span>
+                    <TeamLogo
+                      name={
+                        group.away
+                      }
+                      code={
+                        group.awayCode
+                      }
+                      size={36}
+                    />
                   </div>
 
                   <div
@@ -1936,9 +2258,7 @@ function BetSlip({
                               "1px solid rgba(255,255,255,.07)",
                           }}
                         >
-                          <div
-                            className="bet-info"
-                          >
+                          <div className="bet-info">
                             <span
                               style={{
                                 color:
@@ -2076,7 +2396,10 @@ function BetSlip({
             </span>
 
             <strong>
-              {potentialReturn}
+              {Number(
+                potentialReturn
+              ).toLocaleString()}{" "}
+              IQD
             </strong>
           </div>
 
@@ -2129,6 +2452,9 @@ function Sports({
   const [league, setLeague] =
     useState(null);
 
+  const [search, setSearch] =
+    useState("");
+
   const countryData =
     sportsCountries.find(
       (item) =>
@@ -2139,7 +2465,7 @@ function Sports({
     matches.filter((match) => {
       if (
         sport !==
-          "Football"
+        "Football"
       ) {
         return false;
       }
@@ -2156,6 +2482,17 @@ function Sports({
         league &&
         match.league !==
           league
+      ) {
+        return false;
+      }
+
+      if (
+        search &&
+        !`${match.home} ${match.away} ${match.league} ${match.country}`
+          .toLowerCase()
+          .includes(
+            search.toLowerCase()
+          )
       ) {
         return false;
       }
@@ -2209,6 +2546,21 @@ function Sports({
         >
           ⚽ All Sports
         </div>
+
+        <input
+          type="search"
+          value={search}
+          onChange={(e) =>
+            setSearch(
+              e.target.value
+            )
+          }
+          placeholder="🔎 Search teams..."
+          style={{
+            flex: 1,
+            minWidth: "220px",
+          }}
+        />
       </div>
 
       <div
@@ -2297,9 +2649,9 @@ function Sports({
                 </h2>
 
                 <p>
-                  This sport is ready
-                  for leagues and
-                  matches to be added.
+                  League and match
+                  data can be connected
+                  to a live sports API.
                 </p>
               </div>
             </div>
@@ -2643,45 +2995,123 @@ function Live() {
         </h1>
 
         <p>
-          Live matches and live markets.
+          Live interface preview.
+          Real scores require a live
+          sports data provider.
         </p>
+      </div>
+
+      <div
+        style={{
+          padding: "12px 16px",
+          marginBottom: "18px",
+          borderRadius: "10px",
+          background:
+            "rgba(212,175,55,.08)",
+          border:
+            "1px solid rgba(212,175,55,.25)",
+          color: "#d4af37",
+        }}
+      >
+        ⚠️ Demo live data — scores
+        shown here are not live.
       </div>
 
       <div className="live-grid">
         {matches
-          .slice(0, 4)
+          .slice(0, 8)
           .map((match) => (
             <div
               className="live-card"
               key={match.id}
             >
               <div className="live-badge">
-                LIVE
+                LIVE DEMO
               </div>
 
               <span>
+                {match.country} •{" "}
                 {match.league}
               </span>
 
-              <h3>
-                {match.home}
-              </h3>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems:
+                    "center",
+                  justifyContent:
+                    "center",
+                  gap: "15px",
+                  margin:
+                    "15px 0",
+                }}
+              >
+                <div
+                  style={{
+                    display:
+                      "flex",
+                    flexDirection:
+                      "column",
+                    alignItems:
+                      "center",
+                    gap: "6px",
+                  }}
+                >
+                  <TeamLogo
+                    name={
+                      match.home
+                    }
+                    code={
+                      match.homeCode
+                    }
+                    size={46}
+                  />
 
-              <div className="live-score">
-                1 - 0
+                  <strong>
+                    {match.home}
+                  </strong>
+                </div>
+
+                <div>
+                  <div className="live-score">
+                    1 - 0
+                  </div>
+
+                  <small>
+                    2nd Half
+                  </small>
+                </div>
+
+                <div
+                  style={{
+                    display:
+                      "flex",
+                    flexDirection:
+                      "column",
+                    alignItems:
+                      "center",
+                    gap: "6px",
+                  }}
+                >
+                  <TeamLogo
+                    name={
+                      match.away
+                    }
+                    code={
+                      match.awayCode
+                    }
+                    size={46}
+                  />
+
+                  <strong>
+                    {match.away}
+                  </strong>
+                </div>
               </div>
-
-              <h3>
-                {match.away}
-              </h3>
 
               <Link
                 to={`/match/${match.id}`}
                 className="btn btn-gold"
-                style={{
-                  marginTop:
-                    "10px",
-                }}
               >
                 View Markets
               </Link>
@@ -2714,12 +3144,9 @@ function Casino() {
       <div
         className="casino-hero"
         style={{
-          padding:
-            "30px",
-          borderRadius:
-            "18px",
-          marginBottom:
-            "22px",
+          padding: "30px",
+          borderRadius: "18px",
+          marginBottom: "22px",
           background:
             "linear-gradient(135deg,#090909,#17120a,#090909)",
           border:
@@ -2742,56 +3169,37 @@ function Casino() {
 
         <div
           style={{
-            display:
-              "grid",
+            display: "grid",
             gridTemplateColumns:
               "repeat(auto-fit,minmax(150px,1fr))",
             gap: "12px",
-            marginTop:
-              "20px",
+            marginTop: "20px",
           }}
         >
-          <div className="game-card">
-            <div className="game-image">
-              🎡
-            </div>
-            <h3>
-              Roulette
-            </h3>
-          </div>
+          {[
+            ["🎡", "Roulette"],
+            ["🃏", "Blackjack"],
+            ["💰", "Jackpot"],
+            ["🚀", "Crash"],
+          ].map(([icon, name]) => (
+            <div
+              className="game-card"
+              key={name}
+            >
+              <div className="game-image">
+                {icon}
+              </div>
 
-          <div className="game-card">
-            <div className="game-image">
-              🃏
+              <h3>
+                {name}
+              </h3>
             </div>
-            <h3>
-              Blackjack
-            </h3>
-          </div>
-
-          <div className="game-card">
-            <div className="game-image">
-              💰
-            </div>
-            <h3>
-              Jackpot
-            </h3>
-          </div>
-
-          <div className="game-card">
-            <div className="game-image">
-              🚀
-            </div>
-            <h3>
-              Crash
-            </h3>
-          </div>
+          ))}
         </div>
 
         <div
           style={{
-            marginTop:
-              "18px",
+            marginTop: "18px",
           }}
         >
           <Link
@@ -2845,7 +3253,7 @@ function Casino() {
               className="btn btn-gold"
               onClick={() =>
                 alert(
-                  `${game.name} will be available here.`
+                  `${game.name} is a UI demo. A real casino provider integration is required to play.`
                 )
               }
             >
@@ -2882,12 +3290,9 @@ function LiveCasino() {
       <div
         className="casino-hero"
         style={{
-          padding:
-            "30px",
-          borderRadius:
-            "18px",
-          marginBottom:
-            "22px",
+          padding: "30px",
+          borderRadius: "18px",
+          marginBottom: "22px",
           background:
             "linear-gradient(135deg,#090909,#160d0d,#090909)",
           border:
@@ -2910,10 +3315,8 @@ function LiveCasino() {
 
         <div
           style={{
-            fontSize:
-              "55px",
-            marginTop:
-              "15px",
+            fontSize: "55px",
+            marginTop: "15px",
           }}
         >
           🎡 🃏 💰 🎲
@@ -2962,7 +3365,7 @@ function LiveCasino() {
               className="btn btn-gold"
               onClick={() =>
                 alert(
-                  `${game.name} will be available here.`
+                  `${game.name} is a UI demo. Real live casino integration requires a licensed provider.`
                 )
               }
             >
@@ -2988,7 +3391,7 @@ function GoldenGames() {
         </span>
 
         <h1>
-          🟡 Golden Games
+          💎 Golden Games
         </h1>
 
         <p>
@@ -3012,11 +3415,19 @@ function GoldenGames() {
                 {game}
               </h3>
 
+              <p
+                style={{
+                  opacity: 0.7,
+                }}
+              >
+                GoldenBet Original
+              </p>
+
               <button
                 className="btn btn-gold"
                 onClick={() =>
                   alert(
-                    `${game} will be available here.`
+                    `${game} is currently a UI preview.`
                   )
                 }
               >
@@ -3038,6 +3449,10 @@ function Promotions() {
   return (
     <div className="page section">
       <div className="page-heading">
+        <span className="section-kicker">
+          GOLDENBET OFFERS
+        </span>
+
         <h1>
           🎁 Promotions
         </h1>
@@ -3142,7 +3557,7 @@ function Login() {
     <div className="auth-page">
       <div className="auth-card">
         <h1>
-          Login
+          👑 GoldenBet Login
         </h1>
 
         {error && (
@@ -3293,7 +3708,7 @@ function Register() {
     <div className="auth-page">
       <div className="auth-card">
         <h1>
-          Register
+          👑 Create GoldenBet Account
         </h1>
 
         {error && (
@@ -3709,12 +4124,25 @@ function Withdraw({
     }
 
     alert(
-      `Withdrawal request prepared.\nAmount: ${amount} IQD\nMethod: ${method}`
+      `Withdrawal request prepared.\nAmount: ${Number(
+        amount
+      ).toLocaleString()} IQD\nMethod: ${method}`
     );
   }
 
   return (
     <div className="page section">
+      <div className="page-heading">
+        <h1>
+          💸 Withdraw
+        </h1>
+
+        <p>
+          Choose your withdrawal
+          method.
+        </p>
+      </div>
+
       <div className="form-card">
         <form
           onSubmit={
@@ -3979,8 +4407,26 @@ function MyBets({
 ========================================================= */
 
 function Settings() {
+  const [saved, setSaved] =
+    useState(false);
+
+  function saveSettings() {
+    setSaved(true);
+
+    setTimeout(
+      () => setSaved(false),
+      2000
+    );
+  }
+
   return (
     <div className="page section">
+      <div className="page-heading">
+        <h1>
+          ⚙️ Settings
+        </h1>
+      </div>
+
       <div className="settings-card">
         <label>
           Notifications
@@ -4002,14 +4448,25 @@ function Settings() {
 
         <button
           className="btn btn-gold"
-          onClick={() =>
-            alert(
-              "Settings saved."
-            )
+          onClick={
+            saveSettings
           }
         >
           Save Settings
         </button>
+
+        {saved && (
+          <p
+            style={{
+              color:
+                "#35d06f",
+              marginTop:
+                "12px",
+            }}
+          >
+            ✓ Settings saved
+          </p>
+        )}
       </div>
     </div>
   );
@@ -4066,7 +4523,8 @@ function Footer() {
           </div>
 
           <p>
-            GoldenBet sports and casino platform.
+            GoldenBet sports and casino
+            platform.
           </p>
         </div>
 
@@ -4079,8 +4537,16 @@ function Footer() {
             Casino
           </Link>
 
+          <Link to="/live">
+            Live Sports
+          </Link>
+
           <Link to="/live-casino">
             Live Casino
+          </Link>
+
+          <Link to="/golden-games">
+            Golden Games
           </Link>
 
           <Link to="/my-bets">
