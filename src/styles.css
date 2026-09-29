@@ -33,8 +33,7 @@
   --radius-lg: 18px;
   --radius-xl: 24px;
 
-  --shadow:
-    0 20px 60px rgba(0, 0, 0, 0.45);
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
 
   --transition: 0.22s ease;
 }
@@ -101,6 +100,8 @@ a {
 
 .app {
   min-height: 100vh;
+  padding-bottom: 105px;
+
   background:
     radial-gradient(
       circle at 50% 0%,
@@ -116,7 +117,8 @@ a {
 }
 
 /* =========================================================
-   HEADER
+   OLD HEADER
+   Kept for compatibility.
 ========================================================= */
 
 .header {
@@ -388,6 +390,7 @@ a {
 
 .bet-slip-top:hover {
   background: rgba(246, 201, 69, 0.13);
+
   box-shadow:
     0 0 25px rgba(246, 201, 69, 0.12);
 }
@@ -2585,6 +2588,386 @@ a {
 }
 
 /* =========================================================
+   GOLDENBET PREMIUM TOP HEADER
+   Roulette | GOLDENBET | Football
+========================================================= */
+
+.golden-top-header {
+  position: relative;
+  z-index: 50;
+
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(246, 201, 69, 0.12),
+      transparent 34%
+    ),
+    linear-gradient(
+      180deg,
+      #090909 0%,
+      #020202 100%
+    );
+
+  border-bottom:
+    1px solid rgba(246, 201, 69, 0.38);
+
+  box-shadow:
+    0 8px 35px rgba(0, 0, 0, 0.55);
+}
+
+.golden-top-visual {
+  width: min(100%, 1180px);
+
+  min-height: 175px;
+
+  margin: 0 auto;
+
+  padding: 12px 18px;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    minmax(230px, 360px)
+    1fr;
+
+  align-items: center;
+
+  gap: 12px;
+
+  overflow: hidden;
+}
+
+.golden-side-image {
+  height: 150px;
+
+  display: flex;
+
+  align-items: center;
+}
+
+.golden-side-left {
+  justify-content: flex-start;
+}
+
+.golden-side-right {
+  justify-content: flex-end;
+}
+
+.golden-side-image img {
+  width: 100%;
+
+  max-width: 330px;
+
+  height: 150px;
+
+  object-fit: cover;
+
+  border-radius: 24px;
+
+  border:
+    1px solid rgba(246, 201, 69, 0.38);
+
+  box-shadow:
+    0 0 30px rgba(246, 201, 69, 0.13);
+}
+
+.golden-center-logo {
+  justify-self: center;
+
+  color: #f6d66a;
+
+  text-decoration: none;
+
+  font-size:
+    clamp(2rem, 4vw, 3.8rem);
+
+  line-height: 1;
+
+  font-weight: 1000;
+
+  letter-spacing: 0.08em;
+
+  text-align: center;
+
+  text-shadow:
+    0 0 5px rgba(255, 218, 91, 0.8),
+    0 0 18px rgba(246, 201, 69, 0.5),
+    0 0 38px rgba(246, 201, 69, 0.25);
+
+  white-space: nowrap;
+
+  transition:
+    transform var(--transition),
+    text-shadow var(--transition);
+}
+
+.golden-center-logo:hover {
+  transform: scale(1.03);
+
+  text-shadow:
+    0 0 7px rgba(255, 218, 91, 0.95),
+    0 0 25px rgba(246, 201, 69, 0.65),
+    0 0 45px rgba(246, 201, 69, 0.3);
+}
+
+/* =========================================================
+   GOLDENBET FIXED BOTTOM NAV
+   Sports | Bet Slip | Deposit | Casino
+========================================================= */
+
+.golden-bottom-nav {
+  position: fixed;
+
+  left: 50%;
+  bottom: 14px;
+
+  transform: translateX(-50%);
+
+  z-index: 1000;
+
+  width: min(94vw, 760px);
+
+  min-height: 72px;
+
+  padding: 8px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 7px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20, 20, 20, 0.98),
+      rgba(5, 5, 5, 0.98)
+    );
+
+  border:
+    1px solid rgba(246, 201, 69, 0.45);
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 14px 50px rgba(0, 0, 0, 0.65),
+    0 0 30px rgba(246, 201, 69, 0.12);
+
+  backdrop-filter: blur(18px);
+
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.golden-bottom-item {
+  position: relative;
+
+  min-height: 56px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 2px;
+
+  color: #d8d8d8;
+
+  text-decoration: none;
+
+  border-radius: 17px;
+
+  font-size: 0.78rem;
+
+  font-weight: 800;
+
+  transition:
+    color var(--transition),
+    background var(--transition),
+    transform var(--transition);
+}
+
+.golden-bottom-item:hover,
+.golden-bottom-item:focus-visible {
+  color: #f6d66a;
+
+  background:
+    rgba(246, 201, 69, 0.08);
+
+  transform: translateY(-1px);
+}
+
+.golden-bottom-item:active {
+  transform: scale(0.96);
+}
+
+.golden-bottom-icon {
+  font-size: 1.45rem;
+
+  line-height: 1;
+}
+
+.golden-bet-count {
+  position: absolute;
+
+  top: 4px;
+
+  right: calc(50% - 25px);
+
+  min-width: 19px;
+
+  height: 19px;
+
+  padding: 0 5px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 999px;
+
+  background: #f6c945;
+
+  color: #050505;
+
+  font-size: 0.68rem;
+
+  font-weight: 1000;
+
+  border:
+    2px solid #080808;
+}
+
+/* =========================================================
+   GOLDENBET MOBILE PREMIUM
+========================================================= */
+
+@media (max-width: 720px) {
+  .golden-top-header {
+    border-bottom-color:
+      rgba(246, 201, 69, 0.3);
+  }
+
+  .golden-top-visual {
+    min-height: 125px;
+
+    padding: 8px;
+
+    grid-template-columns:
+      1fr
+      auto
+      1fr;
+
+    gap: 5px;
+  }
+
+  .golden-side-image {
+    height: 105px;
+  }
+
+  .golden-side-image img {
+    height: 105px;
+
+    max-width: 170px;
+
+    border-radius: 18px;
+  }
+
+  .golden-center-logo {
+    font-size:
+      clamp(1.35rem, 7vw, 2.25rem);
+
+    letter-spacing: 0.045em;
+  }
+
+  .golden-bottom-nav {
+    bottom: 8px;
+
+    width:
+      calc(100vw - 16px);
+
+    min-height: 67px;
+
+    border-radius: 20px;
+
+    padding: 6px;
+  }
+
+  .golden-bottom-item {
+    min-height: 53px;
+
+    font-size: 0.68rem;
+  }
+
+  .golden-bottom-icon {
+    font-size: 1.25rem;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+  .golden-top-visual {
+    min-height: 105px;
+
+    padding: 6px;
+  }
+
+  .golden-side-image {
+    height: 88px;
+  }
+
+  .golden-side-image img {
+    height: 88px;
+
+    border-radius: 14px;
+  }
+
+  .golden-center-logo {
+    font-size: 1.18rem;
+
+    letter-spacing: 0.025em;
+  }
+
+  .golden-bottom-nav {
+    bottom: 6px;
+
+    width:
+      calc(100vw - 12px);
+
+    min-height: 64px;
+
+    border-radius: 18px;
+  }
+
+  .golden-bottom-item {
+    min-height: 50px;
+
+    font-size: 0.62rem;
+  }
+
+  .golden-bottom-icon {
+    font-size: 1.15rem;
+  }
+
+  .golden-bet-count {
+    right: calc(50% - 22px);
+
+    min-width: 17px;
+
+    height: 17px;
+
+    font-size: 0.6rem;
+  }
+}
+
+/* =========================================================
    TABLET
 ========================================================= */
 
@@ -2989,7 +3372,9 @@ a {
     scroll-behavior: auto !important;
 
     transition-duration: 0.01ms !important;
+
     animation-duration: 0.01ms !important;
+
     animation-iteration-count: 1 !important;
   }
 }
