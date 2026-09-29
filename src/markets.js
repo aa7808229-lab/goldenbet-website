@@ -25,31 +25,4 @@ export const marketGroups = [
         id: "over-under",
         title: "Over / Under",
         selections: [
-          { key: "over05", label: "Over 0.5", name: "Over 0.5 Goals", odds: 1.2 },
-          { key: "over15", label: "Over 1.5", name: "Over 1.5 Goals", odds: 1.5 },
-          { key: "over25", label: "Over 2.5", name: "Over 2.5 Goals", odds: 1.8 },
-          { key: "under25", label: "Under 2.5", name: "Under 2.5 Goals", odds: 1.9 },
-          { key: "over35", label: "Over 3.5", name: "Over 3.5 Goals", odds: 2.5 },
-        ],
-      },
-      {
-        id: "btts",
-        title: "Both Teams To Score",
-        selections: [
-          { key: "yes", label: "Yes", name: "Both Teams To Score - Yes", odds: 1.7 },
-          { key: "no", label: "No", name: "Both Teams To Score - No", odds: 2.0 },
-        ],
-      },
-      {
-        id: "team-goals",
-        title: "Team Goals",
-        selections: [
-          { key: "home-over15", label: "Over 1.5", name: "Home Team Over 1.5", odds: 1.8 },
-          { key: "away-over15", label: "Over 1.5", name: "Away Team Over 1.5", odds: 2.0 },
-          { key: "home-over25", label: "Over 2.5", name: "Home Team Over 2.5", odds: 2.5 },
-          { key: "away-over25", label: "Over 2.5", name: "Away Team Over 2.5", odds: 2.8 },
-        ],
-      },
-    ],
-  },
-];
+          { key: "over
