@@ -1,16 +1,11 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-
+import { useEffect, useMemo, useState } from "react";
 import {
   Link,
   Route,
   Routes,
+  useLocation,
   useNavigate,
   useParams,
-  useLocation,
 } from "react-router-dom";
 
 import AdminDashboard from "./AdminDashboard";
@@ -19,7 +14,7 @@ import PaymentCard from "./PaymentCard";
 import { supabase } from "../lib/supabase";
 
 /* =========================================================
-   GOLDENBET DATA
+   DATA
 ========================================================= */
 
 const sports = [
@@ -48,202 +43,119 @@ const sportsCountries = [
   {
     name: "Iraq",
     flag: "🇮🇶",
-    leagues: [
-      "Iraq Stars League",
-      "Iraq Premier League",
-      "Kurdistan Premier League",
-      "Kurdistan Regional League",
-    ],
+    leagues: ["Iraq Stars League", "Kurdistan Premier League"],
   },
   {
     name: "England",
     flag: "🏴",
-    leagues: [
-      "Premier League",
-      "Championship",
-      "League One",
-      "League Two",
-    ],
+    leagues: ["Premier League", "Championship", "League One"],
   },
   {
     name: "Spain",
     flag: "🇪🇸",
-    leagues: [
-      "La Liga",
-      "La Liga 2",
-      "Primera RFEF",
-    ],
+    leagues: ["La Liga", "Segunda Division"],
   },
   {
     name: "Italy",
     flag: "🇮🇹",
-    leagues: [
-      "Serie A",
-      "Serie B",
-      "Serie C",
-    ],
+    leagues: ["Serie A", "Serie B"],
   },
   {
     name: "Germany",
     flag: "🇩🇪",
-    leagues: [
-      "Bundesliga",
-      "2. Bundesliga",
-      "3. Liga",
-    ],
+    leagues: ["Bundesliga", "2. Bundesliga"],
   },
   {
     name: "France",
     flag: "🇫🇷",
-    leagues: [
-      "Ligue 1",
-      "Ligue 2",
-      "National",
-    ],
+    leagues: ["Ligue 1", "Ligue 2"],
   },
   {
     name: "Turkey",
     flag: "🇹🇷",
-    leagues: [
-      "Super Lig",
-      "1. Lig",
-    ],
+    leagues: ["Super Lig", "1. Lig"],
   },
   {
     name: "Saudi Arabia",
     flag: "🇸🇦",
-    leagues: [
-      "Saudi Pro League",
-      "Saudi First Division",
-    ],
+    leagues: ["Saudi Pro League"],
   },
   {
     name: "UAE",
     flag: "🇦🇪",
-    leagues: [
-      "UAE Pro League",
-      "UAE First Division",
-    ],
+    leagues: ["UAE Pro League"],
   },
   {
     name: "Qatar",
     flag: "🇶🇦",
-    leagues: [
-      "Qatar Stars League",
-      "Qatar Second Division",
-    ],
+    leagues: ["Qatar Stars League"],
   },
   {
     name: "Netherlands",
     flag: "🇳🇱",
-    leagues: [
-      "Eredivisie",
-      "Eerste Divisie",
-    ],
+    leagues: ["Eredivisie"],
   },
   {
     name: "Portugal",
     flag: "🇵🇹",
-    leagues: [
-      "Primeira Liga",
-      "Liga Portugal 2",
-    ],
+    leagues: ["Primeira Liga"],
   },
   {
     name: "Belgium",
     flag: "🇧🇪",
-    leagues: [
-      "Belgian Pro League",
-      "Challenger Pro League",
-    ],
+    leagues: ["Pro League"],
   },
   {
     name: "Scotland",
     flag: "🏴",
-    leagues: [
-      "Scottish Premiership",
-      "Scottish Championship",
-    ],
+    leagues: ["Premiership"],
   },
   {
     name: "Greece",
     flag: "🇬🇷",
-    leagues: [
-      "Super League Greece",
-      "Super League 2",
-    ],
+    leagues: ["Super League"],
   },
   {
     name: "USA",
     flag: "🇺🇸",
-    leagues: [
-      "MLS",
-      "USL Championship",
-    ],
+    leagues: ["MLS"],
   },
   {
     name: "Brazil",
     flag: "🇧🇷",
-    leagues: [
-      "Brasileirão Serie A",
-      "Brasileirão Serie B",
-    ],
+    leagues: ["Serie A"],
   },
   {
     name: "Argentina",
     flag: "🇦🇷",
-    leagues: [
-      "Liga Profesional",
-      "Primera Nacional",
-    ],
+    leagues: ["Liga Profesional"],
   },
   {
     name: "Mexico",
     flag: "🇲🇽",
-    leagues: [
-      "Liga MX",
-      "Liga de Expansion",
-    ],
+    leagues: ["Liga MX"],
   },
   {
     name: "Japan",
     flag: "🇯🇵",
-    leagues: [
-      "J1 League",
-      "J2 League",
-    ],
+    leagues: ["J1 League"],
   },
   {
     name: "South Korea",
     flag: "🇰🇷",
-    leagues: [
-      "K League 1",
-      "K League 2",
-    ],
+    leagues: ["K League 1"],
   },
   {
     name: "Australia",
     flag: "🇦🇺",
-    leagues: [
-      "A-League",
-    ],
+    leagues: ["A-League"],
   },
   {
     name: "International",
     flag: "🌍",
-    leagues: [
-      "UEFA Champions League",
-      "UEFA Europa League",
-      "UEFA Conference League",
-      "World Cup",
-      "International Friendlies",
-    ],
+    leagues: ["International"],
   },
 ];
-
-/* =========================================================
-   CASINO
-========================================================= */
 
 const casinoCategories = [
   "All Games",
@@ -277,131 +189,39 @@ const liveCasinoCategories = [
 ];
 
 const casinoGames = [
-  {
-    name: "Golden Fortune",
-    category: "Slots",
-    image: "🎰",
-  },
-  {
-    name: "Golden Roulette",
-    category: "Roulette",
-    image: "🎡",
-  },
-  {
-    name: "Golden Blackjack",
-    category: "Blackjack",
-    image: "🃏",
-  },
-  {
-    name: "Golden Baccarat",
-    category: "Baccarat",
-    image: "♠️",
-  },
-  {
-    name: "Golden Poker",
-    category: "Poker",
-    image: "♣️",
-  },
-  {
-    name: "Golden Crash",
-    category: "Crash Games",
-    image: "🚀",
-  },
-  {
-    name: "Golden Jackpot",
-    category: "Jackpot",
-    image: "💰",
-  },
-  {
-    name: "Golden Wheel",
-    category: "Game Shows",
-    image: "🎡",
-  },
-  {
-    name: "Golden Dice",
-    category: "Table Games",
-    image: "🎲",
-  },
-  {
-    name: "Golden Arcade",
-    category: "Arcade",
-    image: "🕹️",
-  },
-  {
-    name: "Golden Cards",
-    category: "Instant Games",
-    image: "🃏",
-  },
-  {
-    name: "Golden Mines",
-    category: "Instant Games",
-    image: "💎",
-  },
+  { name: "Golden Fortune", category: "Slots", icon: "🎰" },
+  { name: "Golden Roulette", category: "Roulette", icon: "🎡" },
+  { name: "Golden Blackjack", category: "Blackjack", icon: "🃏" },
+  { name: "Golden Baccarat", category: "Baccarat", icon: "♦️" },
+  { name: "Golden Poker", category: "Poker", icon: "♠️" },
+  { name: "Golden Crash", category: "Crash Games", icon: "🚀" },
+  { name: "Golden Jackpot", category: "Jackpot", icon: "💰" },
+  { name: "Golden Wheel", category: "Game Shows", icon: "🎡" },
+  { name: "Golden Dice", category: "Table Games", icon: "🎲" },
+  { name: "Golden Arcade", category: "Arcade", icon: "🕹️" },
+  { name: "Golden Cards", category: "Instant Games", icon: "🃏" },
+  { name: "Golden Mines", category: "Instant Games", icon: "💎" },
 ];
 
 const liveGames = [
-  {
-    name: "Live Roulette",
-    provider: "Evolution",
-    category: "Live Roulette",
-    image: "🎡",
-  },
-  {
-    name: "Live Blackjack",
-    provider: "Evolution",
-    category: "Live Blackjack",
-    image: "🃏",
-  },
-  {
-    name: "Live Baccarat",
-    provider: "Ezugi",
-    category: "Live Baccarat",
-    image: "♠️",
-  },
-  {
-    name: "Live Game Show",
-    provider: "Pragmatic Play Live",
-    category: "Live Game Shows",
-    image: "🎤",
-  },
-  {
-    name: "Live Dragon Tiger",
-    provider: "Evolution",
-    category: "Live Dragon Tiger",
-    image: "🐉",
-  },
-  {
-    name: "Live Sic Bo",
-    provider: "Ezugi",
-    category: "Live Sic Bo",
-    image: "🎲",
-  },
-  {
-    name: "Live Wheel",
-    provider: "TVBet",
-    category: "Live Wheel",
-    image: "🎡",
-  },
-  {
-    name: "Live Poker",
-    provider: "Evolution",
-    category: "Live Poker",
-    image: "♣️",
-  },
+  { name: "Live Roulette", provider: "Evolution", icon: "🎡" },
+  { name: "Live Blackjack", provider: "Evolution", icon: "🃏" },
+  { name: "Live Baccarat", provider: "Ezugi", icon: "♦️" },
+  { name: "Live Game Show", provider: "Pragmatic Play Live", icon: "🎤" },
+  { name: "Live Dragon Tiger", provider: "TVBet", icon: "🐉" },
+  { name: "Live Sic Bo", provider: "Ezugi", icon: "🎲" },
+  { name: "Live Wheel", provider: "Evolution", icon: "🎡" },
+  { name: "Live Poker", provider: "Ezugi", icon: "♠️" },
 ];
 
 const goldenGames = [
-  "Golden Crash",
-  "Golden Dice",
-  "Golden Wheel",
-  "Golden Mines",
-  "Golden Cards",
-  "Golden Jackpot",
+  { name: "Golden Crash", icon: "🚀" },
+  { name: "Golden Dice", icon: "🎲" },
+  { name: "Golden Wheel", icon: "🎡" },
+  { name: "Golden Mines", icon: "💎" },
+  { name: "Golden Cards", icon: "🃏" },
+  { name: "Golden Jackpot", icon: "💰" },
 ];
-
-/* =========================================================
-   FOOTBALL MATCHES
-========================================================= */
 
 const matches = [
   {
@@ -410,10 +230,10 @@ const matches = [
     away: "Barcelona",
     homeCode: "RMA",
     awayCode: "BAR",
-    time: "21:00",
-    date: "Today",
     league: "La Liga",
     country: "Spain",
+    time: "21:00",
+    date: "Today",
   },
   {
     id: 2,
@@ -421,21 +241,21 @@ const matches = [
     away: "Chelsea",
     homeCode: "ARS",
     awayCode: "CHE",
-    time: "20:30",
-    date: "Today",
     league: "Premier League",
     country: "England",
+    time: "20:30",
+    date: "Today",
   },
   {
     id: 3,
     home: "Inter Milan",
     away: "AC Milan",
     homeCode: "INT",
-    awayCode: "ACM",
-    time: "21:45",
-    date: "Today",
+    awayCode: "MIL",
     league: "Serie A",
     country: "Italy",
+    time: "21:45",
+    date: "Today",
   },
   {
     id: 4,
@@ -443,21 +263,21 @@ const matches = [
     away: "Dortmund",
     homeCode: "BAY",
     awayCode: "BVB",
-    time: "22:00",
-    date: "Today",
     league: "Bundesliga",
     country: "Germany",
+    time: "22:00",
+    date: "Today",
   },
   {
     id: 5,
     home: "Al-Shorta",
     away: "Al-Zawraa",
-    homeCode: "ALS",
-    awayCode: "ALZ",
-    time: "19:30",
-    date: "Today",
+    homeCode: "SHR",
+    awayCode: "ZWR",
     league: "Iraq Stars League",
     country: "Iraq",
+    time: "19:30",
+    date: "Today",
   },
   {
     id: 6,
@@ -465,10 +285,10 @@ const matches = [
     away: "Erbil",
     homeCode: "DUH",
     awayCode: "ERB",
-    time: "20:00",
-    date: "Today",
     league: "Kurdistan Premier League",
     country: "Iraq",
+    time: "20:00",
+    date: "Today",
   },
   {
     id: 7,
@@ -476,10 +296,10 @@ const matches = [
     away: "Manchester City",
     homeCode: "LIV",
     awayCode: "MCI",
-    time: "20:00",
-    date: "Today",
     league: "Premier League",
     country: "England",
+    time: "20:00",
+    date: "Today",
   },
   {
     id: 8,
@@ -487,10 +307,10 @@ const matches = [
     away: "Tottenham",
     homeCode: "MUN",
     awayCode: "TOT",
-    time: "21:00",
-    date: "Today",
     league: "Premier League",
     country: "England",
+    time: "21:00",
+    date: "Today",
   },
   {
     id: 9,
@@ -498,21 +318,21 @@ const matches = [
     away: "Napoli",
     homeCode: "JUV",
     awayCode: "NAP",
-    time: "21:45",
-    date: "Today",
     league: "Serie A",
     country: "Italy",
+    time: "21:45",
+    date: "Today",
   },
   {
     id: 10,
     home: "PSG",
     away: "Marseille",
     homeCode: "PSG",
-    awayCode: "OM",
-    time: "22:00",
-    date: "Today",
+    awayCode: "MAR",
     league: "Ligue 1",
     country: "France",
+    time: "22:00",
+    date: "Today",
   },
   {
     id: 11,
@@ -520,10 +340,10 @@ const matches = [
     away: "Fenerbahce",
     homeCode: "GAL",
     awayCode: "FEN",
-    time: "20:00",
-    date: "Today",
     league: "Super Lig",
     country: "Turkey",
+    time: "20:00",
+    date: "Today",
   },
   {
     id: 12,
@@ -531,10 +351,10 @@ const matches = [
     away: "Al-Nassr",
     homeCode: "HIL",
     awayCode: "NAS",
-    time: "21:00",
-    date: "Today",
     league: "Saudi Pro League",
     country: "Saudi Arabia",
+    time: "21:00",
+    date: "Today",
   },
   {
     id: 13,
@@ -542,10 +362,10 @@ const matches = [
     away: "PSV",
     homeCode: "AJA",
     awayCode: "PSV",
-    time: "19:45",
-    date: "Today",
     league: "Eredivisie",
     country: "Netherlands",
+    time: "19:45",
+    date: "Today",
   },
   {
     id: 14,
@@ -553,10 +373,10 @@ const matches = [
     away: "Porto",
     homeCode: "BEN",
     awayCode: "POR",
-    time: "21:15",
-    date: "Today",
     league: "Primeira Liga",
     country: "Portugal",
+    time: "21:15",
+    date: "Today",
   },
 ];
 
@@ -565,11 +385,7 @@ const matches = [
 ========================================================= */
 
 function getSelectionStatus(bet) {
-  return (
-    bet?.result ||
-    bet?.selectionResult ||
-    "pending"
-  );
+  return bet?.result || bet?.selectionResult || "pending";
 }
 
 function getStatusIcon(status) {
@@ -584,70 +400,58 @@ function getStatusColor(status) {
   return "#f2c94c";
 }
 
-/* =========================================================
-   TEAM LOGO
-========================================================= */
+function safeOdds(value) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : 1;
+}
 
-function TeamLogo({
-  name,
-  code,
-  src,
-  size = 48,
-}) {
-  const [failed, setFailed] =
-    useState(false);
+function TeamLogo({ name, code, src, size = 48 }) {
+  const [failed, setFailed] = useState(false);
 
   const initials =
     code ||
-    name
+    String(name || "TM")
       .split(" ")
       .map((word) => word[0])
-      .slice(0, 3)
       .join("")
+      .slice(0, 3)
       .toUpperCase();
 
-  if (src && !failed) {
+  if (!src || failed) {
     return (
-      <img
-        src={src}
-        alt={name}
-        title={name}
-        onError={() =>
-          setFailed(true)
-        }
+      <div
         style={{
           width: size,
           height: size,
-          objectFit: "contain",
-          borderRadius: "14px",
-          background: "#111",
-          border:
-            "1px solid rgba(212,175,55,.45)",
-          padding: "5px",
+          minWidth: size,
+          borderRadius: 12,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg,#1c1c1c,#080808)",
+          border: "1px solid rgba(255,215,0,.3)",
+          color: "#f2c94c",
+          fontWeight: 800,
+          fontSize: Math.max(10, size / 4),
         }}
-      />
+      >
+        {initials}
+      </div>
     );
   }
 
   return (
-    <div
+    <img
+      src={src}
+      alt={name}
+      width={size}
+      height={size}
+      onError={() => setFailed(true)}
       style={{
-        width: size,
-        height: size,
-        borderRadius: "14px",
-        background:
-          "linear-gradient(145deg,rgba(212,175,55,.3),#090909)",
-        border:
-          "1px solid rgba(212,175,55,.55)",
-        display: "grid",
-        placeItems: "center",
-        color: "#f6d66a",
-        fontWeight: 900,
-        fontSize: size * 0.25,
+        objectFit: "contain",
+        borderRadius: 12,
       }}
-    >
-      {initials}
-    </div>
+    />
   );
 }
 
@@ -655,67 +459,38 @@ function TeamLogo({
    HEADER
 ========================================================= */
 
-function GoldenBetHeader({ bets }) {
-  const [menuOpen, setMenuOpen] =
-    useState(false);
-
-  const [session, setSession] =
-    useState(null);
+function GoldenBetHeader({ bets = [] }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [headerSession, setHeaderSession] = useState(null);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    let mounted = true;
+    let active = true;
 
-    async function getSession() {
-      const { data } =
-        await supabase.auth.getSession();
-
-      if (mounted) {
-        setSession(
-          data?.session ?? null
-        );
-      }
-    }
-
-    getSession();
+    supabase.auth.getSession().then(({ data }) => {
+      if (active) setHeaderSession(data?.session || null);
+    });
 
     const {
-      data: listener,
-    } =
-      supabase.auth.onAuthStateChange(
-        (_event, newSession) => {
-          if (mounted) {
-            setSession(newSession);
-          }
-        }
-      );
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setHeaderSession(session || null);
+    });
 
     return () => {
-      mounted = false;
-      listener?.subscription?.unsubscribe();
+      active = false;
+      subscription?.unsubscribe();
     };
   }, []);
 
-  async function handleLogout() {
-    const { error } =
-      await supabase.auth.signOut();
+  if (location.pathname === "/") return null;
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    setSession(null);
+  async function logout() {
+    await supabase.auth.signOut();
     setMenuOpen(false);
-  }
-
-  /*
-    Home has its own new design.
-    Therefore the old global header is hidden only on "/".
-  */
-  if (location.pathname === "/") {
-    return null;
+    navigate("/");
   }
 
   return (
@@ -724,187 +499,195 @@ function GoldenBetHeader({ bets }) {
         position: "sticky",
         top: 0,
         zIndex: 1000,
-        background:
-          "rgba(5,5,5,.96)",
-        backdropFilter:
-          "blur(12px)",
-        borderBottom:
-          "1px solid rgba(212,175,55,.2)",
+        background: "rgba(8,8,8,.96)",
+        borderBottom: "1px solid rgba(242,201,76,.2)",
+        backdropFilter: "blur(14px)",
       }}
     >
       <div
         style={{
-          maxWidth: "1400px",
+          maxWidth: 1400,
           margin: "0 auto",
           padding: "12px 18px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          gap: "15px",
+          gap: 18,
         }}
       >
         <Link
           to="/"
           style={{
             textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
+            color: "#f2c94c",
             fontWeight: 900,
-            fontSize: "21px",
+            fontSize: 22,
+            letterSpacing: 1,
+            whiteSpace: "nowrap",
           }}
         >
-          <span>👑</span>
-          <span style={{ color: "#d4af37" }}>
-            GOLDEN
-          </span>
-          <span style={{ color: "#fff" }}>
-            BET
-          </span>
+          GOLDENBET
         </Link>
 
         <nav
-          className="goldenbet-main-nav"
           style={{
             display: "flex",
-            gap: "14px",
-            alignItems: "center",
-            flexWrap: "wrap",
+            gap: 6,
+            flex: 1,
+            overflowX: "auto",
           }}
         >
-          <Link to="/">Home</Link>
-          <Link to="/sports">Sports</Link>
-          <Link to="/live">Live</Link>
-          <Link to="/casino">Casino</Link>
-          <Link to="/live-casino">
-            Live Casino
-          </Link>
-          <Link to="/golden-games">
-            Golden Games
-          </Link>
-          <Link to="/promotions">
-            Promotions
-          </Link>
+          <HeaderLink to="/" label="Home" />
+          <HeaderLink to="/sports" label="Sports" />
+          <HeaderLink to="/live" label="Live" />
+          <HeaderLink to="/casino" label="Casino" />
+          <HeaderLink to="/live-casino" label="Live Casino" />
+          <HeaderLink to="/golden-games" label="Golden Games" />
+          <HeaderLink to="/promotions" label="Promotions" />
         </nav>
 
-        <div
+        <Link
+          to="/bet-slip"
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
+            textDecoration: "none",
+            color: "#111",
+            background: "#f2c94c",
+            padding: "9px 13px",
+            borderRadius: 10,
+            fontWeight: 800,
+            whiteSpace: "nowrap",
           }}
         >
-          <Link
-            to="/bet-slip"
-            className="btn btn-gold"
-            style={{
-              padding: "8px 12px",
-              textDecoration: "none",
-            }}
-          >
-            🧾 {bets.length}
-          </Link>
+          🎫 {bets.length}
+        </Link>
 
-          {session ? (
-            <>
-              <Link
-                to="/profile"
-                className="btn btn-outline"
-                style={{
-                  padding: "8px 12px",
-                  textDecoration: "none",
-                }}
-              >
-                👤
-              </Link>
+        {headerSession ? (
+          <>
+            <Link
+              to="/profile"
+              style={{
+                color: "#fff",
+                textDecoration: "none",
+                fontWeight: 700,
+              }}
+            >
+              Profile
+            </Link>
 
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={handleLogout}
-                style={{
-                  padding: "8px 12px",
-                }}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="btn btn-outline"
-                style={{
-                  padding: "8px 12px",
-                  textDecoration: "none",
-                }}
-              >
-                Login
-              </Link>
+            <button
+              onClick={logout}
+              style={{
+                background: "transparent",
+                color: "#f2c94c",
+                border: "1px solid rgba(242,201,76,.4)",
+                borderRadius: 9,
+                padding: "8px 12px",
+                cursor: "pointer",
+              }}
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              to="/login"
+              style={{
+                color: "#fff",
+                textDecoration: "none",
+                fontWeight: 700,
+              }}
+            >
+              Login
+            </Link>
 
-              <Link
-                to="/register"
-                className="btn btn-gold"
-                style={{
-                  padding: "8px 12px",
-                  textDecoration: "none",
-                }}
-              >
-                Register
-              </Link>
-            </>
-          )}
+            <Link
+              to="/register"
+              style={{
+                color: "#111",
+                background: "#f2c94c",
+                textDecoration: "none",
+                padding: "8px 12px",
+                borderRadius: 9,
+                fontWeight: 800,
+              }}
+            >
+              Register
+            </Link>
+          </>
+        )}
 
-          <button
-            type="button"
-            onClick={() =>
-              setMenuOpen(
-                (value) => !value
-              )
-            }
-            style={{
-              padding: "8px",
-              borderRadius: "8px",
-              background: "#111",
-              color: "#fff",
-              border:
-                "1px solid rgba(212,175,55,.3)",
-              cursor: "pointer",
-            }}
-          >
-            ☰
-          </button>
-        </div>
+        <button
+          onClick={() => setMenuOpen((value) => !value)}
+          style={{
+            display: "none",
+            background: "transparent",
+            border: 0,
+            color: "#fff",
+            fontSize: 24,
+            cursor: "pointer",
+          }}
+          className="mobile-menu-button"
+        >
+          ☰
+        </button>
       </div>
 
       {menuOpen && (
         <div
           style={{
-            padding: "12px 18px 18px",
-            borderTop:
-              "1px solid rgba(212,175,55,.15)",
-            display: "grid",
-            gap: "10px",
+            padding: 15,
+            borderTop: "1px solid rgba(255,255,255,.08)",
+            background: "#0b0b0b",
           }}
         >
-          <Link to="/">Home</Link>
-          <Link to="/sports">Sports</Link>
-          <Link to="/live">Live Sports</Link>
-          <Link to="/casino">Casino</Link>
-          <Link to="/live-casino">
-            Live Casino
-          </Link>
-          <Link to="/golden-games">
-            Golden Games
-          </Link>
-          <Link to="/promotions">
-            Promotions
-          </Link>
-          <Link to="/profile">Profile</Link>
-          <Link to="/balance">Balance</Link>
+          {[
+            ["/", "🏠 Home"],
+            ["/sports", "⚽ Sports"],
+            ["/live", "🔴 Live Sports"],
+            ["/casino", "🎰 Casino"],
+            ["/live-casino", "🎥 Live Casino"],
+            ["/golden-games", "💎 Golden Games"],
+            ["/promotions", "🎁 Promotions"],
+            ["/bet-slip", `🎫 Bet Slip (${bets.length})`],
+            ["/profile", "👤 Profile"],
+            ["/balance", "💰 Balance"],
+          ].map(([to, label]) => (
+            <Link
+              key={to}
+              to={to}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                display: "block",
+                padding: "12px 5px",
+                color: "#fff",
+                textDecoration: "none",
+                borderBottom: "1px solid rgba(255,255,255,.05)",
+              }}
+            >
+              {label}
+            </Link>
+          ))}
         </div>
       )}
     </header>
+  );
+}
+
+function HeaderLink({ to, label }) {
+  return (
+    <Link
+      to={to}
+      style={{
+        color: "#ddd",
+        textDecoration: "none",
+        padding: "8px 10px",
+        borderRadius: 8,
+        whiteSpace: "nowrap",
+        fontSize: 14,
+      }}
+    >
+      {label}
+    </Link>
   );
 }
 
@@ -913,110 +696,66 @@ function GoldenBetHeader({ bets }) {
 ========================================================= */
 
 export default function App() {
-  const [bets, setBets] =
-    useState([]);
-
-  const [session, setSession] =
-    useState(null);
-
-  const [authLoading, setAuthLoading] =
-    useState(true);
+  const [bets, setBets] = useState([]);
+  const [session, setSession] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
 
-    async function loadSession() {
-      try {
-        const { data, error } =
-          await supabase.auth.getSession();
-
-        if (error) {
-          console.error(
-            "Session error:",
-            error
-          );
-        }
-
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
         if (mounted) {
-          setSession(
-            data?.session ?? null
-          );
+          setSession(data?.session || null);
           setAuthLoading(false);
         }
-      } catch (error) {
-        console.error(
-          "Unexpected session error:",
-          error
-        );
-
-        if (mounted) {
-          setSession(null);
-          setAuthLoading(false);
-        }
-      }
-    }
-
-    loadSession();
+      })
+      .catch(() => {
+        if (mounted) setAuthLoading(false);
+      });
 
     const {
-      data: authListener,
-    } =
-      supabase.auth.onAuthStateChange(
-        (_event, newSession) => {
-          if (mounted) {
-            setSession(newSession);
-            setAuthLoading(false);
-          }
-        }
-      );
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      if (mounted) setSession(nextSession || null);
+      setAuthLoading(false);
+    });
 
     return () => {
       mounted = false;
-      authListener?.subscription?.unsubscribe();
+      subscription?.unsubscribe();
     };
   }, []);
 
   function addBet(bet) {
-    setBets((current) => {
-      const sameMarket =
-        current.find(
-          (item) =>
-            item.matchId ===
-              bet.matchId &&
-            item.marketId ===
-              bet.marketId
-        );
+    if (!bet) return;
 
-      if (sameMarket) {
-        return current.map(
-          (item) =>
-            item.matchId ===
-              bet.matchId &&
-            item.marketId ===
-              bet.marketId
-              ? bet
-              : item
+    setBets((current) => {
+      const sameSelection = current.some(
+        (item) =>
+          String(item.matchId) === String(bet.matchId) &&
+          String(item.marketId) === String(bet.marketId)
+      );
+
+      if (sameSelection) {
+        return current.map((item) =>
+          String(item.matchId) === String(bet.matchId) &&
+          String(item.marketId) === String(bet.marketId)
+            ? bet
+            : item
         );
       }
 
-      const uniqueMatchIds =
-        new Set(
-          current.map(
-            (item) =>
-              item.matchId
-          )
-        );
+      const uniqueMatches = new Set(
+        current.map((item) => String(item.matchId))
+      );
 
       if (
-        !uniqueMatchIds.has(
-          bet.matchId
-        ) &&
-        uniqueMatchIds.size >= 20
+        !uniqueMatches.has(String(bet.matchId)) &&
+        uniqueMatches.size >= 20
       ) {
-        alert(
-          "Maximum 20 matches allowed in the Bet Slip."
-        );
-
+        alert("Maximum 20 matches are allowed in one bet slip.");
         return current;
       }
 
@@ -1026,9 +765,7 @@ export default function App() {
 
   function removeBet(id) {
     setBets((current) =>
-      current.filter(
-        (item) => item.id !== id
-      )
+      current.filter((bet) => String(bet.id) !== String(id))
     );
   }
 
@@ -1038,157 +775,97 @@ export default function App() {
 
   if (authLoading) {
     return (
-      <div className="app">
-        <div className="page section">
-          <div className="empty-state">
-            <h2>
-              Loading GoldenBet...
-            </h2>
-          </div>
-        </div>
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "#070707",
+          color: "#f2c94c",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 22,
+          fontWeight: 800,
+        }}
+      >
+        GOLDENBET
       </div>
     );
   }
 
   return (
-    <div className="app">
+    <div
+      className="app"
+      style={{
+        minHeight: "100vh",
+        background: "#080808",
+        color: "#fff",
+      }}
+    >
       <GoldenBetHeader bets={bets} />
 
-      <main>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Home
-                bets={bets}
-                addBet={addBet}
-                removeBet={removeBet}
-                clearBets={clearBets}
-                session={session}
-              />
-            }
-          />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home
+              bets={bets}
+              addBet={addBet}
+              removeBet={removeBet}
+              clearBets={clearBets}
+              session={session}
+            />
+          }
+        />
 
-          <Route
-            path="/sports"
-            element={
-              <Sports
-                bets={bets}
-                addBet={addBet}
-              />
-            }
-          />
+        <Route
+          path="/sports"
+          element={<Sports bets={bets} addBet={addBet} />}
+        />
 
-          <Route
-            path="/bet-slip"
-            element={
-              <BetSlipPage
-                bets={bets}
-                removeBet={removeBet}
-                clearBets={clearBets}
-                session={session}
-              />
-            }
-          />
+        <Route
+          path="/bet-slip"
+          element={
+            <BetSlipPage
+              bets={bets}
+              removeBet={removeBet}
+              clearBets={clearBets}
+              session={session}
+            />
+          }
+        />
 
-          <Route
-            path="/match/:id"
-            element={
-              <MatchPage
-                bets={bets}
-                addBet={addBet}
-              />
-            }
-          />
+        <Route
+          path="/match/:id"
+          element={<MatchPage bets={bets} addBet={addBet} />}
+        />
 
-          <Route
-            path="/live"
-            element={<Live />}
-          />
+        <Route path="/live" element={<Live />} />
+        <Route path="/casino" element={<Casino />} />
+        <Route path="/live-casino" element={<LiveCasino />} />
+        <Route path="/golden-games" element={<GoldenGames />} />
+        <Route path="/promotions" element={<Promotions />} />
 
-          <Route
-            path="/casino"
-            element={<Casino />}
-          />
+        <Route
+          path="/login"
+          element={<Login setSession={setSession} />}
+        />
 
-          <Route
-            path="/live-casino"
-            element={<LiveCasino />}
-          />
+        <Route
+          path="/register"
+          element={<Register setSession={setSession} />}
+        />
 
-          <Route
-            path="/golden-games"
-            element={<GoldenGames />}
-          />
+        <Route path="/profile" element={<Profile session={session} />} />
+        <Route path="/balance" element={<Balance session={session} />} />
+        <Route path="/deposit" element={<Deposit session={session} />} />
+        <Route path="/withdraw" element={<Withdraw session={session} />} />
+        <Route path="/my-bets" element={<MyBets session={session} />} />
+        <Route path="/settings" element={<Settings />} />
 
-          <Route
-            path="/promotions"
-            element={<Promotions />}
-          />
+        <Route path="/super-admin" element={<AdminDashboard />} />
 
-          <Route
-            path="/login"
-            element={<Login />}
-          />
-
-          <Route
-            path="/register"
-            element={<Register />}
-          />
-
-          <Route
-            path="/profile"
-            element={
-              <Profile session={session} />
-            }
-          />
-
-          <Route
-            path="/balance"
-            element={
-              <Balance session={session} />
-            }
-          />
-
-          <Route
-            path="/deposit"
-            element={
-              <Deposit session={session} />
-            }
-          />
-
-          <Route
-            path="/withdraw"
-            element={
-              <Withdraw session={session} />
-            }
-          />
-
-          <Route
-            path="/my-bets"
-            element={
-              <MyBets session={session} />
-            }
-          />
-
-          <Route
-            path="/settings"
-            element={<Settings />}
-          />
-
-          <Route
-            path="/super-admin"
-            element={
-              <AdminDashboard />
-            }
-          />
-
-          <Route
-            path="*"
-            element={<NotFound />}
-          />
-        </Routes>
-      </main>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
 
       <Footer />
     </div>
@@ -1196,1240 +873,359 @@ export default function App() {
 }
 
 /* =========================================================
-   NEW GOLDENBET HOME
+   HOME
 ========================================================= */
 
-function Home({ session }) {
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background:
-          "radial-gradient(circle at top,#19140a 0%,#080808 38%,#030303 100%)",
-        color: "#fff",
-        paddingBottom: "105px",
-      }}
-    >
-      {/* TOP BAR */}
-
-      <div
-        style={{
-          width: "100%",
-          padding:
-            "18px 16px 14px",
-          display: "grid",
-          gridTemplateColumns:
-            "1fr auto 1fr",
-          alignItems: "center",
-          gap: "10px",
-          position: "relative",
-          zIndex: 10,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent:
-              "flex-start",
-          }}
-        >
-          <Link
-            to="/profile"
-            style={{
-              width: "45px",
-              height: "45px",
-              borderRadius: "14px",
-              display: "grid",
-              placeItems: "center",
-              textDecoration: "none",
-              color: "#fff",
-              fontSize: "21px",
-              background:
-                "linear-gradient(145deg,#1c1c1c,#0b0b0b)",
-              border:
-                "1px solid rgba(212,175,55,.4)",
-              boxShadow:
-                "0 5px 25px rgba(0,0,0,.45)",
-            }}
-          >
-            👤
-          </Link>
-        </div>
-
-        <Link
-          to="/"
-          style={{
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent:
-              "center",
-            gap: "3px",
-            whiteSpace:
-              "nowrap",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "24px",
-              marginRight: "2px",
-            }}
-          >
-            👑
-          </span>
-
-          <span
-            style={{
-              color: "#e1b93e",
-              fontSize: "24px",
-              fontWeight: 1000,
-              letterSpacing: "1px",
-            }}
-          >
-            GOLDEN
-          </span>
-
-          <span
-            style={{
-              color: "#fff",
-              fontSize: "24px",
-              fontWeight: 1000,
-              letterSpacing: "1px",
-            }}
-          >
-            BET
-          </span>
-        </Link>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent:
-              "flex-end",
-          }}
-        >
-          <Link
-            to="/register"
-            style={{
-              textDecoration: "none",
-              color: "#050505",
-              fontWeight: 900,
-              fontSize: "12px",
-              padding:
-                "11px 13px",
-              borderRadius: "12px",
-              background:
-                "linear-gradient(135deg,#ffe89a,#d4af37)",
-              boxShadow:
-                "0 7px 24px rgba(212,175,55,.18)",
-              whiteSpace:
-                "nowrap",
-            }}
-          >
-            Register
-          </Link>
-        </div>
-      </div>
-
-      {/* WELCOME TEXT */}
-
-      <div
-        style={{
-          textAlign: "center",
-          padding:
-            "8px 18px 18px",
-        }}
-      >
-        <div
-          style={{
-            display: "inline-block",
-            padding:
-              "6px 12px",
-            borderRadius: "30px",
-            background:
-              "rgba(212,175,55,.08)",
-            border:
-              "1px solid rgba(212,175,55,.2)",
-            color: "#d4af37",
-            fontSize: "11px",
-            fontWeight: 800,
-            letterSpacing: "1.5px",
-          }}
-        >
-          PREMIUM BETTING EXPERIENCE
-        </div>
-      </div>
-
-      {/* THREE MAIN IMAGE CARDS */}
-
-      <section
-        style={{
-          padding:
-            "0 14px 20px",
-          maxWidth: "1400px",
-          margin: "0 auto",
-        }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(3,minmax(0,1fr))",
-            gap: "10px",
-          }}
-        >
-          {/* ROULETTE */}
-
-          <Link
-            to="/casino"
-            style={{
-              position: "relative",
-              overflow: "hidden",
-              display: "block",
-              minWidth: 0,
-              aspectRatio:
-                "1 / 1.22",
-              borderRadius: "18px",
-              textDecoration:
-                "none",
-              background:
-                "linear-gradient(145deg,#1c1407,#090909)",
-              border:
-                "1px solid rgba(212,175,55,.4)",
-              boxShadow:
-                "0 12px 35px rgba(0,0,0,.55)",
-            }}
-          >
-            <img
-              src="/roulette.jpg"
-              alt="Roulette"
-              onError={(e) => {
-                e.currentTarget.style.display =
-                  "none";
-              }}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(180deg,transparent 35%,rgba(0,0,0,.9) 100%)",
-              }}
-            />
-
-            <div
-              style={{
-                position: "absolute",
-                left: "10px",
-                right: "10px",
-                bottom: "10px",
-                color: "#fff",
-                fontWeight: 900,
-                fontSize: "13px",
-              }}
-            >
-              🎰 Roulette
-            </div>
-          </Link>
-
-          {/* GOLDENBET */}
-
-          <Link
-            to="/golden-games"
-            style={{
-              position: "relative",
-              overflow: "hidden",
-              display: "block",
-              minWidth: 0,
-              aspectRatio:
-                "1 / 1.22",
-              borderRadius: "18px",
-              textDecoration:
-                "none",
-              background:
-                "linear-gradient(145deg,#241b08,#090909)",
-              border:
-                "1px solid rgba(212,175,55,.55)",
-              boxShadow:
-                "0 12px 40px rgba(212,175,55,.12)",
-            }}
-          >
-            <img
-              src="/goldenbet.jpg"
-              alt="GoldenBet"
-              onError={(e) => {
-                e.currentTarget.style.display =
-                  "none";
-              }}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(180deg,transparent 30%,rgba(0,0,0,.92) 100%)",
-              }}
-            />
-
-            <div
-              style={{
-                position: "absolute",
-                left: "10px",
-                right: "10px",
-                bottom: "10px",
-                color: "#d4af37",
-                fontWeight: 1000,
-                fontSize: "13px",
-              }}
-            >
-              👑 GoldenBet
-            </div>
-          </Link>
-
-          {/* FOOTBALL */}
-
-          <Link
-            to="/sports"
-            style={{
-              position: "relative",
-              overflow: "hidden",
-              display: "block",
-              minWidth: 0,
-              aspectRatio:
-                "1 / 1.22",
-              borderRadius: "18px",
-              textDecoration:
-                "none",
-              background:
-                "linear-gradient(145deg,#07150a,#090909)",
-              border:
-                "1px solid rgba(212,175,55,.4)",
-              boxShadow:
-                "0 12px 35px rgba(0,0,0,.55)",
-            }}
-          >
-            <img
-              src="/football.jpg"
-              alt="Football"
-              onError={(e) => {
-                e.currentTarget.style.display =
-                  "none";
-              }}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(180deg,transparent 35%,rgba(0,0,0,.92) 100%)",
-              }}
-            />
-
-            <div
-              style={{
-                position: "absolute",
-                left: "10px",
-                right: "10px",
-                bottom: "10px",
-                color: "#fff",
-                fontWeight: 900,
-                fontSize: "13px",
-              }}
-            >
-              ⚽ Football
-            </div>
-          </Link>
-        </div>
-      </section>
-
-      {/* QUICK ACCESS */}
-
-      <section
-        style={{
-          padding:
-            "4px 14px 22px",
-          maxWidth: "900px",
-          margin: "0 auto",
-        }}
-      >
-        <div
-          style={{
-            fontSize: "13px",
-            fontWeight: 900,
-            marginBottom: "12px",
-            color: "#d4af37",
-          }}
-        >
-          QUICK ACCESS
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(4,minmax(0,1fr))",
-            gap: "8px",
-          }}
-        >
-          <HomeQuickButton
-            to="/sports"
-            icon="⚽"
-            title="Sports"
-          />
-
-          <HomeQuickButton
-            to="/bet-slip"
-            icon="🎫"
-            title="Coupons"
-            count={bets?.length || 0}
-          />
-
-          <HomeQuickButton
-            to="/golden-games"
-            icon="🎮"
-            title="Golden Games"
-          />
-
-          <HomeQuickButton
-            to="/casino"
-            icon="🎰"
-            title="Casino"
-          />
-        </div>
-      </section>
-
-      {/* LOGIN PROMO */}
-
-      {!session && (
-        <section
-          style={{
-            margin:
-              "0 14px 25px",
-            padding:
-              "18px",
-            borderRadius: "18px",
-            background:
-              "linear-gradient(135deg,#171207,#0b0b0b)",
-            border:
-              "1px solid rgba(212,175,55,.25)",
-            textAlign: "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "22px",
-              marginBottom: "7px",
-            }}
-          >
-            👑
-          </div>
-
-          <h3
-            style={{
-              margin:
-                "0 0 5px",
-            }}
-          >
-            Join GoldenBet
-          </h3>
-
-          <p
-            style={{
-              margin:
-                "0 0 13px",
-              opacity: 0.7,
-              fontSize: "13px",
-            }}
-          >
-            Create your account and
-            start your GoldenBet
-            experience.
-          </p>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent:
-                "center",
-              gap: "8px",
-            }}
-          >
-            <Link
-              to="/register"
-              className="btn btn-gold"
-            >
-              Register
-            </Link>
-
-            <Link
-              to="/login"
-              className="btn btn-outline"
-            >
-              Login
-            </Link>
-          </div>
-        </section>
-      )}
-
-      {/* MOBILE BOTTOM NAV */}
-
-      <div
-        style={{
-          position: "fixed",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 2000,
-          padding:
-            "8px 10px calc(8px + env(safe-area-inset-bottom))",
-          background:
-            "rgba(4,4,4,.97)",
-          backdropFilter:
-            "blur(18px)",
-          borderTop:
-            "1px solid rgba(212,175,55,.25)",
-          boxShadow:
-            "0 -8px 30px rgba(0,0,0,.45)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "650px",
-            margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(4,1fr)",
-            gap: "5px",
-          }}
-        >
-          <HomeBottomButton
-            to="/sports"
-            icon="⚽"
-            title="Sports"
-          />
-
-          <HomeBottomButton
-            to="/bet-slip"
-            icon="🎫"
-            title="Coupons"
-            count={bets?.length || 0}
-          />
-
-          <HomeBottomButton
-            to="/golden-games"
-            icon="🎮"
-            title="Golden Games"
-          />
-
-          <HomeBottomButton
-            to="/casino"
-            icon="🎰"
-            title="Casino"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function HomeQuickButton({
-  to,
-  icon,
-  title,
-  count,
-}) {
-  return (
-    <Link
-      to={to}
-      style={{
-        minWidth: 0,
-        minHeight: "85px",
-        padding: "8px 4px",
-        borderRadius: "15px",
-        background:
-          "linear-gradient(145deg,#161616,#090909)",
-        border:
-          "1px solid rgba(212,175,55,.22)",
-        textDecoration: "none",
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "6px",
-        position: "relative",
-      }}
-    >
-      <span
-        style={{
-          fontSize: "26px",
-        }}
-      >
-        {icon}
-      </span>
-
-      <span
-        style={{
-          fontSize: "11px",
-          fontWeight: 800,
-          textAlign: "center",
-          lineHeight: 1.2,
-        }}
-      >
-        {title}
-      </span>
-
-      {count > 0 && (
-        <span
-          style={{
-            position: "absolute",
-            top: "6px",
-            right: "7px",
-            minWidth: "18px",
-            height: "18px",
-            borderRadius: "50%",
-            display: "grid",
-            placeItems: "center",
-            background: "#d4af37",
-            color: "#050505",
-            fontSize: "10px",
-            fontWeight: 900,
-          }}
-        >
-          {count}
-        </span>
-      )}
-    </Link>
-  );
-}
-
-function HomeBottomButton({
-  to,
-  icon,
-  title,
-  count,
-}) {
-  return (
-    <Link
-      to={to}
-      style={{
-        color: "#fff",
-        textDecoration: "none",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "2px",
-        minHeight: "50px",
-        position: "relative",
-        fontSize: "10px",
-        fontWeight: 800,
-      }}
-    >
-      <span
-        style={{
-          fontSize: "21px",
-        }}
-      >
-        {icon}
-      </span>
-
-      <span>{title}</span>
-
-      {count > 0 && (
-        <span
-          style={{
-            position: "absolute",
-            top: "-1px",
-            right: "17%",
-            minWidth: "16px",
-            height: "16px",
-            borderRadius: "50%",
-            background: "#d4af37",
-            color: "#050505",
-            display: "grid",
-            placeItems: "center",
-            fontSize: "9px",
-            fontWeight: 900,
-          }}
-        >
-          {count}
-        </span>
-      )}
-    </Link>
-  );
-}
-
-/* =========================================================
-   BET SLIP PAGE
-========================================================= */
-
-function BetSlipPage({
-  bets,
+function Home({
+  bets = [],
+  addBet,
   removeBet,
   clearBets,
   session,
 }) {
   return (
-    <div className="page section">
-      <div className="page-heading">
-        <span className="section-kicker">
-          GOLDENBET
-        </span>
-
-        <h1>🧾 Bet Slip</h1>
-
-        <p>
-          Review your selections,
-          choose your stake and place
-          your bet.
-        </p>
-      </div>
-
-      <div
-        style={{
-          maxWidth: "850px",
-          margin: "0 auto",
-        }}
-      >
-        <BetSlip
-          bets={bets}
-          removeBet={removeBet}
-          clearBets={clearBets}
-          session={session}
-        />
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================
-   MATCH CARD
-========================================================= */
-
-function MatchCard({
-  match,
-  bets,
-  addBet,
-}) {
-  const selectedBets =
-    bets.filter(
-      (bet) =>
-        bet.matchId === match.id
-    );
-
-  const combinedOdds =
-    selectedBets.length
-      ? selectedBets
-          .reduce(
-            (total, bet) =>
-              total *
-              Number(bet.odds),
-            1
-          )
-          .toFixed(2)
-      : "0.00";
-
-  return (
-    <div
-      className={`match-card ${
-        selectedBets.length
-          ? "has-bet-builder"
-          : ""
-      }`}
+    <main
+      style={{
+        minHeight: "calc(100vh - 60px)",
+        background:
+          "radial-gradient(circle at top, rgba(242,201,76,.16), transparent 30%), #050505",
+        paddingBottom: 90,
+      }}
     >
-      <div className="match-top">
-        <span>
-          {match.country &&
-            `${match.country} • `}
-          {match.league}
-        </span>
-
-        <span>
-          {match.date} • {match.time}
-        </span>
-      </div>
-
-      <div
-        className="match-teams"
+      <section
         style={{
-          display: "grid",
-          gridTemplateColumns:
-            "1fr auto 1fr",
-          alignItems: "center",
-          gap: "12px",
-          textAlign: "center",
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: "45px 18px 20px",
         }}
       >
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
+            justifyContent: "space-between",
             alignItems: "center",
-            gap: "8px",
+            gap: 20,
+            flexWrap: "wrap",
           }}
         >
-          <TeamLogo
-            name={match.home}
-            code={match.homeCode}
-            size={50}
-          />
+          <div>
+            <div
+              style={{
+                color: "#f2c94c",
+                fontWeight: 900,
+                fontSize: 13,
+                letterSpacing: 3,
+              }}
+            >
+              PREMIUM BETTING
+            </div>
 
-          <strong>{match.home}</strong>
+            <h1
+              style={{
+                margin: "10px 0 8px",
+                fontSize: "clamp(34px,6vw,70px)",
+                lineHeight: 1,
+                fontWeight: 950,
+              }}
+            >
+              GOLDEN<span style={{ color: "#f2c94c" }}>BET</span>
+            </h1>
+
+            <p
+              style={{
+                color: "#aaa",
+                maxWidth: 620,
+                lineHeight: 1.7,
+                margin: 0,
+              }}
+            >
+              Sports betting, live matches, casino and Golden Games in one
+              place.
+            </p>
+          </div>
+
+          <div
+            style={{
+              border: "1px solid rgba(242,201,76,.3)",
+              borderRadius: 18,
+              padding: 18,
+              background: "rgba(255,255,255,.035)",
+              minWidth: 180,
+            }}
+          >
+            <div style={{ fontSize: 28 }}>👑</div>
+            <strong style={{ color: "#f2c94c" }}>GOLDEN VIP</strong>
+            <div style={{ color: "#aaa", marginTop: 5, fontSize: 13 }}>
+              Premium experience
+            </div>
+          </div>
         </div>
 
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+            gap: 15,
+            marginTop: 35,
+          }}
+        >
+          <HomeImageCard
+            image="/roulette.jpg"
+            title="Casino"
+            text="Explore casino games"
+            to="/casino"
+          />
+
+          <HomeImageCard
+            image="/goldenbet.jpg"
+            title="Golden Games"
+            text="Play Golden exclusive games"
+            to="/golden-games"
+          />
+
+          <HomeImageCard
+            image="/football.jpg"
+            title="Sports"
+            text="Bet on today's matches"
+            to="/sports"
+          />
+        </div>
+
+        <section style={{ marginTop: 35 }}>
+          <h2 style={{ marginBottom: 15 }}>Quick Access</h2>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4,minmax(0,1fr))",
+              gap: 12,
+            }}
+          >
+            <HomeQuickButton to="/sports" icon="⚽" label="Sports" />
+            <HomeQuickButton
+              to="/bet-slip"
+              icon="🎫"
+              label="Coupons"
+              count={bets.length}
+            />
+            <HomeQuickButton
+              to="/golden-games"
+              icon="💎"
+              label="Golden Games"
+            />
+            <HomeQuickButton to="/casino" icon="🎰" label="Casino" />
+          </div>
+        </section>
+
+        {!session && (
+          <section
+            style={{
+              marginTop: 35,
+              padding: 25,
+              borderRadius: 18,
+              background:
+                "linear-gradient(135deg,rgba(242,201,76,.18),rgba(255,255,255,.03))",
+              border: "1px solid rgba(242,201,76,.25)",
+              textAlign: "center",
+            }}
+          >
+            <div style={{ fontSize: 32 }}>👑</div>
+            <h2>Join GoldenBet</h2>
+            <p style={{ color: "#aaa" }}>
+              Create your account and start using GoldenBet.
+            </p>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 10,
+                flexWrap: "wrap",
+              }}
+            >
+              <Link className="btn btn-primary" to="/register">
+                Register
+              </Link>
+
+              <Link className="btn" to="/login">
+                Login
+              </Link>
+            </div>
+          </section>
+        )}
+      </section>
+
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 900,
+          background: "rgba(8,8,8,.97)",
+          borderTop: "1px solid rgba(242,201,76,.2)",
+          display: "grid",
+          gridTemplateColumns: "repeat(4,1fr)",
+          padding: "8px 5px",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        <HomeBottomButton to="/sports" icon="⚽" label="Sports" />
+        <HomeBottomButton
+          to="/bet-slip"
+          icon="🎫"
+          label="Coupons"
+          count={bets.length}
+        />
+        <HomeBottomButton
+          to="/golden-games"
+          icon="💎"
+          label="Golden"
+        />
+        <HomeBottomButton to="/casino" icon="🎰" label="Casino" />
+      </div>
+    </main>
+  );
+}
+
+function HomeImageCard({ image, title, text, to }) {
+  return (
+    <Link
+      to={to}
+      style={{
+        minHeight: 220,
+        borderRadius: 20,
+        overflow: "hidden",
+        position: "relative",
+        textDecoration: "none",
+        color: "#fff",
+        border: "1px solid rgba(255,255,255,.08)",
+        background: "#111",
+        display: "flex",
+        alignItems: "flex-end",
+      }}
+    >
+      <img
+        src={image}
+        alt={title}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          opacity: 0.65,
+        }}
+        onError={(event) => {
+          event.currentTarget.style.display = "none";
+        }}
+      />
+
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          width: "100%",
+          padding: 20,
+          background:
+            "linear-gradient(transparent,rgba(0,0,0,.95))",
+        }}
+      >
+        <div
+          style={{
+            color: "#f2c94c",
+            fontWeight: 900,
+            fontSize: 21,
+          }}
+        >
+          {title}
+        </div>
+
+        <div style={{ color: "#ddd", marginTop: 5 }}>{text}</div>
+      </div>
+    </Link>
+  );
+}
+
+function HomeQuickButton({ to, icon, label, count }) {
+  return (
+    <Link
+      to={to}
+      style={{
+        textDecoration: "none",
+        color: "#fff",
+        padding: 18,
+        borderRadius: 15,
+        background: "rgba(255,255,255,.045)",
+        border: "1px solid rgba(255,255,255,.07)",
+        textAlign: "center",
+        position: "relative",
+      }}
+    >
+      <div style={{ fontSize: 25 }}>{icon}</div>
+      <div style={{ marginTop: 7, fontWeight: 800 }}>{label}</div>
+
+      {count > 0 && (
         <span
           style={{
+            position: "absolute",
+            top: 7,
+            right: 7,
+            background: "#f2c94c",
+            color: "#111",
+            minWidth: 22,
+            height: 22,
+            borderRadius: 50,
+            display: "grid",
+            placeItems: "center",
+            fontSize: 12,
             fontWeight: 900,
-            color: "#d4af37",
           }}
         >
-          VS
+          {count}
         </span>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "8px",
-          }}
-        >
-          <TeamLogo
-            name={match.away}
-            code={match.awayCode}
-            size={50}
-          />
-
-          <strong>{match.away}</strong>
-        </div>
-      </div>
-
-      <div className="match-markets-preview">
-        {marketGroups?.[0] ? (
-          <MarketGroup
-            group={marketGroups[0]}
-            match={match}
-            bets={bets}
-            addBet={addBet}
-            compact
-          />
-        ) : (
-          <div className="empty-state">
-            Market data unavailable.
-          </div>
-        )}
-      </div>
-
-      {selectedBets.length > 0 && (
-        <div
-          style={{
-            marginTop: "14px",
-            padding: "12px",
-            borderRadius: "10px",
-            background: "#111",
-            border:
-              "1px solid rgba(212,175,55,.35)",
-          }}
-        >
-          <strong>
-            🎯 Bet Builder
-          </strong>
-
-          {selectedBets.map(
-            (bet) => {
-              const status =
-                getSelectionStatus(
-                  bet
-                );
-
-              return (
-                <div
-                  key={bet.id}
-                  style={{
-                    padding: "7px 0",
-                    borderTop:
-                      "1px solid rgba(255,255,255,.08)",
-                    color:
-                      getStatusColor(
-                        status
-                      ),
-                  }}
-                >
-                  {getStatusIcon(
-                    status
-                  )}{" "}
-                  <strong>
-                    {
-                      bet.marketTitle
-                    }
-                  </strong>
-                  {" — "}
-                  {bet.selection}
-                  <span
-                    style={{
-                      marginLeft: "6px",
-                    }}
-                  >
-                    @ {bet.odds}
-                  </span>
-                </div>
-              );
-            }
-          )}
-
-          <div
-            style={{
-              marginTop: "10px",
-              paddingTop: "8px",
-              borderTop:
-                "1px solid rgba(255,255,255,.08)",
-              display: "flex",
-              justifyContent:
-                "space-between",
-            }}
-          >
-            <span>
-              Combined Odds
-            </span>
-
-            <strong>
-              {combinedOdds}
-            </strong>
-          </div>
-        </div>
       )}
-
-      <Link
-        to={`/match/${match.id}`}
-        className="view-all-markets"
-      >
-        {selectedBets.length > 0
-          ? `✓ ${selectedBets.length} selected — View all markets`
-          : "View all markets →"}
-      </Link>
-    </div>
+    </Link>
   );
 }
 
-/* =========================================================
-   MATCH PAGE
-========================================================= */
-
-function MatchPage({
-  bets,
-  addBet,
-}) {
-  const { id } = useParams();
-
-  const match =
-    matches.find(
-      (item) =>
-        item.id === Number(id)
-    ) || null;
-
-  if (!match) {
-    return (
-      <div className="page section">
-        <div className="empty-state">
-          <h2>Match not found.</h2>
-
-          <Link
-            to="/sports"
-            className="btn btn-gold"
-          >
-            Back to Sports
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const selectedBets =
-    bets.filter(
-      (bet) =>
-        bet.matchId === match.id
-    );
-
+function HomeBottomButton({ to, icon, label, count }) {
   return (
-    <div className="page section">
-      <div className="match-detail-header">
-        <Link
-          to="/sports"
-          className="back-link"
-        >
-          ← Back to Sports
-        </Link>
-
-        <div className="match-detail-league">
-          {match.country} •{" "}
-          {match.league}
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "25px",
-            flexWrap: "wrap",
-            margin: "20px 0",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "8px",
-            }}
-          >
-            <TeamLogo
-              name={match.home}
-              code={match.homeCode}
-              size={72}
-            />
-
-            <h2>{match.home}</h2>
-          </div>
-
-          <div
-            style={{
-              color: "#d4af37",
-              fontSize: "22px",
-              fontWeight: 900,
-            }}
-          >
-            VS
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "8px",
-            }}
-          >
-            <TeamLogo
-              name={match.away}
-              code={match.awayCode}
-              size={72}
-            />
-
-            <h2>{match.away}</h2>
-          </div>
-        </div>
-
-        <div className="match-detail-time">
-          📅 {match.date}
-          <span> • </span>
-          ⏰ {match.time}
-        </div>
-
-        {selectedBets.length > 0 && (
-          <div className="selected-count">
-            🎯 {selectedBets.length}{" "}
-            selections in Bet Builder
-          </div>
-        )}
-      </div>
-
-      <div className="markets-container">
-        {(marketGroups || []).map(
-          (group) => (
-            <MarketGroup
-              key={group.id}
-              group={group}
-              match={match}
-              bets={bets}
-              addBet={addBet}
-            />
-          )
-        )}
-      </div>
-
-      <div className="mobile-bet-slip-link">
-        <Link
-          to="/bet-slip"
-          className="btn btn-gold"
-        >
-          🧾 Open Bet Slip
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================
-   MARKET GROUP
-========================================================= */
-
-function MarketGroup({
-  group,
-  match,
-  bets,
-  addBet,
-  compact = false,
-}) {
-  if (!group?.markets) {
-    return null;
-  }
-
-  return (
-    <div
-      className={`market-group ${
-        compact
-          ? "compact-market"
-          : ""
-      }`}
+    <Link
+      to={to}
+      style={{
+        position: "relative",
+        color: "#ddd",
+        textDecoration: "none",
+        textAlign: "center",
+        fontSize: 12,
+        padding: 4,
+      }}
     >
-      <div className="market-group-title">
-        <h3>{group.title}</h3>
-      </div>
+      <div style={{ fontSize: 20 }}>{icon}</div>
+      <div>{label}</div>
 
-      {group.markets.map(
-        (market) => (
-          <Market
-            key={market.id}
-            market={market}
-            group={group}
-            match={match}
-            bets={bets}
-            addBet={addBet}
-          />
-        )
+      {count > 0 && (
+        <span
+          style={{
+            position: "absolute",
+            top: 0,
+            right: "20%",
+            background: "#f2c94c",
+            color: "#111",
+            borderRadius: 50,
+            minWidth: 18,
+            height: 18,
+            display: "grid",
+            placeItems: "center",
+            fontSize: 10,
+            fontWeight: 900,
+          }}
+        >
+          {count}
+        </span>
       )}
-    </div>
-  );
-}
-
-/* =========================================================
-   MARKET
-========================================================= */
-
-function Market({
-  market,
-  group,
-  match,
-  bets,
-  addBet,
-}) {
-  const selected = (
-    selectionKey
-  ) =>
-    bets.some(
-      (bet) =>
-        bet.matchId === match.id &&
-        bet.marketId === market.id &&
-        bet.selectionKey ===
-          selectionKey
-    );
-
-  function selectMarket(
-    selection
-  ) {
-    const odds = Number(
-      selection.odds
-    );
-
-    if (
-      !Number.isFinite(odds) ||
-      odds <= 0
-    ) {
-      alert(
-        "Invalid market odds."
-      );
-      return;
-    }
-
-    addBet({
-      id: `${match.id}-${market.id}-${selection.key}`,
-      matchId: match.id,
-      match:
-        `${match.home} vs ${match.away}`,
-      home: match.home,
-      away: match.away,
-      homeCode: match.homeCode,
-      awayCode: match.awayCode,
-      league: match.league,
-      country: match.country,
-      time: match.time,
-      date: match.date,
-      groupId: group.id,
-      groupTitle: group.title,
-      marketId: market.id,
-      marketTitle: market.title,
-      selectionKey: selection.key,
-      selection: selection.name,
-      label: selection.label,
-      odds,
-      result: "pending",
-    });
-  }
-
-  if (!market?.selections) {
-    return null;
-  }
-
-  return (
-    <div className="market">
-      <div className="market-title">
-        {market.title}
-      </div>
-
-      <div className="market-selections">
-        {market.selections.map(
-          (selection) => (
-            <button
-              key={selection.key}
-              type="button"
-              className={`market-selection ${
-                selected(
-                  selection.key
-                )
-                  ? "selected"
-                  : ""
-              }`}
-              onClick={() =>
-                selectMarket(
-                  selection
-                )
-              }
-            >
-              <span>
-                {selection.label}
-              </span>
-
-              <strong>
-                {selection.odds}
-              </strong>
-            </button>
-          )
-        )}
-      </div>
-    </div>
+    </Link>
   );
 }
 
@@ -2437,167 +1233,84 @@ function Market({
    BET SLIP
 ========================================================= */
 
-function BetSlip({
-  bets,
+function BetSlipPage({
+  bets = [],
   removeBet,
   clearBets,
   session,
 }) {
-  const [stake, setStake] =
-    useState("");
+  return (
+    <main className="page">
+      <div className="page-container">
+        <BetSlip
+          bets={bets}
+          removeBet={removeBet}
+          clearBets={clearBets}
+          session={session}
+        />
+      </div>
+    </main>
+  );
+}
 
-  const [placing, setPlacing] =
-    useState(false);
+function BetSlip({
+  bets = [],
+  removeBet,
+  clearBets,
+  session,
+}) {
+  const [stake, setStake] = useState("");
+  const [placing, setPlacing] = useState(false);
 
-  const groupedBets =
-    useMemo(() => {
-      const groups = [];
+  const groupedBets = useMemo(() => {
+    const groups = new Map();
 
-      bets.forEach((bet) => {
-        let group =
-          groups.find(
-            (item) =>
-              item.matchId ===
-              bet.matchId
-          );
+    for (const bet of bets) {
+      const key = String(bet.matchId);
 
-        if (!group) {
-          const match =
-            matches.find(
-              (m) =>
-                m.id ===
-                bet.matchId
-            );
-
-          group = {
-            matchId:
-              bet.matchId,
-            match:
-              bet.match ||
-              `${bet.home} vs ${bet.away}`,
-            home:
-              bet.home ||
-              match?.home ||
-              "",
-            away:
-              bet.away ||
-              match?.away ||
-              "",
-            homeCode:
-              bet.homeCode ||
-              match?.homeCode,
-            awayCode:
-              bet.awayCode ||
-              match?.awayCode,
-            league:
-              bet.league ||
-              match?.league ||
-              "",
-            country:
-              bet.country ||
-              match?.country ||
-              "",
-            time:
-              bet.time ||
-              match?.time ||
-              "",
-            date:
-              bet.date ||
-              match?.date ||
-              "",
-            selections: [],
-          };
-
-          groups.push(group);
-        }
-
-        group.selections.push(bet);
-      });
-
-      return groups;
-    }, [bets]);
-
-  const matchOdds =
-    useMemo(() => {
-      return groupedBets.map(
-        (group) => {
-          const odds =
-            group.selections.reduce(
-              (total, bet) => {
-                const value =
-                  Number(
-                    bet.odds
-                  );
-
-                return Number.isFinite(
-                  value
-                ) && value > 0
-                  ? total * value
-                  : total;
-              },
-              1
-            );
-
-          return {
-            ...group,
-            combinedOdds:
-              odds.toFixed(2),
-          };
-        }
-      );
-    }, [groupedBets]);
-
-  const totalOdds =
-    useMemo(() => {
-      if (!matchOdds.length) {
-        return "0.00";
+      if (!groups.has(key)) {
+        groups.set(key, {
+          matchId: bet.matchId,
+          match: bet.match,
+          league: bet.league,
+          time: bet.time,
+          selections: [],
+        });
       }
 
-      const value =
-        matchOdds.reduce(
-          (total, group) =>
-            total *
-            Number(
-              group.combinedOdds
-            ),
-          1
-        );
+      groups.get(key).selections.push(bet);
+    }
 
-      return value.toFixed(2);
-    }, [matchOdds]);
+    return Array.from(groups.values());
+  }, [bets]);
 
-  const stakeNumber =
-    Number(stake);
+  const matchGroups = groupedBets.map((group) => ({
+    ...group,
+    combinedOdds: group.selections.reduce(
+      (total, bet) => total * safeOdds(bet.odds),
+      1
+    ),
+  }));
 
+  const totalOdds = matchGroups.reduce(
+    (total, group) => total * group.combinedOdds,
+    1
+  );
+
+  const stakeNumber = Number(stake);
   const potentialReturn =
-    Number.isFinite(
-      stakeNumber
-    ) &&
-    stakeNumber > 0
-      ? (
-          stakeNumber *
-          Number(totalOdds)
-        ).toFixed(2)
-      : "0.00";
+    Number.isFinite(stakeNumber) && stakeNumber > 0
+      ? stakeNumber * totalOdds
+      : 0;
 
   async function placeBet() {
     if (!bets.length) {
-      alert(
-        "Please select at least one market."
-      );
+      alert("Your bet slip is empty.");
       return;
     }
 
-    if (
-      !stake ||
-      !Number.isFinite(
-        stakeNumber
-      ) ||
-      stakeNumber <= 0
-    ) {
-      alert(
-        "Please enter a valid stake."
-      );
+    if (!Number.isFinite(stakeNumber) || stakeNumber <= 0) {
+      alert("Please enter a valid stake.");
       return;
     }
 
@@ -2609,317 +1322,710 @@ function BetSlip({
     setPlacing(true);
 
     try {
-      const matchNames =
-        groupedBets
-          .map(
-            (group) =>
-              group.match
-          )
-          .join(" | ");
+      const matchNames = groupedBets
+        .map((group) => group.match)
+        .join(" | ");
 
-      const {
-        error,
-      } = await supabase
-        .from("bets")
-        .insert({
-          user_id:
-            session.user.id,
-          match_name:
-            matchNames,
-          stake:
-            stakeNumber,
-          total_odds:
-            Number(totalOdds),
-          potential_win:
-            Number(potentialReturn),
-          status: "pending",
-        });
+      const { error } = await supabase.from("bets").insert({
+        user_id: session.user.id,
+        match_name: matchNames,
+        stake: stakeNumber,
+        total_odds: Number(totalOdds),
+        potential_win: Number(potentialReturn),
+        status: "pending",
+      });
 
       if (error) {
-        alert(
-          `Bet failed: ${error.message}`
-        );
-        return;
+        throw error;
       }
 
-      alert(
-        `Bet placed successfully!\n\nTotal Odds: ${totalOdds}\nStake: ${stakeNumber.toLocaleString()} IQD\nPotential Return: ${Number(
-          potentialReturn
-        ).toLocaleString()} IQD`
-      );
+      alert("Bet placed successfully.");
 
       setStake("");
       clearBets();
     } catch (error) {
       console.error(error);
-
-      alert(
-        "Something went wrong while placing the bet."
-      );
+      alert(error?.message || "Could not place bet.");
     } finally {
       setPlacing(false);
     }
   }
 
   return (
-    <aside className="bet-slip">
-      <div className="bet-slip-header">
+    <section>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 10,
+          flexWrap: "wrap",
+          marginBottom: 20,
+        }}
+      >
         <div>
-          <h3>🧾 Bet Slip</h3>
-
-          <span>
-            {groupedBets.length}/20 Matches
-          </span>
+          <h1 style={{ marginBottom: 5 }}>Bet Slip</h1>
+          <div style={{ color: "#999" }}>
+            {bets.length} selection{bets.length === 1 ? "" : "s"}
+          </div>
         </div>
 
         {bets.length > 0 && (
-          <button
-            type="button"
-            className="clear-bets"
-            onClick={clearBets}
-          >
-            Clear
+          <button className="btn" onClick={clearBets}>
+            Clear All
           </button>
         )}
       </div>
 
       {!bets.length ? (
-        <div className="empty-bets">
-          <div className="empty-icon">
-            🧾
-          </div>
-
-          <h4>
-            Your bet slip is empty
-          </h4>
-
-          <p>
-            Choose markets from a match.
-          </p>
-
-          <Link
-            to="/sports"
-            className="btn btn-gold"
-            style={{
-              marginTop: "15px",
-              display: "inline-flex",
-            }}
-          >
-            ⚽ Browse Sports
+        <div className="empty-state">
+          <div style={{ fontSize: 50 }}>🎫</div>
+          <h2>Your bet slip is empty</h2>
+          <p>Select odds from the sports section.</p>
+          <Link className="btn btn-primary" to="/sports">
+            Browse Sports
           </Link>
         </div>
       ) : (
-        <>
-          <div className="bet-list">
-            {matchOdds.map(
-              (group, index) => (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "minmax(0,1fr) 330px",
+            gap: 20,
+          }}
+        >
+          <div>
+            {matchGroups.map((group) => (
+              <div className="card" key={group.matchId}>
                 <div
-                  className="bet-match-group"
-                  key={
-                    group.matchId
-                  }
                   style={{
-                    marginBottom:
-                      "14px",
-                    padding:
-                      "12px",
-                    borderRadius:
-                      "12px",
-                    background:
-                      "#111",
-                    border:
-                      "1px solid rgba(212,175,55,.25)",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: 10,
+                    marginBottom: 12,
                   }}
                 >
-                  <strong
-                    style={{
-                      color:
-                        "#d4af37",
-                    }}
-                  >
-                    {index + 1}.{" "}
-                    {group.home} vs{" "}
-                    {group.away}
-                  </strong>
-
-                  {group.selections.map(
-                    (bet) => {
-                      const status =
-                        getSelectionStatus(
-                          bet
-                        );
-
-                      return (
-                        <div
-                          className="bet-item"
-                          key={
-                            bet.id
-                          }
-                          style={{
-                            marginTop:
-                              "8px",
-                          }}
-                        >
-                          <div className="bet-info">
-                            <span
-                              style={{
-                                color:
-                                  getStatusColor(
-                                    status
-                                  ),
-                              }}
-                            >
-                              {getStatusIcon(
-                                status
-                              )}{" "}
-                              <strong>
-                                {
-                                  bet.marketTitle
-                                }
-                              </strong>
-                            </span>
-
-                            <span>
-                              {
-                                bet.selection
-                              }
-                            </span>
-
-                            <b>
-                              @{" "}
-                              {bet.odds}
-                            </b>
-                          </div>
-
-                          <button
-                            type="button"
-                            className="remove-bet"
-                            onClick={() =>
-                              removeBet(
-                                bet.id
-                              )
-                            }
-                          >
-                            ×
-                          </button>
-                        </div>
-                      );
-                    }
-                  )}
+                  <div>
+                    <strong>{group.match}</strong>
+                    <div style={{ color: "#888", fontSize: 12 }}>
+                      {group.league} • {group.time}
+                    </div>
+                  </div>
 
                   <div
                     style={{
-                      marginTop:
-                        "10px",
-                      paddingTop:
-                        "8px",
-                      borderTop:
-                        "1px solid rgba(255,255,255,.1)",
-                      display:
-                        "flex",
-                      justifyContent:
-                        "space-between",
+                      color: "#f2c94c",
+                      fontWeight: 900,
                     }}
                   >
-                    <span>
-                      Combined Odds
-                    </span>
-
-                    <strong>
-                      {
-                        group.combinedOdds
-                      }
-                    </strong>
+                    {group.combinedOdds.toFixed(2)}
                   </div>
                 </div>
-              )
-            )}
+
+                {group.selections.map((bet) => (
+                  <div
+                    key={bet.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "10px 0",
+                      borderTop: "1px solid rgba(255,255,255,.06)",
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 700 }}>
+                        {bet.marketTitle}
+                      </div>
+
+                      <div style={{ color: "#aaa", fontSize: 13 }}>
+                        {bet.selection}
+                        {bet.label ? ` — ${bet.label}` : ""}
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                      }}
+                    >
+                      <strong style={{ color: "#f2c94c" }}>
+                        {safeOdds(bet.odds).toFixed(2)}
+                      </strong>
+
+                      <button
+                        onClick={() => removeBet(bet.id)}
+                        style={{
+                          border: 0,
+                          background: "rgba(255,77,79,.12)",
+                          color: "#ff6464",
+                          borderRadius: 7,
+                          padding: "5px 8px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
 
-          <div className="bet-summary">
-            <div>
+          <div
+            className="card"
+            style={{
+              height: "fit-content",
+              position: "sticky",
+              top: 90,
+            }}
+          >
+            <h2 style={{ marginTop: 0 }}>Bet Summary</h2>
+
+            <div className="summary-row">
               <span>Matches</span>
-              <strong>
-                {groupedBets.length}
+              <strong>{matchGroups.length}</strong>
+            </div>
+
+            <div className="summary-row">
+              <span>Total selections</span>
+              <strong>{bets.length}</strong>
+            </div>
+
+            <div className="summary-row">
+              <span>Total odds</span>
+              <strong style={{ color: "#f2c94c" }}>
+                {totalOdds.toFixed(2)}
               </strong>
             </div>
 
-            <div>
-              <span>Selections</span>
-              <strong>
-                {bets.length}
-              </strong>
-            </div>
+            <label style={{ display: "block", marginTop: 20 }}>
+              <span style={{ display: "block", marginBottom: 7 }}>
+                Stake
+              </span>
 
-            <div>
-              <span>Total Odds</span>
-              <strong>
-                {totalOdds}
-              </strong>
-            </div>
-          </div>
-
-          <div className="stake-box">
-            <label htmlFor="stake">
-              Stake
+              <input
+                className="input"
+                type="number"
+                min="0"
+                step="any"
+                value={stake}
+                onChange={(event) => setStake(event.target.value)}
+                placeholder="Enter stake"
+              />
             </label>
 
-            <input
-              id="stake"
-              type="number"
-              min="0"
-              step="0.01"
-              value={stake}
-              onChange={(e) =>
-                setStake(
-                  e.target.value
-                )
-              }
-              placeholder="0"
-            />
-          </div>
+            <div className="summary-row" style={{ marginTop: 15 }}>
+              <span>Potential Win</span>
+              <strong style={{ color: "#35d06f", fontSize: 20 }}>
+                {potentialReturn.toFixed(2)}
+              </strong>
+            </div>
 
-          <div className="return-box">
-            <span>
-              Potential Return
-            </span>
-
-            <strong>
-              {Number(
-                potentialReturn
-              ).toLocaleString()}{" "}
-              IQD
-            </strong>
-          </div>
-
-          <button
-            type="button"
-            className="place-bet-btn"
-            onClick={placeBet}
-            disabled={placing}
-          >
-            {placing
-              ? "Placing Bet..."
-              : "Place Bet"}
-          </button>
-
-          {!session && (
-            <p
+            <button
+              className="btn btn-primary"
+              onClick={placeBet}
+              disabled={placing}
               style={{
-                marginTop: "10px",
-                textAlign: "center",
+                width: "100%",
+                marginTop: 18,
+                opacity: placing ? 0.6 : 1,
               }}
             >
-              Please{" "}
-              <Link to="/login">
-                login
-              </Link>{" "}
-              before placing a bet.
-            </p>
-          )}
-        </>
+              {placing ? "Placing..." : "Place Bet"}
+            </button>
+
+            {!session && (
+              <div
+                style={{
+                  marginTop: 12,
+                  color: "#aaa",
+                  fontSize: 13,
+                  textAlign: "center",
+                }}
+              >
+                Login is required before placing a bet.
+              </div>
+            )}
+          </div>
+        </div>
       )}
-    </aside>
+    </section>
+  );
+}
+
+/* =========================================================
+   MATCH CARD
+========================================================= */
+
+function MatchCard({ match, bets = [], addBet }) {
+  const selectedForMatch = bets.filter(
+    (bet) => String(bet.matchId) === String(match.id)
+  );
+
+  const combinedOdds = selectedForMatch.reduce(
+    (total, bet) => total * safeOdds(bet.odds),
+    1
+  );
+
+  return (
+    <div className="match-card">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 10,
+          color: "#999",
+          fontSize: 12,
+          marginBottom: 15,
+        }}
+      >
+        <span>
+          {match.country} • {match.league}
+        </span>
+
+        <span>{match.time}</span>
+      </div>
+
+      <Link
+        to={`/match/${match.id}`}
+        style={{
+          color: "#fff",
+          textDecoration: "none",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            alignItems: "center",
+            gap: 15,
+          }}
+        >
+          <TeamSide
+            name={match.home}
+            code={match.homeCode}
+            align="right"
+          />
+
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: "50%",
+              background: "rgba(242,201,76,.12)",
+              display: "grid",
+              placeItems: "center",
+              color: "#f2c94c",
+              fontWeight: 900,
+            }}
+          >
+            VS
+          </div>
+
+          <TeamSide
+            name={match.away}
+            code={match.awayCode}
+            align="left"
+          />
+        </div>
+      </Link>
+
+      {marketGroups?.[0] && (
+        <div style={{ marginTop: 18 }}>
+          <MarketGroup
+            group={marketGroups[0]}
+            match={match}
+            addBet={addBet}
+            bets={bets}
+            compact
+          />
+        </div>
+      )}
+
+      {selectedForMatch.length > 0 && (
+        <div
+          style={{
+            marginTop: 14,
+            padding: 12,
+            borderRadius: 10,
+            background: "rgba(242,201,76,.08)",
+            border: "1px solid rgba(242,201,76,.18)",
+          }}
+        >
+          <div
+            style={{
+              color: "#f2c94c",
+              fontWeight: 800,
+              marginBottom: 7,
+            }}
+          >
+            Bet Builder
+          </div>
+
+          {selectedForMatch.map((bet) => (
+            <div
+              key={bet.id}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 10,
+                fontSize: 13,
+                padding: "4px 0",
+              }}
+            >
+              <span>{bet.selection}</span>
+              <strong>{safeOdds(bet.odds).toFixed(2)}</strong>
+            </div>
+          ))}
+
+          <div
+            style={{
+              borderTop: "1px solid rgba(255,255,255,.07)",
+              marginTop: 8,
+              paddingTop: 8,
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <span>Combined</span>
+            <strong style={{ color: "#f2c94c" }}>
+              {combinedOdds.toFixed(2)}
+            </strong>
+          </div>
+        </div>
+      )}
+
+      <Link
+        to={`/match/${match.id}`}
+        className="btn"
+        style={{
+          display: "block",
+          textAlign: "center",
+          marginTop: 15,
+        }}
+      >
+        View All Markets
+      </Link>
+    </div>
+  );
+}
+
+function TeamSide({ name, code, align }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: align === "right" ? "flex-end" : "flex-start",
+        gap: 10,
+        textAlign: align,
+      }}
+    >
+      {align === "right" && (
+        <strong style={{ fontSize: 14 }}>{name}</strong>
+      )}
+
+      <TeamLogo name={name} code={code} size={42} />
+
+      {align === "left" && (
+        <strong style={{ fontSize: 14 }}>{name}</strong>
+      )}
+    </div>
+  );
+}
+
+/* =========================================================
+   MATCH PAGE
+========================================================= */
+
+function MatchPage({ bets = [], addBet }) {
+  const { id } = useParams();
+
+  const match = matches.find(
+    (item) => String(item.id) === String(id)
+  );
+
+  if (!match) {
+    return <NotFound />;
+  }
+
+  const selectedCount = bets.filter(
+    (bet) => String(bet.matchId) === String(match.id)
+  ).length;
+
+  return (
+    <main className="page">
+      <div className="page-container">
+        <Link to="/sports" className="back-link">
+          ← Back to Sports
+        </Link>
+
+        <section className="card" style={{ marginTop: 15 }}>
+          <div
+            style={{
+              textAlign: "center",
+              color: "#999",
+              fontSize: 13,
+            }}
+          >
+            {match.country} • {match.league} • {match.date} • {match.time}
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr auto 1fr",
+              alignItems: "center",
+              gap: 20,
+              marginTop: 25,
+            }}
+          >
+            <TeamSide
+              name={match.home}
+              code={match.homeCode}
+              align="right"
+            />
+
+            <div
+              style={{
+                textAlign: "center",
+                color: "#f2c94c",
+                fontWeight: 900,
+              }}
+            >
+              VS
+              <div
+                style={{
+                  marginTop: 5,
+                  fontSize: 11,
+                  color: "#777",
+                }}
+              >
+                {selectedCount} selected
+              </div>
+            </div>
+
+            <TeamSide
+              name={match.away}
+              code={match.awayCode}
+              align="left"
+            />
+          </div>
+        </section>
+
+        <div style={{ marginTop: 20 }}>
+          {Array.isArray(marketGroups) &&
+            marketGroups.map((group) => (
+              <MarketGroup
+                key={group.id}
+                group={group}
+                match={match}
+                bets={bets}
+                addBet={addBet}
+              />
+            ))}
+        </div>
+
+        <Link
+          to="/bet-slip"
+          className="btn btn-primary"
+          style={{
+            display: "block",
+            textAlign: "center",
+            marginTop: 20,
+          }}
+        >
+          🎫 Open Bet Slip ({bets.length})
+        </Link>
+      </div>
+    </main>
+  );
+}
+
+/* =========================================================
+   MARKETS
+========================================================= */
+
+function MarketGroup({
+  group,
+  match,
+  bets = [],
+  addBet,
+  compact = false,
+}) {
+  if (!group) return null;
+
+  const markets = Array.isArray(group.markets)
+    ? group.markets
+    : [];
+
+  return (
+    <div
+      className="market-group"
+      style={{
+        marginBottom: compact ? 10 : 18,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 10,
+          marginBottom: 10,
+        }}
+      >
+        <h3 style={{ margin: 0 }}>{group.title}</h3>
+
+        {!compact && (
+          <span style={{ color: "#777", fontSize: 12 }}>
+            {markets.length} markets
+          </span>
+        )}
+      </div>
+
+      {markets.map((market) => (
+        <Market
+          key={market.id}
+          market={market}
+          group={group}
+          match={match}
+          bets={bets}
+          addBet={addBet}
+          compact={compact}
+        />
+      ))}
+    </div>
+  );
+}
+
+function Market({
+  market,
+  group,
+  match,
+  bets = [],
+  addBet,
+  compact = false,
+}) {
+  if (!market) return null;
+
+  const selections = Array.isArray(market.selections)
+    ? market.selections
+    : [];
+
+  return (
+    <div
+      className="market-card"
+      style={{
+        marginBottom: 10,
+        padding: compact ? 8 : 12,
+      }}
+    >
+      <div
+        style={{
+          color: "#aaa",
+          fontSize: 12,
+          marginBottom: 8,
+        }}
+      >
+        {market.title}
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            selections.length > 3
+              ? "repeat(2,minmax(0,1fr))"
+              : `repeat(${Math.max(
+                  selections.length,
+                  1
+                )},minmax(0,1fr))`,
+          gap: 7,
+        }}
+      >
+        {selections.map((selection) => {
+          const existing = bets.find(
+            (bet) =>
+              String(bet.matchId) === String(match.id) &&
+              String(bet.marketId) === String(market.id) &&
+              String(bet.selectionKey) ===
+                String(selection.key)
+          );
+
+          const odds = safeOdds(selection.odds);
+
+          const bet = {
+            id: `${match.id}-${market.id}-${selection.key}`,
+            matchId: match.id,
+            match: `${match.home} vs ${match.away}`,
+            home: match.home,
+            away: match.away,
+            homeCode: match.homeCode,
+            awayCode: match.awayCode,
+            league: match.league,
+            country: match.country,
+            time: match.time,
+            date: match.date,
+            groupId: group.id,
+            groupTitle: group.title,
+            marketId: market.id,
+            marketTitle: market.title,
+            selectionKey: selection.key,
+            selection: selection.name,
+            label: selection.label,
+            odds,
+            result: "pending",
+          };
+
+          return (
+            <button
+              key={selection.key}
+              onClick={() => addBet?.(bet)}
+              style={{
+                border: existing
+                  ? "1px solid #f2c94c"
+                  : "1px solid rgba(255,255,255,.08)",
+                background: existing
+                  ? "rgba(242,201,76,.16)"
+                  : "rgba(255,255,255,.035)",
+                color: "#fff",
+                borderRadius: 8,
+                padding: compact ? "8px 6px" : "10px 7px",
+                cursor: "pointer",
+                minWidth: 0,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 12,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {selection.name}
+              </div>
+
+              <strong
+                style={{
+                  color: "#f2c94c",
+                  display: "block",
+                  marginTop: 3,
+                }}
+              >
+                {odds.toFixed(2)}
+              </strong>
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -2927,376 +2033,176 @@ function BetSlip({
    SPORTS
 ========================================================= */
 
-function Sports({
-  bets,
-  addBet,
-}) {
-  const [sport, setSport] =
-    useState("Football");
+function Sports({ bets = [], addBet }) {
+  const [sport, setSport] = useState("Football");
+  const [country, setCountry] = useState("All");
+  const [league, setLeague] = useState("All");
+  const [search, setSearch] = useState("");
 
-  const [country, setCountry] =
-    useState(null);
+  const leagues = useMemo(() => {
+    if (country === "All") {
+      return sportsCountries.flatMap((item) => item.leagues);
+    }
 
-  const [league, setLeague] =
-    useState(null);
-
-  const [search, setSearch] =
-    useState("");
-
-  const countryData =
-    sportsCountries.find(
-      (item) =>
-        item.name === country
+    return (
+      sportsCountries.find((item) => item.name === country)
+        ?.leagues || []
     );
+  }, [country]);
 
-  const visibleMatches =
-    matches.filter((match) => {
-      if (
-        sport !== "Football"
-      ) {
-        return false;
-      }
+  const filteredMatches = useMemo(() => {
+    if (sport !== "Football") return [];
 
-      if (
-        country &&
-        match.country !==
-          country
-      ) {
-        return false;
-      }
+    return matches.filter((match) => {
+      const countryMatch =
+        country === "All" || match.country === country;
 
-      if (
-        league &&
-        match.league !==
-          league
-      ) {
-        return false;
-      }
+      const leagueMatch =
+        league === "All" || match.league === league;
 
-      if (
-        search &&
-        !`${match.home} ${match.away} ${match.league} ${match.country}`
-          .toLowerCase()
-          .includes(
-            search.toLowerCase()
-          )
-      ) {
-        return false;
-      }
+      const query = search.trim().toLowerCase();
 
-      return true;
+      const searchMatch =
+        !query ||
+        match.home.toLowerCase().includes(query) ||
+        match.away.toLowerCase().includes(query) ||
+        match.league.toLowerCase().includes(query) ||
+        match.country.toLowerCase().includes(query);
+
+      return countryMatch && leagueMatch && searchMatch;
     });
+  }, [sport, country, league, search]);
+
+  function changeCountry(value) {
+    setCountry(value);
+    setLeague("All");
+  }
 
   return (
-    <div className="page section sports-page">
-      <div className="page-heading">
-        <span className="section-kicker">
-          GOLDENBET SPORTS
-        </span>
-
-        <h1>⚽ Sports</h1>
-
-        <p>
-          Select sport, country,
-          league and match.
-        </p>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          gap: "10px",
-          flexWrap: "wrap",
-          marginBottom: "20px",
-        }}
-      >
-        <Link
-          to="/live"
-          className="btn btn-gold"
-        >
-          🔴 Live Sports
-        </Link>
-
-        <input
-          type="search"
-          value={search}
-          onChange={(e) =>
-            setSearch(
-              e.target.value
-            )
-          }
-          placeholder="🔎 Search teams..."
-          style={{
-            flex: 1,
-            minWidth: "220px",
-          }}
-        />
-      </div>
-
-      <div
-        className="sports-layout"
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "220px 1fr",
-          gap: "20px",
-        }}
-      >
-        <aside
-          className="sports-sidebar"
-          style={{
-            padding: "16px",
-            borderRadius: "14px",
-            background: "#101010",
-            border:
-              "1px solid rgba(212,175,55,.2)",
-            height: "fit-content",
-          }}
-        >
-          <div
-            style={{
-              fontWeight: 700,
-              marginBottom: "12px",
-            }}
-          >
-            🏆 Sports
+    <main className="page">
+      <div className="page-container">
+        <div className="page-heading">
+          <div>
+            <h1>Sports</h1>
+            <p>Choose a sport and start building your bet.</p>
           </div>
 
-          {sports.map(
-            (item) => (
-              <button
-                type="button"
-                key={item}
-                onClick={() => {
-                  setSport(item);
-                  setCountry(null);
-                  setLeague(null);
-                }}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  marginBottom: "6px",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                }}
-              >
-                ⚽ {item}
-              </button>
-            )
-          )}
-        </aside>
-
-        <div>
-          {sport !==
-          "Football" ? (
-            <div className="sports-panel">
-              <div className="empty-state">
-                <h2>{sport}</h2>
-                <p>
-                  League and match
-                  data can be connected
-                  to a live sports API.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div
-                className="sports-panel"
-                style={{
-                  padding: "18px",
-                  borderRadius: "14px",
-                  background: "#101010",
-                  border:
-                    "1px solid rgba(212,175,55,.2)",
-                  marginBottom: "20px",
-                }}
-              >
-                <h2>
-                  🌍 Countries
-                </h2>
-
-                <div
-                  className="country-grid"
-                  style={{
-                    display:
-                      "grid",
-                    gridTemplateColumns:
-                      "repeat(auto-fill,minmax(150px,1fr))",
-                    gap: "10px",
-                  }}
-                >
-                  {sportsCountries.map(
-                    (item) => (
-                      <button
-                        type="button"
-                        key={
-                          item.name
-                        }
-                        onClick={() => {
-                          setCountry(
-                            item.name
-                          );
-                          setLeague(
-                            null
-                          );
-                        }}
-                        style={{
-                          padding:
-                            "14px",
-                          borderRadius:
-                            "10px",
-                          cursor:
-                            "pointer",
-                          textAlign:
-                            "left",
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize:
-                              "24px",
-                          }}
-                        >
-                          {
-                            item.flag
-                          }
-                        </span>
-
-                        <strong>
-                          {
-                            item.name
-                          }
-                        </strong>
-
-                        <small
-                          style={{
-                            display:
-                              "block",
-                            opacity:
-                              ".7",
-                          }}
-                        >
-                          {
-                            item
-                              .leagues
-                              .length
-                          }{" "}
-                          leagues
-                        </small>
-                      </button>
-                    )
-                  )}
-                </div>
-              </div>
-
-              {country && (
-                <div
-                  className="sports-panel"
-                  style={{
-                    padding:
-                      "18px",
-                    borderRadius:
-                      "14px",
-                    background:
-                      "#101010",
-                    border:
-                      "1px solid rgba(212,175,55,.2)",
-                    marginBottom:
-                      "20px",
-                  }}
-                >
-                  <h2>
-                    🏆 Leagues
-                  </h2>
-
-                  <div
-                    style={{
-                      display:
-                        "grid",
-                      gridTemplateColumns:
-                        "repeat(auto-fill,minmax(180px,1fr))",
-                      gap: "10px",
-                    }}
-                  >
-                    {countryData?.leagues.map(
-                      (item) => (
-                        <button
-                          type="button"
-                          key={
-                            item
-                          }
-                          onClick={() =>
-                            setLeague(
-                              item
-                            )
-                          }
-                          style={{
-                            padding:
-                              "13px",
-                            borderRadius:
-                              "10px",
-                            cursor:
-                              "pointer",
-                            textAlign:
-                              "left",
-                          }}
-                        >
-                          🏆{" "}
-                          {item}
-                        </button>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-
-              <div
-                className="sports-panel"
-                style={{
-                  padding: "18px",
-                  borderRadius: "14px",
-                  background: "#101010",
-                  border:
-                    "1px solid rgba(212,175,55,.2)",
-                }}
-              >
-                <h2>
-                  🔥 Matches
-                </h2>
-
-                {visibleMatches.length >
-                0 ? (
-                  <div className="matches-grid">
-                    {visibleMatches.map(
-                      (match) => (
-                        <MatchCard
-                          key={
-                            match.id
-                          }
-                          match={match}
-                          bets={bets}
-                          addBet={
-                            addBet
-                          }
-                        />
-                      )
-                    )}
-                  </div>
-                ) : (
-                  <div className="empty-state">
-                    <h3>
-                      No matches yet
-                    </h3>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
+          <Link className="btn btn-primary" to="/bet-slip">
+            🎫 Bet Slip ({bets.length})
+          </Link>
         </div>
+
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            overflowX: "auto",
+            paddingBottom: 10,
+            marginBottom: 15,
+          }}
+        >
+          {sports.map((item) => (
+            <button
+              key={item}
+              className={sport === item ? "filter-active" : "filter-btn"}
+              onClick={() => setSport(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+
+        {sport === "Football" ? (
+          <>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns:
+                  "repeat(auto-fit,minmax(180px,1fr))",
+                gap: 10,
+                marginBottom: 18,
+              }}
+            >
+              <select
+                className="input"
+                value={country}
+                onChange={(event) =>
+                  changeCountry(event.target.value)
+                }
+              >
+                <option value="All">All Countries</option>
+
+                {sportsCountries.map((item) => (
+                  <option key={item.name} value={item.name}>
+                    {item.flag} {item.name}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="input"
+                value={league}
+                onChange={(event) =>
+                  setLeague(event.target.value)
+                }
+              >
+                <option value="All">All Leagues</option>
+
+                {leagues.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+
+              <input
+                className="input"
+                value={search}
+                onChange={(event) =>
+                  setSearch(event.target.value)
+                }
+                placeholder="Search team or league..."
+              />
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns:
+                  "repeat(auto-fit,minmax(300px,1fr))",
+                gap: 14,
+              }}
+            >
+              {filteredMatches.map((match) => (
+                <MatchCard
+                  key={match.id}
+                  match={match}
+                  bets={bets}
+                  addBet={addBet}
+                />
+              ))}
+            </div>
+
+            {!filteredMatches.length && (
+              <div className="empty-state">
+                <div style={{ fontSize: 40 }}>🔎</div>
+                <h3>No matches found</h3>
+                <p>Try another country, league or search.</p>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="empty-state">
+            <div style={{ fontSize: 45 }}>🏆</div>
+            <h2>{sport}</h2>
+            <p>
+              Live API markets can be connected here when the sports
+              provider is configured.
+            </p>
+          </div>
+        )}
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -3306,78 +2212,90 @@ function Sports({
 
 function Live() {
   return (
-    <div className="page section">
-      <div className="page-heading">
-        <span className="section-kicker">
-          GOLDENBET LIVE
-        </span>
+    <main className="page">
+      <div className="page-container">
+        <div className="page-heading">
+          <div>
+            <h1>🔴 Live Sports</h1>
+            <p>Live match interface.</p>
+          </div>
+        </div>
 
-        <h1>🔴 Live Sports</h1>
-
-        <p>
-          Live interface preview.
-        </p>
-      </div>
-
-      <div className="live-grid">
-        {matches
-          .slice(0, 8)
-          .map((match) => (
-            <div
-              className="live-card"
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(280px,1fr))",
+            gap: 14,
+          }}
+        >
+          {matches.slice(0, 8).map((match, index) => (
+            <Link
               key={match.id}
+              to={`/match/${match.id}`}
+              className="match-card"
+              style={{
+                textDecoration: "none",
+                color: "#fff",
+              }}
             >
-              <div className="live-badge">
-                LIVE DEMO
-              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: 15,
+                }}
+              >
+                <span
+                  style={{
+                    color: "#ff4d4f",
+                    fontWeight: 900,
+                  }}
+                >
+                  ● LIVE
+                </span>
 
-              <span>
-                {match.country} •{" "}
-                {match.league}
-              </span>
+                <span style={{ color: "#777" }}>
+                  2nd Half
+                </span>
+              </div>
 
               <div
                 style={{
                   display: "flex",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  justifyContent:
-                    "center",
-                  gap: "15px",
-                  margin: "15px 0",
                 }}
               >
-                <TeamLogo
-                  name={match.home}
-                  code={match.homeCode}
-                  size={46}
-                />
+                <strong>{match.home}</strong>
 
-                <div>
-                  <div className="live-score">
-                    1 - 0
-                  </div>
-                  <small>
-                    2nd Half
-                  </small>
-                </div>
+                <strong
+                  style={{
+                    color: "#f2c94c",
+                    fontSize: 22,
+                  }}
+                >
+                  {index % 2 === 0 ? "1 - 0" : "2 - 1"}
+                </strong>
 
-                <TeamLogo
-                  name={match.away}
-                  code={match.awayCode}
-                  size={46}
-                />
+                <strong>{match.away}</strong>
               </div>
 
-              <Link
-                to={`/match/${match.id}`}
-                className="btn btn-gold"
+              <div
+                style={{
+                  color: "#777",
+                  fontSize: 12,
+                  marginTop: 10,
+                  textAlign: "center",
+                }}
               >
-                View Markets
-              </Link>
-            </div>
+                LIVE DEMO
+              </div>
+            </Link>
           ))}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -3386,120 +2304,82 @@ function Live() {
 ========================================================= */
 
 function Casino() {
-  const [category, setCategory] =
-    useState("All Games");
+  const [category, setCategory] = useState("All Games");
 
   const games =
     category === "All Games"
       ? casinoGames
       : casinoGames.filter(
-          (game) =>
-            game.category ===
-            category
+          (game) => game.category === category
         );
 
   return (
-    <div className="page section casino-page">
-      <div
-        className="casino-hero"
-        style={{
-          padding: "30px",
-          borderRadius: "18px",
-          marginBottom: "22px",
-          background:
-            "linear-gradient(135deg,#090909,#17120a,#090909)",
-          border:
-            "1px solid rgba(212,175,55,.35)",
-        }}
-      >
-        <span className="section-kicker">
-          GOLDENBET CASINO
-        </span>
-
-        <h1>🎰 Casino</h1>
-
-        <p>
-          Roulette, Blackjack,
-          Slots, Crash, Jackpot
-          and more.
-        </p>
-
-        <div
-          style={{
-            fontSize: "55px",
-            marginTop: "15px",
-          }}
-        >
-          🎡 🃏 💰 🚀
+    <main className="page">
+      <div className="page-container">
+        <div className="page-heading">
+          <div>
+            <h1>🎰 Casino</h1>
+            <p>GoldenBet casino games.</p>
+          </div>
         </div>
 
-        <div
-          style={{
-            marginTop: "18px",
-          }}
-        >
-          <Link
-            to="/live-casino"
-            className="btn btn-outline"
-          >
-            🔴 Open Live Casino
-          </Link>
-        </div>
-      </div>
-
-      <div className="category-tabs">
-        {casinoCategories.map(
-          (item) => (
+        <div className="category-scroll">
+          {casinoCategories.map((item) => (
             <button
-              type="button"
               key={item}
               className={
                 category === item
-                  ? "active"
-                  : ""
+                  ? "filter-active"
+                  : "filter-btn"
               }
-              onClick={() =>
-                setCategory(item)
-              }
+              onClick={() => setCategory(item)}
             >
               {item}
             </button>
-          )
-        )}
+          ))}
+        </div>
+
+        <div className="game-grid">
+          {games.map((game) => (
+            <GameCard
+              key={game.name}
+              icon={game.icon}
+              name={game.name}
+              category={game.category}
+            />
+          ))}
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function GameCard({ icon, name, category }) {
+  return (
+    <div className="game-card">
+      <div className="game-icon">{icon}</div>
+
+      <h3>{name}</h3>
+
+      <div
+        style={{
+          color: "#777",
+          fontSize: 12,
+          marginBottom: 12,
+        }}
+      >
+        {category}
       </div>
 
-      <div className="games-grid">
-        {games.map((game) => (
-          <div
-            className="game-card"
-            key={game.name}
-          >
-            <div className="game-image">
-              {game.image}
-            </div>
-
-            <h3>
-              {game.name}
-            </h3>
-
-            <span>
-              {game.category}
-            </span>
-
-            <button
-              type="button"
-              className="btn btn-gold"
-              onClick={() =>
-                alert(
-                  `${game.name} is a UI demo.`
-                )
-              }
-            >
-              Play
-            </button>
-          </div>
-        ))}
-      </div>
+      <button
+        className="btn btn-primary"
+        style={{ width: "100%" }}
+        onClick={() =>
+          alert(`${name} is currently a UI demo.`)
+        }
+      >
+        Play
+      </button>
     </div>
   );
 }
@@ -3515,104 +2395,73 @@ function LiveCasino() {
   const games =
     category === "All Live Games"
       ? liveGames
-      : liveGames.filter(
-          (game) =>
-            game.provider ===
-              category ||
-            game.category ===
-              category
-        );
+      : liveGames.filter((game) => {
+          if (category.startsWith("Live ")) {
+            return game.name === category;
+          }
+
+          return game.provider === category;
+        });
 
   return (
-    <div className="page section">
-      <div
-        className="casino-hero"
-        style={{
-          padding: "30px",
-          borderRadius: "18px",
-          marginBottom: "22px",
-          background:
-            "linear-gradient(135deg,#090909,#160d0d,#090909)",
-          border:
-            "1px solid rgba(212,175,55,.35)",
-        }}
-      >
-        <span className="section-kicker">
-          GOLDENBET LIVE CASINO
-        </span>
-
-        <h1>🔴 Live Casino</h1>
-
-        <p>
-          Live Roulette, Blackjack,
-          Baccarat, Poker and Game
-          Shows.
-        </p>
-
-        <div
-          style={{
-            fontSize: "55px",
-            marginTop: "15px",
-          }}
-        >
-          🎡 🃏 💰 🎲
+    <main className="page">
+      <div className="page-container">
+        <div className="page-heading">
+          <div>
+            <h1>🎥 Live Casino</h1>
+            <p>Live casino interface.</p>
+          </div>
         </div>
-      </div>
 
-      <div className="category-tabs">
-        {liveCasinoCategories.map(
-          (item) => (
+        <div className="category-scroll">
+          {liveCasinoCategories.map((item) => (
             <button
-              type="button"
               key={item}
               className={
                 category === item
-                  ? "active"
-                  : ""
+                  ? "filter-active"
+                  : "filter-btn"
               }
-              onClick={() =>
-                setCategory(item)
-              }
+              onClick={() => setCategory(item)}
             >
               {item}
             </button>
-          )
-        )}
-      </div>
+          ))}
+        </div>
 
-      <div className="games-grid">
-        {games.map((game) => (
-          <div
-            className="game-card"
-            key={game.name}
-          >
-            <div className="game-image">
-              {game.image}
+        <div className="game-grid">
+          {games.map((game) => (
+            <div className="game-card" key={game.name}>
+              <div className="game-icon">{game.icon}</div>
+
+              <h3>{game.name}</h3>
+
+              <div
+                style={{
+                  color: "#777",
+                  fontSize: 12,
+                  marginBottom: 12,
+                }}
+              >
+                {game.provider}
+              </div>
+
+              <button
+                className="btn btn-primary"
+                style={{ width: "100%" }}
+                onClick={() =>
+                  alert(
+                    `${game.name} is currently a UI demo.`
+                  )
+                }
+              >
+                Enter
+              </button>
             </div>
-
-            <h3>
-              {game.name}
-            </h3>
-
-            <span>
-              {game.provider}
-            </span>
-
-            <button
-              type="button"
-              className="btn btn-gold"
-              onClick={() =>
-                alert(
-                  `${game.name} is a UI demo.`
-                )
-              }
-            >
-              Play Live
-            </button>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -3622,59 +2471,42 @@ function LiveCasino() {
 
 function GoldenGames() {
   return (
-    <div className="page section">
-      <div className="page-heading">
-        <span className="section-kicker">
-          GOLDENBET ORIGINALS
-        </span>
+    <main className="page">
+      <div className="page-container">
+        <div className="page-heading">
+          <div>
+            <h1>💎 Golden Games</h1>
+            <p>Exclusive GoldenBet games.</p>
+          </div>
+        </div>
 
-        <h1>
-          💎 Golden Games
-        </h1>
+        <div className="game-grid">
+          {goldenGames.map((game) => (
+            <div className="game-card" key={game.name}>
+              <div className="game-icon">{game.icon}</div>
 
-        <p>
-          GoldenBet exclusive game
-          collection.
-        </p>
-      </div>
+              <h3>{game.name}</h3>
 
-      <div className="golden-games-grid">
-        {goldenGames.map(
-          (game) => (
-            <div
-              className="golden-game-card"
-              key={game}
-            >
-              <div className="golden-icon">
-                ⭐
-              </div>
-
-              <h3>{game}</h3>
-
-              <p
-                style={{
-                  opacity: 0.7,
-                }}
-              >
-                GoldenBet Original
+              <p style={{ color: "#777", fontSize: 13 }}>
+                GoldenBet exclusive
               </p>
 
               <button
-                type="button"
-                className="btn btn-gold"
+                className="btn btn-primary"
+                style={{ width: "100%" }}
                 onClick={() =>
                   alert(
-                    `${game} is currently a UI preview.`
+                    `${game.name} preview is currently available.`
                   )
                 }
               >
                 Play
               </button>
             </div>
-          )
-        )}
+          ))}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -3684,371 +2516,259 @@ function GoldenGames() {
 
 function Promotions() {
   return (
-    <div className="page section">
-      <div className="page-heading">
-        <span className="section-kicker">
-          GOLDENBET OFFERS
-        </span>
-
-        <h1>🎁 Promotions</h1>
-      </div>
-
-      <div className="promotion-grid">
-        <div className="promotion-card">
-          <span>WELCOME</span>
-
-          <h2>
-            Welcome Bonus
-          </h2>
-
-          <p>
-            Special offer for new users.
-          </p>
-
-          <Link
-            to="/register"
-            className="btn btn-gold"
-          >
-            Register
-          </Link>
+    <main className="page">
+      <div className="page-container">
+        <div className="page-heading">
+          <div>
+            <h1>🎁 Promotions</h1>
+            <p>GoldenBet promotional offers.</p>
+          </div>
         </div>
 
-        <div className="promotion-card">
-          <span>VIP</span>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(280px,1fr))",
+            gap: 18,
+          }}
+        >
+          <div className="card">
+            <div style={{ fontSize: 40 }}>🎉</div>
+            <h2>Welcome Bonus</h2>
+            <p style={{ color: "#aaa", lineHeight: 1.7 }}>
+              Welcome promotion interface for new users.
+            </p>
+            <Link className="btn btn-primary" to="/register">
+              Register
+            </Link>
+          </div>
 
-          <h2>Golden VIP</h2>
-
-          <p>
-            Exclusive VIP benefits.
-          </p>
-
-          <Link
-            to="/register"
-            className="btn btn-gold"
-          >
-            Join VIP
-          </Link>
+          <div className="card">
+            <div style={{ fontSize: 40 }}>👑</div>
+            <h2>Golden VIP</h2>
+            <p style={{ color: "#aaa", lineHeight: 1.7 }}>
+              Premium VIP experience and special offers.
+            </p>
+            <Link className="btn btn-primary" to="/register">
+              Join Now
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
 /* =========================================================
-   LOGIN
+   AUTH
 ========================================================= */
 
 function Login() {
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
-  const [email, setEmail] =
-    useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const [password, setPassword] =
-    useState("");
-
-  const [loading, setLoading] =
-    useState(false);
-
-  const [error, setError] =
-    useState("");
-
-  async function handleLogin(e) {
-    e.preventDefault();
-
+  async function submit(event) {
+    event.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      const {
-        error: loginError,
-      } =
-        await supabase.auth.signInWithPassword(
-          {
-            email:
-              email.trim(),
-            password,
-          }
-        );
+      const { error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        });
 
-      if (loginError) {
-        setError(
-          loginError.message
-        );
-        return;
-      }
+      if (signInError) throw signInError;
 
       navigate("/");
-    } catch (error) {
-      console.error(
-        "Login error:",
-        error
-      );
-
-      setError(
-        "Unable to login right now."
-      );
+    } catch (err) {
+      setError(err?.message || "Login failed.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h1>
-          👑 GoldenBet Login
-        </h1>
+    <main className="auth-page">
+      <form className="auth-card" onSubmit={submit}>
+        <div className="auth-logo">GOLDENBET</div>
 
-        {error && (
-          <p className="auth-error">
-            {error}
-          </p>
-        )}
+        <h1>Login</h1>
 
-        <form
-          onSubmit={handleLogin}
-        >
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(
-                e.target.value
-              )
-            }
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(
-                e.target.value
-              )
-            }
-            required
-          />
-
-          <button
-            className="btn btn-gold"
-            type="submit"
-            disabled={loading}
-          >
-            {loading
-              ? "Logging in..."
-              : "Login"}
-          </button>
-        </form>
-
-        <p>
-          Don't have an account?{" "}
-          <Link to="/register">
-            Register
-          </Link>
+        <p style={{ color: "#888" }}>
+          Login to your GoldenBet account.
         </p>
-      </div>
-    </div>
+
+        {error && <div className="error-box">{error}</div>}
+
+        <input
+          className="input"
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="Email"
+          required
+        />
+
+        <input
+          className="input"
+          type="password"
+          value={password}
+          onChange={(event) =>
+            setPassword(event.target.value)
+          }
+          placeholder="Password"
+          required
+        />
+
+        <button
+          className="btn btn-primary"
+          type="submit"
+          disabled={loading}
+          style={{ width: "100%" }}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+
+        <p style={{ color: "#888", textAlign: "center" }}>
+          Don't have an account?{" "}
+          <Link to="/register">Register</Link>
+        </p>
+      </form>
+    </main>
   );
 }
 
-/* =========================================================
-   REGISTER
-========================================================= */
-
 function Register() {
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
-  const [username, setUsername] =
-    useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-  const [email, setEmail] =
-    useState("");
-
-  const [password, setPassword] =
-    useState("");
-
-  const [
-    confirmPassword,
-    setConfirmPassword,
-  ] = useState("");
-
-  const [loading, setLoading] =
-    useState(false);
-
-  const [error, setError] =
-    useState("");
-
-  const [success, setSuccess] =
-    useState("");
-
-  async function handleRegister(e) {
-    e.preventDefault();
+  async function submit(event) {
+    event.preventDefault();
 
     setError("");
-    setSuccess("");
+    setMessage("");
 
-    if (
-      password !==
-      confirmPassword
-    ) {
-      setError(
-        "Passwords do not match."
-      );
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
       return;
     }
 
-    if (password.length < 6) {
-      setError(
-        "Password must be at least 6 characters."
-      );
+    if (password !== confirm) {
+      setError("Passwords do not match.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const {
-        data,
-        error: signUpError,
-      } =
+      const { data, error: signUpError } =
         await supabase.auth.signUp({
-          email:
-            email.trim(),
+          email: email.trim(),
           password,
           options: {
             data: {
-              username:
-                username.trim(),
+              username: username.trim(),
             },
           },
         });
 
-      if (signUpError) {
-        setError(
-          signUpError.message
-        );
-        return;
-      }
+      if (signUpError) throw signUpError;
 
       if (data?.session) {
         navigate("/");
-        return;
+      } else {
+        setMessage(
+          "Registration successful. Please check your email if email confirmation is enabled."
+        );
       }
-
-      setSuccess(
-        "Registration successful. Please check your email to confirm your account."
-      );
-    } catch (error) {
-      console.error(
-        "Registration error:",
-        error
-      );
-
-      setError(
-        "Unable to create account right now."
-      );
+    } catch (err) {
+      setError(err?.message || "Registration failed.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h1>
-          👑 Create GoldenBet Account
-        </h1>
+    <main className="auth-page">
+      <form className="auth-card" onSubmit={submit}>
+        <div className="auth-logo">GOLDENBET</div>
 
-        {error && (
-          <p className="auth-error">
-            {error}
-          </p>
-        )}
+        <h1>Create Account</h1>
 
-        {success && (
-          <p className="auth-success">
-            {success}
-          </p>
-        )}
+        {error && <div className="error-box">{error}</div>}
 
-        <form
-          onSubmit={handleRegister}
+        {message && <div className="success-box">{message}</div>}
+
+        <input
+          className="input"
+          value={username}
+          onChange={(event) =>
+            setUsername(event.target.value)
+          }
+          placeholder="Username"
+          required
+        />
+
+        <input
+          className="input"
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="Email"
+          required
+        />
+
+        <input
+          className="input"
+          type="password"
+          value={password}
+          onChange={(event) =>
+            setPassword(event.target.value)
+          }
+          placeholder="Password"
+          required
+        />
+
+        <input
+          className="input"
+          type="password"
+          value={confirm}
+          onChange={(event) =>
+            setConfirm(event.target.value)
+          }
+          placeholder="Confirm Password"
+          required
+        />
+
+        <button
+          className="btn btn-primary"
+          type="submit"
+          disabled={loading}
+          style={{ width: "100%" }}
         >
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) =>
-              setUsername(
-                e.target.value
-              )
-            }
-            required
-          />
+          {loading ? "Creating..." : "Create Account"}
+        </button>
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(
-                e.target.value
-              )
-            }
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(
-                e.target.value
-              )
-            }
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={
-              confirmPassword
-            }
-            onChange={(e) =>
-              setConfirmPassword(
-                e.target.value
-              )
-            }
-            required
-          />
-
-          <button
-            className="btn btn-gold"
-            type="submit"
-            disabled={loading}
-          >
-            {loading
-              ? "Creating account..."
-              : "Register"}
-          </button>
-        </form>
-
-        <p>
+        <p style={{ color: "#888", textAlign: "center" }}>
           Already have an account?{" "}
-          <Link to="/login">
-            Login
-          </Link>
+          <Link to="/login">Login</Link>
         </p>
-      </div>
-    </div>
+      </form>
+    </main>
   );
 }
 
@@ -4056,151 +2776,134 @@ function Register() {
    PROFILE
 ========================================================= */
 
-function Profile({
-  session,
-}) {
-  const [profile, setProfile] =
-    useState(null);
-
-  const [loading, setLoading] =
-    useState(true);
+function Profile({ session }) {
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
+    if (!session?.user?.id) {
+      setLoading(false);
+      return;
+    }
+
+    let active = true;
 
     async function loadProfile() {
-      if (!session?.user?.id) {
-        if (mounted) {
-          setLoading(false);
-        }
-        return;
-      }
-
-      const {
-        data,
-        error,
-      } = await supabase
+      const { data, error } = await supabase
         .from("profiles")
-        .select(
-          "username, full_name, avatar_text, balance"
-        )
-        .eq(
-          "id",
-          session.user.id
-        )
+        .select("username, full_name, avatar_text, balance")
+        .eq("id", session.user.id)
         .maybeSingle();
 
+      if (!active) return;
+
       if (error) {
-        console.error(
-          "Profile error:",
-          error
-        );
+        console.error(error);
       }
 
-      if (mounted) {
-        setProfile(data);
-        setLoading(false);
-      }
+      setProfile(data || null);
+      setLoading(false);
     }
 
     loadProfile();
 
     return () => {
-      mounted = false;
+      active = false;
     };
   }, [session]);
 
   if (!session) {
-    return (
-      <div className="page section">
-        <div className="empty-state">
-          <h2>
-            Please login first.
-          </h2>
-
-          <Link
-            to="/login"
-            className="btn btn-gold"
-          >
-            Login
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="page section">
-        Loading profile...
-      </div>
-    );
+    return <LoginRequired />;
   }
 
   const username =
     profile?.username ||
-    session.user.user_metadata
-      ?.username ||
-    "GoldenBet User";
+    session.user.user_metadata?.username ||
+    "Golden User";
+
+  const balance = Number(profile?.balance || 0);
 
   return (
-    <div className="page section">
-      <div className="page-heading">
-        <h1>👤 Profile</h1>
-      </div>
+    <main className="page">
+      <div className="page-container">
+        <div className="profile-hero">
+          <div className="avatar">
+            {profile?.avatar_text ||
+              username.slice(0, 1).toUpperCase()}
+          </div>
 
-      <div className="profile-card">
-        <div className="profile-avatar">
-          {profile?.avatar_text ||
-            "👤"}
+          <div>
+            <h1 style={{ margin: 0 }}>{username}</h1>
+            <p style={{ color: "#888", marginBottom: 0 }}>
+              {session.user.email}
+            </p>
+          </div>
         </div>
 
-        <h2>{username}</h2>
-
-        <p>
-          {session.user.email}
-        </p>
-
-        <p>
-          Balance:{" "}
-          {Number(
-            profile?.balance || 0
-          ).toLocaleString()}{" "}
-          IQD
-        </p>
-
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            flexWrap: "wrap",
-            justifyContent:
-              "center",
-          }}
-        >
-          <Link
-            to="/balance"
-            className="btn btn-gold"
+        {loading ? (
+          <div className="empty-state">Loading profile...</div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit,minmax(220px,1fr))",
+              gap: 14,
+              marginTop: 18,
+            }}
           >
+            <div className="card">
+              <div style={{ color: "#888" }}>Balance</div>
+              <div
+                style={{
+                  fontSize: 28,
+                  color: "#f2c94c",
+                  fontWeight: 900,
+                  marginTop: 5,
+                }}
+              >
+                {balance.toFixed(2)}
+              </div>
+            </div>
+
+            <div className="card">
+              <div style={{ color: "#888" }}>Email</div>
+              <div
+                style={{
+                  fontWeight: 800,
+                  marginTop: 5,
+                  wordBreak: "break-word",
+                }}
+              >
+                {session.user.email}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="profile-links">
+          <Link to="/balance" className="card-link">
             💰 Balance
           </Link>
 
-          <Link
-            to="/my-bets"
-            className="btn btn-outline"
-          >
-            🧾 My Bets
+          <Link to="/deposit" className="card-link">
+            ➕ Deposit
           </Link>
 
-          <Link
-            to="/settings"
-            className="btn btn-outline"
-          >
+          <Link to="/withdraw" className="card-link">
+            ➖ Withdraw
+          </Link>
+
+          <Link to="/my-bets" className="card-link">
+            🎫 My Bets
+          </Link>
+
+          <Link to="/settings" className="card-link">
             ⚙️ Settings
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -4208,112 +2911,64 @@ function Profile({
    BALANCE
 ========================================================= */
 
-function Balance({
-  session,
-}) {
-  const [balance, setBalance] =
-    useState(0);
-
-  const [loading, setLoading] =
-    useState(true);
+function Balance({ session }) {
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
-    let mounted = true;
+    if (!session?.user?.id) return;
 
     async function loadBalance() {
-      if (!session?.user?.id) {
-        if (mounted) {
-          setLoading(false);
-        }
-        return;
-      }
-
-      const {
-        data,
-        error,
-      } = await supabase
+      const { data } = await supabase
         .from("profiles")
         .select("balance")
-        .eq(
-          "id",
-          session.user.id
-        )
+        .eq("id", session.user.id)
         .maybeSingle();
 
-      if (error) {
-        console.error(
-          "Balance error:",
-          error
-        );
-      }
-
-      if (mounted) {
-        setBalance(
-          Number(
-            data?.balance || 0
-          )
-        );
-
-        setLoading(false);
-      }
+      setBalance(Number(data?.balance || 0));
     }
 
     loadBalance();
-
-    return () => {
-      mounted = false;
-    };
   }, [session]);
 
   if (!session) {
-    return (
-      <div className="page section">
-        <div className="empty-state">
-          <h2>
-            Please login first.
-          </h2>
-
-          <Link
-            to="/login"
-            className="btn btn-gold"
-          >
-            Login
-          </Link>
-        </div>
-      </div>
-    );
+    return <LoginRequired />;
   }
 
   return (
-    <div className="page section">
-      <div className="balance-card">
-        <span>
-          Available Balance
-        </span>
+    <main className="page">
+      <div className="page-container">
+        <div className="card balance-card">
+          <div style={{ color: "#999" }}>Available Balance</div>
 
-        <strong>
-          {loading
-            ? "Loading..."
-            : `${balance.toLocaleString()} IQD`}
-        </strong>
-
-        <div className="balance-actions">
-          <Link
-            to="/deposit"
-            className="btn btn-gold"
+          <div
+            style={{
+              fontSize: 46,
+              fontWeight: 950,
+              color: "#f2c94c",
+              margin: "8px 0 25px",
+            }}
           >
-            Deposit
-          </Link>
+            {balance.toFixed(2)}
+          </div>
 
-          <Link
-            to="/withdraw"
-            className="btn btn-outline"
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              flexWrap: "wrap",
+            }}
           >
-            Withdraw
-          </Link>
+            <Link className="btn btn-primary" to="/deposit">
+              Deposit
+            </Link>
+
+            <Link className="btn" to="/withdraw">
+              Withdraw
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -4321,158 +2976,114 @@ function Balance({
    DEPOSIT
 ========================================================= */
 
-function Deposit({
-  session,
-}) {
+function Deposit({ session }) {
   if (!session) {
-    return (
-      <div className="page section">
-        <div className="empty-state">
-          <h2>
-            Please login first.
-          </h2>
-
-          <Link
-            to="/login"
-            className="btn btn-gold"
-          >
-            Login
-          </Link>
-        </div>
-      </div>
-    );
+    return <LoginRequired />;
   }
 
-  return <PaymentCard />;
+  return (
+    <main className="page">
+      <div className="page-container">
+        <div className="page-heading">
+          <div>
+            <h1>Deposit</h1>
+            <p>Choose your payment method.</p>
+          </div>
+        </div>
+
+        <PaymentCard />
+      </div>
+    </main>
+  );
 }
 
 /* =========================================================
    WITHDRAW
 ========================================================= */
 
-function Withdraw({
-  session,
-}) {
-  const [amount, setAmount] =
-    useState("");
+function Withdraw({ session }) {
+  const [method, setMethod] = useState("Korek");
+  const [amount, setAmount] = useState("");
 
-  const [method, setMethod] =
-    useState("Korek");
+  const methods = [
+    "Korek",
+    "Zain",
+    "Zain Cash",
+    "Asiacell",
+    "FIB",
+    "FastPay",
+  ];
 
-  if (!session) {
-    return (
-      <div className="page section">
-        <div className="empty-state">
-          <h2>
-            Please login first.
-          </h2>
+  function submit(event) {
+    event.preventDefault();
 
-          <Link
-            to="/login"
-            className="btn btn-gold"
-          >
-            Login
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  function requestWithdrawal(e) {
-    e.preventDefault();
-
-    const amountNumber =
-      Number(amount);
-
-    if (
-      !Number.isFinite(
-        amountNumber
-      ) ||
-      amountNumber <= 0
-    ) {
-      alert(
-        "Please enter a valid amount."
-      );
+    if (!amount || Number(amount) <= 0) {
+      alert("Enter a valid amount.");
       return;
     }
 
     alert(
-      `Withdrawal request prepared.\nAmount: ${amountNumber.toLocaleString()} IQD\nMethod: ${method}`
+      `Withdrawal request demo: ${amount} via ${method}.`
     );
   }
 
+  if (!session) {
+    return <LoginRequired />;
+  }
+
   return (
-    <div className="page section">
-      <div className="page-heading">
-        <h1>💸 Withdraw</h1>
+    <main className="page">
+      <div className="page-container">
+        <div className="card form-card">
+          <h1>Withdraw</h1>
 
-        <p>
-          Choose your withdrawal
-          method.
-        </p>
+          <p style={{ color: "#888" }}>
+            Withdrawal request interface.
+          </p>
+
+          <form onSubmit={submit}>
+            <label className="form-label">
+              Amount
+            </label>
+
+            <input
+              className="input"
+              type="number"
+              min="0"
+              value={amount}
+              onChange={(event) =>
+                setAmount(event.target.value)
+              }
+              placeholder="Amount"
+            />
+
+            <label className="form-label">
+              Method
+            </label>
+
+            <select
+              className="input"
+              value={method}
+              onChange={(event) =>
+                setMethod(event.target.value)
+              }
+            >
+              {methods.map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+            </select>
+
+            <button
+              className="btn btn-primary"
+              type="submit"
+              style={{ marginTop: 15 }}
+            >
+              Request Withdrawal
+            </button>
+          </form>
+        </div>
       </div>
-
-      <div className="form-card">
-        <form
-          onSubmit={
-            requestWithdrawal
-          }
-        >
-          <input
-            type="number"
-            min="1"
-            placeholder="Amount"
-            value={amount}
-            onChange={(e) =>
-              setAmount(
-                e.target.value
-              )
-            }
-            required
-          />
-
-          <select
-            value={method}
-            onChange={(e) =>
-              setMethod(
-                e.target.value
-              )
-            }
-          >
-            <option value="Korek">
-              Korek
-            </option>
-
-            <option value="Zain">
-              Zain
-            </option>
-
-            <option value="Zain Cash">
-              Zain Cash
-            </option>
-
-            <option value="Asiacell">
-              Asiacell
-            </option>
-
-            <option value="FIB">
-              FIB
-            </option>
-
-            <option value="FastPay">
-              FastPay
-            </option>
-          </select>
-
-          <button
-            className="btn btn-gold"
-            type="submit"
-          >
-            Request Withdrawal
-          </button>
-        </form>
-      </div>
-    </div>
+    </main>
   );
 }
 
@@ -4480,191 +3091,161 @@ function Withdraw({
    MY BETS
 ========================================================= */
 
-function MyBets({
-  session,
-}) {
-  const [bets, setBets] =
-    useState([]);
-
-  const [loading, setLoading] =
-    useState(true);
+function MyBets({ session }) {
+  const [bets, setBets] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
+    if (!session?.user?.id) {
+      setLoading(false);
+      return;
+    }
+
+    let active = true;
 
     async function loadBets() {
-      if (!session?.user?.id) {
-        if (mounted) {
-          setLoading(false);
-        }
-        return;
-      }
-
-      const {
-        data,
-        error,
-      } = await supabase
+      const { data, error } = await supabase
         .from("bets")
         .select(
           "id, match_name, stake, total_odds, potential_win, status, created_at"
         )
-        .eq(
-          "user_id",
-          session.user.id
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false,
-          }
-        );
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false });
+
+      if (!active) return;
 
       if (error) {
-        console.error(
-          "Bets error:",
-          error
-        );
+        console.error(error);
       }
 
-      if (mounted) {
-        setBets(data || []);
-        setLoading(false);
-      }
+      setBets(data || []);
+      setLoading(false);
     }
 
     loadBets();
 
     return () => {
-      mounted = false;
+      active = false;
     };
   }, [session]);
 
   if (!session) {
-    return (
-      <div className="page section">
-        <div className="empty-state">
-          <h2>
-            Please login first.
-          </h2>
-
-          <Link
-            to="/login"
-            className="btn btn-gold"
-          >
-            Login
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="page section">
-        Loading bets...
-      </div>
-    );
+    return <LoginRequired />;
   }
 
   return (
-    <div className="page section">
-      <div className="page-heading">
-        <h1>🧾 My Bets</h1>
-      </div>
+    <main className="page">
+      <div className="page-container">
+        <div className="page-heading">
+          <div>
+            <h1>My Bets</h1>
+            <p>Your betting history.</p>
+          </div>
+        </div>
 
-      {!bets.length ? (
-        <div className="empty-state">
+        {loading ? (
+          <div className="empty-state">Loading...</div>
+        ) : !bets.length ? (
+          <div className="empty-state">
+            <div style={{ fontSize: 45 }}>🎫</div>
+            <h2>No bets yet</h2>
+            <Link className="btn btn-primary" to="/sports">
+              Start Betting
+            </Link>
+          </div>
+        ) : (
           <div
             style={{
-              fontSize: "40px",
+              display: "grid",
+              gap: 12,
             }}
           >
-            🧾
-          </div>
+            {bets.map((bet) => {
+              const status = String(
+                bet.status || "pending"
+              ).toLowerCase();
 
-          <h3>No bets yet</h3>
+              return (
+                <div className="card" key={bet.id}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 10,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <div>
+                      <strong>{bet.match_name}</strong>
 
-          <Link
-            to="/sports"
-            className="btn btn-gold"
-          >
-            Browse Sports
-          </Link>
-        </div>
-      ) : (
-        <div className="bet-history-list">
-          {bets.map((bet) => {
-            const status =
-              bet.status ||
-              "pending";
+                      <div
+                        style={{
+                          color: "#777",
+                          fontSize: 12,
+                          marginTop: 5,
+                        }}
+                      >
+                        {bet.created_at
+                          ? new Date(
+                              bet.created_at
+                            ).toLocaleString()
+                          : ""}
+                      </div>
+                    </div>
 
-            return (
-              <div
-                className="bet-history-card"
-                key={bet.id}
-              >
-                <div>
-                  <strong>
-                    Bet #{bet.id}
-                  </strong>
-
-                  <p>
-                    {bet.match_name}
-                  </p>
-
-                  <p>
-                    Status:{" "}
-                    <strong
+                    <div
                       style={{
-                        color:
-                          getStatusColor(
-                            status
-                          ),
+                        color: getStatusColor(status),
+                        fontWeight: 900,
                       }}
                     >
-                      {status.toUpperCase()}
-                    </strong>
-                  </p>
+                      {getStatusIcon(status)} {status}
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(3,1fr)",
+                      gap: 10,
+                      marginTop: 15,
+                    }}
+                  >
+                    <div>
+                      <div className="muted">Stake</div>
+                      <strong>
+                        {Number(bet.stake || 0).toFixed(2)}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <div className="muted">Odds</div>
+                      <strong>
+                        {Number(
+                          bet.total_odds || 0
+                        ).toFixed(2)}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <div className="muted">
+                        Potential Win
+                      </div>
+                      <strong style={{ color: "#35d06f" }}>
+                        {Number(
+                          bet.potential_win || 0
+                        ).toFixed(2)}
+                      </strong>
+                    </div>
+                  </div>
                 </div>
-
-                <div>
-                  <span>Stake</span>
-
-                  <strong>
-                    {Number(
-                      bet.stake || 0
-                    ).toLocaleString()}{" "}
-                    IQD
-                  </strong>
-                </div>
-
-                <div>
-                  <span>Odds</span>
-
-                  <strong>
-                    {bet.total_odds}
-                  </strong>
-                </div>
-
-                <div>
-                  <span>
-                    Potential Win
-                  </span>
-
-                  <strong>
-                    {Number(
-                      bet.potential_win ||
-                        0
-                    ).toLocaleString()}{" "}
-                    IQD
-                  </strong>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
 
@@ -4673,61 +3254,110 @@ function MyBets({
 ========================================================= */
 
 function Settings() {
-  const [saved, setSaved] =
-    useState(false);
+  const [notifications, setNotifications] = useState(true);
+  const [darkMode, setDarkMode] = useState(true);
+  const [saved, setSaved] = useState(false);
 
-  function saveSettings() {
+  function save() {
     setSaved(true);
 
-    setTimeout(
-      () => setSaved(false),
-      2000
-    );
+    setTimeout(() => {
+      setSaved(false);
+    }, 1800);
   }
 
   return (
-    <div className="page section">
-      <div className="page-heading">
-        <h1>⚙️ Settings</h1>
-      </div>
+    <main className="page">
+      <div className="page-container">
+        <div className="card form-card">
+          <h1>Settings</h1>
 
-      <div className="settings-card">
-        <label>
-          Notifications
-          <input
-            type="checkbox"
-            defaultChecked
-          />
-        </label>
-
-        <label>
-          Dark Mode
-          <input
-            type="checkbox"
-            defaultChecked
-          />
-        </label>
-
-        <button
-          type="button"
-          className="btn btn-gold"
-          onClick={saveSettings}
-        >
-          Save Settings
-        </button>
-
-        {saved && (
-          <p
+          <label
             style={{
-              color: "#35d06f",
-              marginTop: "12px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              marginTop: 20,
             }}
           >
-            ✓ Settings saved
-          </p>
-        )}
+            <input
+              type="checkbox"
+              checked={notifications}
+              onChange={(event) =>
+                setNotifications(event.target.checked)
+              }
+            />
+            Notifications
+          </label>
+
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              marginTop: 15,
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={darkMode}
+              onChange={(event) =>
+                setDarkMode(event.target.checked)
+              }
+            />
+            Dark Mode
+          </label>
+
+          <button
+            className="btn btn-primary"
+            onClick={save}
+            style={{ marginTop: 25 }}
+          >
+            Save Settings
+          </button>
+
+          {saved && (
+            <div className="success-box" style={{ marginTop: 15 }}>
+              Settings saved.
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </main>
+  );
+}
+
+/* =========================================================
+   LOGIN REQUIRED
+========================================================= */
+
+function LoginRequired() {
+  return (
+    <main className="page">
+      <div className="page-container">
+        <div className="empty-state">
+          <div style={{ fontSize: 45 }}>🔐</div>
+          <h2>Login Required</h2>
+          <p>Please login to continue.</p>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 10,
+            }}
+          >
+            <Link className="btn btn-primary" to="/login">
+              Login
+            </Link>
+
+            <Link className="btn" to="/register">
+              Register
+            </Link>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
 
@@ -4737,22 +3367,19 @@ function Settings() {
 
 function NotFound() {
   return (
-    <div className="page section">
-      <div className="empty-state">
-        <h1>404</h1>
+    <main className="page">
+      <div className="page-container">
+        <div className="empty-state">
+          <div style={{ fontSize: 60 }}>404</div>
+          <h1>Page Not Found</h1>
+          <p>The page you requested does not exist.</p>
 
-        <p>
-          Page not found.
-        </p>
-
-        <Link
-          to="/"
-          className="btn btn-gold"
-        >
-          Go Home
-        </Link>
+          <Link className="btn btn-primary" to="/">
+            Go Home
+          </Link>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -4762,62 +3389,65 @@ function NotFound() {
 
 function Footer() {
   return (
-    <footer className="footer">
-      <div className="footer-inner">
+    <footer
+      style={{
+        background: "#050505",
+        borderTop: "1px solid rgba(255,255,255,.06)",
+        padding: "35px 18px 100px",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 20,
+          flexWrap: "wrap",
+        }}
+      >
         <div>
-          <div className="logo">
-            <span className="logo-mark">
-              👑
-            </span>
-
-            <span className="logo-gold">
-              GOLDEN
-            </span>
-
-            <span className="logo-white">
-              BET
-            </span>
+          <div
+            style={{
+              color: "#f2c94c",
+              fontWeight: 950,
+              fontSize: 22,
+            }}
+          >
+            GOLDENBET
           </div>
 
-          <p>
-            GoldenBet sports and casino
-            platform.
+          <p style={{ color: "#666", maxWidth: 400 }}>
+            GoldenBet sports, casino and entertainment platform.
           </p>
         </div>
 
-        <div className="footer-links">
-          <Link to="/sports">
-            Sports
-          </Link>
-
-          <Link to="/casino">
-            Casino
-          </Link>
-
-          <Link to="/live">
-            Live Sports
-          </Link>
-
-          <Link to="/live-casino">
-            Live Casino
-          </Link>
-
-          <Link to="/golden-games">
-            Golden Games
-          </Link>
-
-          <Link to="/my-bets">
-            My Bets
-          </Link>
-
-          <Link to="/promotions">
-            Promotions
-          </Link>
+        <div
+          style={{
+            display: "flex",
+            gap: 15,
+            flexWrap: "wrap",
+          }}
+        >
+          <Link to="/sports">Sports</Link>
+          <Link to="/casino">Casino</Link>
+          <Link to="/live-casino">Live Casino</Link>
+          <Link to="/promotions">Promotions</Link>
+          <Link to="/settings">Settings</Link>
         </div>
       </div>
 
-      <div className="footer-bottom">
-        © 2026 GoldenBet. All rights reserved.
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "25px auto 0",
+          paddingTop: 18,
+          borderTop: "1px solid rgba(255,255,255,.05)",
+          color: "#555",
+          fontSize: 12,
+        }}
+      >
+        © {new Date().getFullYear()} GoldenBet. All rights reserved.
       </div>
     </footer>
   );
