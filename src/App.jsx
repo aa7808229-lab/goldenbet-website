@@ -1,5 +1,4 @@
 import {
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -10,6 +9,7 @@ import {
   Route,
   Routes,
   useNavigate,
+  useParams,
 } from "react-router-dom";
 
 import { LanguageContext } from "./main";
@@ -17,6 +17,7 @@ import { t } from "./translations";
 import AdminDashboard from "./AdminDashboard";
 import { marketGroups } from "./markets";
 import PaymentCard from "./PaymentCard";
+import GoldenBetHeader from "./GoldenBetHeader";
 import { supabase } from "../lib/supabase";
 
 /* =========================================================
@@ -812,11 +813,8 @@ export default function App() {
 
   return (
     <div className="app">
-      <Header
-        language={language}
-        setLanguage={setLanguage}
-        session={session}
-        logout={logout}
+      <GoldenBetHeader
+        bets={bets}
       />
 
       <main>
@@ -840,6 +838,18 @@ export default function App() {
               <Sports
                 bets={bets}
                 addBet={addBet}
+              />
+            }
+          />
+
+          <Route
+            path="/bet-slip"
+            element={
+              <BetSlipPage
+                bets={bets}
+                removeBet={removeBet}
+                clearBets={clearBets}
+                session={session}
               />
             }
           />
@@ -957,179 +967,47 @@ export default function App() {
 }
 
 /* =========================================================
-   HEADER
+   BET SLIP PAGE
 ========================================================= */
 
-function Header({
-  language,
-  setLanguage,
+function BetSlipPage({
+  bets,
+  removeBet,
+  clearBets,
   session,
-  logout,
 }) {
-  const userEmail =
-    session?.user?.email || "";
-
   return (
-    <header className="header">
-      <div className="header-inner">
-        <Link
-          to="/"
-          className="logo"
-        >
-          <span className="logo-mark">
-            👑
-          </span>
+    <div className="page section">
+      <div className="page-heading">
+        <span className="section-kicker">
+          GOLDENBET
+        </span>
 
-          <span className="logo-gold">
-            GOLDEN
-          </span>
+        <h1>
+          🧾 Bet Slip
+        </h1>
 
-          <span className="logo-white">
-            BET
-          </span>
-        </Link>
-
-        <nav className="nav">
-          <Link to="/">
-            {t(language, "home")}
-          </Link>
-
-          <Link
-            to="/sports"
-            className="main-nav-tab sports-tab"
-          >
-            ⚽ Sports
-          </Link>
-
-          <Link
-            to="/casino"
-            className="main-nav-tab casino-tab"
-          >
-            🎰 Casino
-          </Link>
-
-          <Link
-            to="/live"
-            className="nav-live"
-          >
-            🔴 Live Sports
-          </Link>
-
-          <Link
-            to="/live-casino"
-            className="nav-live"
-          >
-            🔴 Live Casino
-          </Link>
-
-          <Link to="/golden-games">
-            💎 Golden Games
-          </Link>
-
-          <Link to="/promotions">
-            🎁 Promotions
-          </Link>
-        </nav>
-
-        <div className="header-actions">
-          <select
-            value={language}
-            onChange={(e) =>
-              setLanguage(
-                e.target.value
-              )
-            }
-            className="language-select"
-            aria-label="Language"
-          >
-            <option value="en">
-              English
-            </option>
-
-            <option value="ku">
-              کوردی
-            </option>
-
-            <option value="ar">
-              العربية
-            </option>
-
-            <option value="fa">
-              فارسی
-            </option>
-
-            <option value="tr">
-              Türkçe
-            </option>
-
-            <option value="es">
-              Español
-            </option>
-
-            <option value="fr">
-              Français
-            </option>
-
-            <option value="de">
-              Deutsch
-            </option>
-
-            <option value="ru">
-              Русский
-            </option>
-
-            <option value="it">
-              Italiano
-            </option>
-
-            <option value="pt">
-              Português
-            </option>
-          </select>
-
-          {session ? (
-            <>
-              <Link
-                to="/profile"
-                className="btn btn-outline profile-button"
-              >
-                👤 Profile
-              </Link>
-
-              <Link
-                to="/balance"
-                className="btn btn-outline"
-              >
-                💰 Balance
-              </Link>
-
-              <button
-                className="btn btn-gold"
-                onClick={logout}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="btn btn-outline"
-              >
-                Login
-              </Link>
-
-              <Link
-                to="/register"
-                className="btn btn-gold"
-              >
-                Register
-              </Link>
-            </>
-          )}
-        </div>
+        <p>
+          Review your selections,
+          choose your stake and place
+          your bet.
+        </p>
       </div>
-    </header>
+
+      <div
+        style={{
+          maxWidth: "850px",
+          margin: "0 auto",
+        }}
+      >
+        <BetSlip
+          bets={bets}
+          removeBet={removeBet}
+          clearBets={clearBets}
+          session={session}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -1498,16 +1376,12 @@ function MatchPage({
   bets,
   addBet,
 }) {
-  const path =
-    window.location.pathname;
-
-  const id = Number(
-    path.split("/").pop()
-  );
+  const { id } = useParams();
 
   const match =
     matches.find(
-      (item) => item.id === id
+      (item) =>
+        item.id === Number(id)
     ) || null;
 
   if (!match) {
@@ -1693,7 +1567,7 @@ function MatchPage({
 
       <div className="mobile-bet-slip-link">
         <Link
-          to="/"
+          to="/bet-slip"
           className="btn btn-gold"
         >
           🧾 Open Bet Slip
@@ -2138,6 +2012,17 @@ function BetSlip({
           <small>
             Maximum 20 matches.
           </small>
+
+          <Link
+            to="/sports"
+            className="btn btn-gold"
+            style={{
+              marginTop: "15px",
+              display: "inline-flex",
+            }}
+          >
+            ⚽ Browse Sports
+          </Link>
         </div>
       ) : (
         <>
