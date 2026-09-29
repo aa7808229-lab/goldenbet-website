@@ -19,9 +19,9 @@ import { marketGroups } from "./markets";
 import PaymentCard from "./PaymentCard";
 import { supabase } from "../lib/supabase";
 
-/* =========================
+/* =========================================================
    SPORTS
-========================= */
+========================================================= */
 
 const sports = [
   "Football",
@@ -43,8 +43,208 @@ const sports = [
   "Darts",
   "Golf",
   "Cycling",
-  "All Sports",
 ];
+
+const sportsCountries = [
+  {
+    name: "Iraq",
+    flag: "🇮🇶",
+    leagues: [
+      "Iraq Stars League",
+      "Iraq Premier League",
+      "Kurdistan Premier League",
+      "Kurdistan Regional League",
+    ],
+  },
+  {
+    name: "England",
+    flag: "🏴",
+    leagues: [
+      "Premier League",
+      "Championship",
+      "League One",
+      "League Two",
+    ],
+  },
+  {
+    name: "Spain",
+    flag: "🇪🇸",
+    leagues: [
+      "La Liga",
+      "La Liga 2",
+      "Primera RFEF",
+    ],
+  },
+  {
+    name: "Italy",
+    flag: "🇮🇹",
+    leagues: [
+      "Serie A",
+      "Serie B",
+      "Serie C",
+    ],
+  },
+  {
+    name: "Germany",
+    flag: "🇩🇪",
+    leagues: [
+      "Bundesliga",
+      "2. Bundesliga",
+      "3. Liga",
+    ],
+  },
+  {
+    name: "France",
+    flag: "🇫🇷",
+    leagues: [
+      "Ligue 1",
+      "Ligue 2",
+      "National",
+    ],
+  },
+  {
+    name: "Turkey",
+    flag: "🇹🇷",
+    leagues: [
+      "Super Lig",
+      "1. Lig",
+    ],
+  },
+  {
+    name: "Saudi Arabia",
+    flag: "🇸🇦",
+    leagues: [
+      "Saudi Pro League",
+      "Saudi First Division",
+    ],
+  },
+  {
+    name: "UAE",
+    flag: "🇦🇪",
+    leagues: [
+      "UAE Pro League",
+      "UAE First Division",
+    ],
+  },
+  {
+    name: "Qatar",
+    flag: "🇶🇦",
+    leagues: [
+      "Qatar Stars League",
+      "Qatar Second Division",
+    ],
+  },
+  {
+    name: "Netherlands",
+    flag: "🇳🇱",
+    leagues: [
+      "Eredivisie",
+      "Eerste Divisie",
+    ],
+  },
+  {
+    name: "Portugal",
+    flag: "🇵🇹",
+    leagues: [
+      "Primeira Liga",
+      "Liga Portugal 2",
+    ],
+  },
+  {
+    name: "Belgium",
+    flag: "🇧🇪",
+    leagues: [
+      "Belgian Pro League",
+      "Challenger Pro League",
+    ],
+  },
+  {
+    name: "Scotland",
+    flag: "🏴",
+    leagues: [
+      "Scottish Premiership",
+      "Scottish Championship",
+    ],
+  },
+  {
+    name: "Greece",
+    flag: "🇬🇷",
+    leagues: [
+      "Super League Greece",
+      "Super League 2",
+    ],
+  },
+  {
+    name: "USA",
+    flag: "🇺🇸",
+    leagues: [
+      "MLS",
+      "USL Championship",
+    ],
+  },
+  {
+    name: "Brazil",
+    flag: "🇧🇷",
+    leagues: [
+      "Brasileirão Serie A",
+      "Brasileirão Serie B",
+    ],
+  },
+  {
+    name: "Argentina",
+    flag: "🇦🇷",
+    leagues: [
+      "Liga Profesional",
+      "Primera Nacional",
+    ],
+  },
+  {
+    name: "Mexico",
+    flag: "🇲🇽",
+    leagues: [
+      "Liga MX",
+      "Liga de Expansion",
+    ],
+  },
+  {
+    name: "Japan",
+    flag: "🇯🇵",
+    leagues: [
+      "J1 League",
+      "J2 League",
+    ],
+  },
+  {
+    name: "South Korea",
+    flag: "🇰🇷",
+    leagues: [
+      "K League 1",
+      "K League 2",
+    ],
+  },
+  {
+    name: "Australia",
+    flag: "🇦🇺",
+    leagues: [
+      "A-League",
+    ],
+  },
+  {
+    name: "International",
+    flag: "🌍",
+    leagues: [
+      "UEFA Champions League",
+      "UEFA Europa League",
+      "UEFA Conference League",
+      "World Cup",
+      "International Friendlies",
+    ],
+  },
+];
+
+/* =========================================================
+   CASINO
+========================================================= */
 
 const casinoCategories = [
   "All Games",
@@ -94,6 +294,16 @@ const casinoGames = [
     image: "🃏",
   },
   {
+    name: "Golden Baccarat",
+    category: "Baccarat",
+    image: "♠️",
+  },
+  {
+    name: "Golden Poker",
+    category: "Poker",
+    image: "♣️",
+  },
+  {
     name: "Golden Crash",
     category: "Crash Games",
     image: "🚀",
@@ -104,9 +314,29 @@ const casinoGames = [
     image: "💰",
   },
   {
+    name: "Golden Wheel",
+    category: "Game Shows",
+    image: "🎡",
+  },
+  {
     name: "Golden Dice",
     category: "Table Games",
     image: "🎲",
+  },
+  {
+    name: "Golden Arcade",
+    category: "Arcade",
+    image: "🕹️",
+  },
+  {
+    name: "Golden Cards",
+    category: "Instant Games",
+    image: "🃏",
+  },
+  {
+    name: "Golden Mines",
+    category: "Instant Games",
+    image: "💎",
   },
 ];
 
@@ -114,32 +344,50 @@ const liveGames = [
   {
     name: "Live Roulette",
     provider: "Evolution",
+    category: "Live Roulette",
     image: "🎡",
   },
   {
     name: "Live Blackjack",
     provider: "Evolution",
+    category: "Live Blackjack",
     image: "🃏",
   },
   {
     name: "Live Baccarat",
     provider: "Ezugi",
+    category: "Live Baccarat",
     image: "♠️",
   },
   {
     name: "Live Game Show",
     provider: "Pragmatic Play Live",
+    category: "Live Game Shows",
     image: "🎤",
   },
   {
     name: "Live Dragon Tiger",
     provider: "Evolution",
+    category: "Live Dragon Tiger",
     image: "🐉",
   },
   {
     name: "Live Sic Bo",
     provider: "Ezugi",
+    category: "Live Sic Bo",
     image: "🎲",
+  },
+  {
+    name: "Live Wheel",
+    provider: "TVBet",
+    category: "Live Wheel",
+    image: "🎡",
+  },
+  {
+    name: "Live Poker",
+    provider: "Evolution",
+    category: "Live Poker",
+    image: "♣️",
   },
 ];
 
@@ -152,9 +400,9 @@ const goldenGames = [
   "Golden Jackpot",
 ];
 
-/* =========================
+/* =========================================================
    MATCHES
-========================= */
+========================================================= */
 
 const matches = [
   {
@@ -164,6 +412,7 @@ const matches = [
     time: "21:00",
     date: "Today",
     league: "La Liga",
+    country: "Spain",
   },
   {
     id: 2,
@@ -172,6 +421,7 @@ const matches = [
     time: "20:30",
     date: "Today",
     league: "Premier League",
+    country: "England",
   },
   {
     id: 3,
@@ -180,6 +430,7 @@ const matches = [
     time: "21:45",
     date: "Today",
     league: "Serie A",
+    country: "Italy",
   },
   {
     id: 4,
@@ -188,12 +439,31 @@ const matches = [
     time: "22:00",
     date: "Today",
     league: "Bundesliga",
+    country: "Germany",
+  },
+  {
+    id: 5,
+    home: "Al-Shorta",
+    away: "Al-Zawraa",
+    time: "19:30",
+    date: "Today",
+    league: "Iraq Stars League",
+    country: "Iraq",
+  },
+  {
+    id: 6,
+    home: "Duhok",
+    away: "Erbil",
+    time: "20:00",
+    date: "Today",
+    league: "Kurdistan Premier League",
+    country: "Iraq",
   },
 ];
 
-/* =========================
+/* =========================================================
    HELPERS
-========================= */
+========================================================= */
 
 function getSelectionStatus(bet) {
   return (
@@ -204,44 +474,26 @@ function getSelectionStatus(bet) {
 }
 
 function getStatusIcon(status) {
-  if (status === "won") {
-    return "🟢";
-  }
-
-  if (status === "lost") {
-    return "🔴";
-  }
-
+  if (status === "won") return "🟢";
+  if (status === "lost") return "🔴";
   return "🟡";
 }
 
 function getStatusColor(status) {
-  if (status === "won") {
-    return "#35d06f";
-  }
-
-  if (status === "lost") {
-    return "#ff4d4f";
-  }
-
+  if (status === "won") return "#35d06f";
+  if (status === "lost") return "#ff4d4f";
   return "#f2c94c";
 }
 
 function getStatusLabel(status) {
-  if (status === "won") {
-    return "WON";
-  }
-
-  if (status === "lost") {
-    return "LOST";
-  }
-
+  if (status === "won") return "WON";
+  if (status === "lost") return "LOST";
   return "PENDING";
 }
 
-/* =========================
+/* =========================================================
    APP
-========================= */
+========================================================= */
 
 export default function App() {
   const {
@@ -251,8 +503,7 @@ export default function App() {
 
   const [bets, setBets] = useState([]);
   const [session, setSession] = useState(null);
-  const [authLoading, setAuthLoading] =
-    useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -274,7 +525,6 @@ export default function App() {
         setSession(
           data?.session ?? null
         );
-
         setAuthLoading(false);
       }
     }
@@ -293,17 +543,15 @@ export default function App() {
 
     return () => {
       mounted = false;
-
       authListener?.subscription?.unsubscribe();
     };
   }, []);
 
   /*
-   * IMPORTANT:
-   * Maximum = 20 MATCHES.
+   * Maximum 20 DIFFERENT MATCHES.
    *
-   * Multiple selections from the same
-   * match stay inside the same Bet Builder.
+   * Multiple markets from the same match
+   * stay inside one Bet Builder.
    */
   function addBet(bet) {
     setBets((current) => {
@@ -315,14 +563,11 @@ export default function App() {
 
       /*
        * Same market:
-       * replace previous selection.
+       * replace old selection.
        *
        * Example:
        * Real Madrid Win
        * -> Barcelona Win
-       *
-       * Only one selection remains
-       * for that market.
        */
       if (sameMarket) {
         return current.map((item) =>
@@ -333,9 +578,6 @@ export default function App() {
         );
       }
 
-      /*
-       * Count unique matches.
-       */
       const uniqueMatchIds =
         new Set(
           current.map(
@@ -343,9 +585,6 @@ export default function App() {
           )
         );
 
-      /*
-       * New match + already 20 matches.
-       */
       if (
         !uniqueMatchIds.has(
           bet.matchId
@@ -548,9 +787,9 @@ export default function App() {
   );
 }
 
-/* =========================
+/* =========================================================
    HEADER
-========================= */
+========================================================= */
 
 function Header({
   language,
@@ -568,6 +807,10 @@ function Header({
           to="/"
           className="logo"
         >
+          <span className="logo-mark">
+            👑
+          </span>
+
           <span className="logo-gold">
             GOLDEN
           </span>
@@ -582,20 +825,32 @@ function Header({
             {t(language, "home")}
           </Link>
 
-          <Link to="/sports">
-            Sports
+          <Link
+            to="/sports"
+            className="main-nav-tab sports-tab"
+          >
+            ⚽ Sports
           </Link>
 
-          <Link to="/live">
-            Live
+          <Link
+            to="/casino"
+            className="main-nav-tab casino-tab"
+          >
+            🎰 Casino
           </Link>
 
-          <Link to="/casino">
-            Casino
+          <Link
+            to="/live"
+            className="nav-live"
+          >
+            🔴 Live Sports
           </Link>
 
-          <Link to="/live-casino">
-            Live Casino
+          <Link
+            to="/live-casino"
+            className="nav-live"
+          >
+            🔴 Live Casino
           </Link>
 
           <Link to="/golden-games">
@@ -616,6 +871,7 @@ function Header({
               )
             }
             className="language-select"
+            aria-label="Language"
           >
             <option value="en">
               English
@@ -666,10 +922,17 @@ function Header({
             <>
               <Link
                 to="/profile"
-                className="btn btn-outline"
+                className="btn btn-outline profile-button"
               >
                 👤{" "}
                 {userEmail || "Profile"}
+              </Link>
+
+              <Link
+                to="/balance"
+                className="btn btn-outline"
+              >
+                💰 Balance
               </Link>
 
               <button
@@ -702,9 +965,9 @@ function Header({
   );
 }
 
-/* =========================
+/* =========================================================
    HOME
-========================= */
+========================================================= */
 
 function Home({
   bets,
@@ -718,7 +981,7 @@ function Home({
       <section className="hero">
         <div className="hero-content">
           <span className="hero-badge">
-            GOLDENBET
+            👑 GOLDENBET
           </span>
 
           <h1>
@@ -726,8 +989,9 @@ function Home({
           </h1>
 
           <p>
-            Explore matches, markets and
-            betting opportunities.
+            Premium sports betting,
+            casino games and live
+            entertainment.
           </p>
 
           <div className="hero-buttons">
@@ -735,14 +999,14 @@ function Home({
               to="/sports"
               className="btn btn-gold"
             >
-              Explore Sports
+              ⚽ Explore Sports
             </Link>
 
             <Link
               to="/casino"
               className="btn btn-outline"
             >
-              Casino
+              🎰 Casino
             </Link>
           </div>
         </div>
@@ -751,8 +1015,15 @@ function Home({
       <section className="section">
         <div className="section-title">
           <h2>
-            Popular Matches
+            🔥 Popular Matches
           </h2>
+
+          <Link
+            to="/sports"
+            className="view-all-markets"
+          >
+            All Sports →
+          </Link>
         </div>
 
         <div className="home-layout">
@@ -779,9 +1050,9 @@ function Home({
   );
 }
 
-/* =========================
+/* =========================================================
    MATCH CARD
-========================= */
+========================================================= */
 
 function MatchCard({
   match,
@@ -807,14 +1078,23 @@ function MatchCard({
       : "0.00";
 
   return (
-    <div className="match-card">
+    <div
+      className={`match-card ${
+        selectedBets.length
+          ? "has-bet-builder"
+          : ""
+      }`}
+    >
       <div className="match-top">
         <span>
+          {match.country &&
+            `${match.country} • `}
           {match.league}
         </span>
 
         <span>
-          {match.date} • {match.time}
+          {match.date} •{" "}
+          {match.time}
         </span>
       </div>
 
@@ -891,7 +1171,6 @@ function MatchCard({
                 }}
               >
                 {getStatusIcon(status)}{" "}
-
                 <strong>
                   {bet.marketTitle}
                 </strong>
@@ -958,9 +1237,9 @@ function MatchCard({
   );
 }
 
-/* =========================
+/* =========================================================
    MATCH PAGE
-========================= */
+========================================================= */
 
 function MatchPage({
   bets,
@@ -977,12 +1256,23 @@ function MatchPage({
   const match =
     matches.find(
       (item) => item.id === id
-    ) || matches[0];
+    ) || null;
 
   if (!match) {
     return (
       <div className="page section">
-        Match not found.
+        <div className="empty-state">
+          <h2>
+            Match not found.
+          </h2>
+
+          <Link
+            to="/sports"
+            className="btn btn-gold"
+          >
+            Back to Sports
+          </Link>
+        </div>
       </div>
     );
   }
@@ -1004,6 +1294,7 @@ function MatchPage({
         </Link>
 
         <div className="match-detail-league">
+          {match.country} •{" "}
           {match.league}
         </div>
 
@@ -1019,11 +1310,13 @@ function MatchPage({
           ⏰ {match.time}
         </div>
 
-        <div className="selected-count">
-          🎯{" "}
-          {selectedBets.length}{" "}
-          selections
-        </div>
+        {selectedBets.length > 0 && (
+          <div className="selected-count">
+            🎯{" "}
+            {selectedBets.length}{" "}
+            selections in Bet Builder
+          </div>
+        )}
       </div>
 
       <div className="markets-container">
@@ -1099,9 +1392,9 @@ function MatchPage({
   );
 }
 
-/* =========================
+/* =========================================================
    MARKET GROUP
-========================= */
+========================================================= */
 
 function MarketGroup({
   group,
@@ -1141,9 +1434,9 @@ function MarketGroup({
   );
 }
 
-/* =========================
+/* =========================================================
    MARKET
-========================= */
+========================================================= */
 
 function Market({
   market,
@@ -1180,7 +1473,11 @@ function Market({
 
       league: match.league,
 
+      country: match.country,
+
       time: match.time,
+
+      date: match.date,
 
       groupId: group.id,
 
@@ -1206,11 +1503,6 @@ function Market({
           selection.odds
         ),
 
-      /*
-       * Result starts as pending.
-       * Later the admin/result system
-       * can change this to won/lost.
-       */
       result: "pending",
     });
   }
@@ -1254,9 +1546,9 @@ function Market({
   );
 }
 
-/* =========================
+/* =========================================================
    BET SLIP
-========================= */
+========================================================= */
 
 function BetSlip({
   bets,
@@ -1270,22 +1562,6 @@ function BetSlip({
   const [placing, setPlacing] =
     useState(false);
 
-  /*
-   * GROUP BY MATCH
-   *
-   * Example:
-   *
-   * Real Madrid vs Barcelona
-   *   4 selections
-   *
-   * Arsenal vs Chelsea
-   *   3 selections
-   *
-   * Milan vs Inter
-   *   2 selections
-   *
-   * Top count = 3 matches.
-   */
   const groupedBets =
     useMemo(() => {
       const groups = [];
@@ -1315,8 +1591,14 @@ function BetSlip({
             league:
               bet.league,
 
+            country:
+              bet.country,
+
             time:
               bet.time,
+
+            date:
+              bet.date,
 
             selections: [],
           };
@@ -1332,9 +1614,6 @@ function BetSlip({
       return groups;
     }, [bets]);
 
-  /*
-   * Combined odds per match.
-   */
   const matchOdds =
     useMemo(() => {
       return groupedBets.map(
@@ -1358,10 +1637,6 @@ function BetSlip({
       );
     }, [groupedBets]);
 
-  /*
-   * Total odds:
-   * product of every Bet Builder.
-   */
   const totalOdds =
     useMemo(() => {
       if (
@@ -1448,6 +1723,18 @@ function BetSlip({
     setPlacing(true);
 
     try {
+      /*
+       * IMPORTANT:
+       *
+       * We do NOT insert "selection"
+       * because your current Supabase
+       * bets table does not have that
+       * column.
+       *
+       * This prevents:
+       * Could not find the 'selection'
+       * column...
+       */
       const matchNames =
         groupedBets
           .map(
@@ -1455,60 +1742,6 @@ function BetSlip({
               group.match
           )
           .join(" | ");
-
-      const selections =
-        bets.map(
-          (bet) => ({
-            matchId:
-              bet.matchId,
-
-            match:
-              bet.match,
-
-            home:
-              bet.home,
-
-            away:
-              bet.away,
-
-            league:
-              bet.league,
-
-            time:
-              bet.time,
-
-            groupId:
-              bet.groupId,
-
-            groupTitle:
-              bet.groupTitle,
-
-            marketId:
-              bet.marketId,
-
-            marketTitle:
-              bet.marketTitle,
-
-            selectionKey:
-              bet.selectionKey,
-
-            selection:
-              bet.selection,
-
-            label:
-              bet.label,
-
-            odds:
-              Number(
-                bet.odds
-              ),
-
-            result:
-              getSelectionStatus(
-                bet
-              ),
-          })
-        );
 
       const {
         error,
@@ -1520,9 +1753,6 @@ function BetSlip({
 
           match_name:
             matchNames,
-
-          selection:
-            selections,
 
           stake:
             stakeAmount,
@@ -1551,7 +1781,7 @@ function BetSlip({
       }
 
       alert(
-        `Bet placed successfully!\n\nMatches: ${groupedBets.length}/20\nSelections: ${totalSelections}\nTotal Odds: ${totalOdds}\nStake: ${stakeAmount}\nPotential Return: ${returnAmount}`
+        `Bet placed successfully!\n\nMatches: ${groupedBets.length}/20\nSelections: ${totalSelections}\nTotal Odds: ${totalOdds}\nStake: ${stakeAmount.toLocaleString()} IQD\nPotential Return: ${returnAmount.toLocaleString()} IQD`
       );
 
       setStake("");
@@ -1667,6 +1897,8 @@ function BetSlip({
                       </div>
 
                       <small>
+                        {group.country &&
+                          `${group.country} • `}
                         {group.league}{" "}
                         •{" "}
                         {group.time}
@@ -1754,24 +1986,6 @@ function BetSlip({
                                 bet.odds
                               }
                             </b>
-
-                            {status !==
-                              "pending" && (
-                              <small
-                                style={{
-                                  color:
-                                    getStatusColor(
-                                      status
-                                    ),
-                                  fontWeight:
-                                    "700",
-                                }}
-                              >
-                                {getStatusLabel(
-                                  status
-                                )}
-                              </small>
-                            )}
                           </div>
 
                           <button
@@ -1915,72 +2129,534 @@ function BetSlip({
   );
 }
 
-/* =========================
+/* =========================================================
    SPORTS
-========================= */
+========================================================= */
 
 function Sports({
   bets,
   addBet,
 }) {
+  const [sport, setSport] =
+    useState("Football");
+
+  const [country, setCountry] =
+    useState(null);
+
+  const [league, setLeague] =
+    useState(null);
+
+  const countryData =
+    sportsCountries.find(
+      (item) =>
+        item.name === country
+    );
+
+  const visibleMatches =
+    matches.filter((match) => {
+      if (
+        sport !==
+          "Football"
+      ) {
+        return false;
+      }
+
+      if (
+        country &&
+        match.country !==
+          country
+      ) {
+        return false;
+      }
+
+      if (
+        league &&
+        match.league !==
+          league
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
   return (
-    <div className="page section">
+    <div className="page section sports-page">
       <div className="page-heading">
+        <span className="section-kicker">
+          GOLDENBET SPORTS
+        </span>
+
         <h1>
           ⚽ Sports
         </h1>
 
         <p>
-          All sports and matches.
+          Select sport, country,
+          league and match.
         </p>
       </div>
 
-      <div className="sports-grid">
-        {sports.map((sport) => (
-          <Link
-            key={sport}
-            to="/sports"
-            className="sport-card"
-          >
-            ⚽
+      <div
+        className="sports-mode-bar"
+        style={{
+          display: "flex",
+          gap: "10px",
+          flexWrap: "wrap",
+          marginBottom: "20px",
+        }}
+      >
+        <Link
+          to="/live"
+          className="btn btn-gold"
+        >
+          🔴 Live Sports
+        </Link>
 
-            <span>
-              {sport}
-            </span>
-          </Link>
-        ))}
+        <div
+          className="sports-mode-title"
+          style={{
+            padding:
+              "10px 16px",
+            borderRadius:
+              "10px",
+            border:
+              "1px solid rgba(212,175,55,.35)",
+          }}
+        >
+          ⚽ All Sports
+        </div>
       </div>
 
-      <div className="section">
-        <h2>
-          Today's Matches
-        </h2>
+      <div
+        className="sports-layout"
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "220px 1fr",
+          gap: "20px",
+        }}
+      >
+        <aside
+          className="sports-sidebar"
+          style={{
+            padding: "16px",
+            borderRadius:
+              "14px",
+            background:
+              "#101010",
+            border:
+              "1px solid rgba(212,175,55,.2)",
+            height:
+              "fit-content",
+          }}
+        >
+          <div
+            className="sidebar-title"
+            style={{
+              fontWeight:
+                "700",
+              marginBottom:
+                "12px",
+            }}
+          >
+            🏆 Sports
+          </div>
 
-        <div className="matches-grid">
-          {matches.map((match) => (
-            <MatchCard
-              key={match.id}
-              match={match}
-              bets={bets}
-              addBet={addBet}
-            />
-          ))}
+          <div className="sports-list">
+            {sports.map(
+              (item) => (
+                <button
+                  key={item}
+                  className={
+                    sport === item
+                      ? "sport-side-item active"
+                      : "sport-side-item"
+                  }
+                  onClick={() => {
+                    setSport(item);
+                    setCountry(
+                      null
+                    );
+                    setLeague(
+                      null
+                    );
+                  }}
+                  style={{
+                    width:
+                      "100%",
+                    textAlign:
+                      "left",
+                    marginBottom:
+                      "6px",
+                    padding:
+                      "10px",
+                    borderRadius:
+                      "8px",
+                    cursor:
+                      "pointer",
+                  }}
+                >
+                  ⚽ {item}
+                </button>
+              )
+            )}
+          </div>
+        </aside>
+
+        <div className="sports-content">
+          {sport !==
+          "Football" ? (
+            <div className="sports-panel">
+              <div className="empty-state">
+                <h2>
+                  {sport}
+                </h2>
+
+                <p>
+                  This sport is ready
+                  for leagues and
+                  matches to be added.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div
+                className="sports-panel"
+                style={{
+                  padding:
+                    "18px",
+                  borderRadius:
+                    "14px",
+                  background:
+                    "#101010",
+                  border:
+                    "1px solid rgba(212,175,55,.2)",
+                  marginBottom:
+                    "20px",
+                }}
+              >
+                <div
+                  className="sports-panel-head"
+                  style={{
+                    display:
+                      "flex",
+                    justifyContent:
+                      "space-between",
+                    alignItems:
+                      "center",
+                    marginBottom:
+                      "15px",
+                  }}
+                >
+                  <div>
+                    <span className="section-kicker">
+                      WORLDWIDE
+                    </span>
+
+                    <h2>
+                      🌍 Countries
+                    </h2>
+                  </div>
+
+                  <span>
+                    {
+                      sportsCountries.length
+                    }{" "}
+                    countries
+                  </span>
+                </div>
+
+                <div
+                  className="country-grid"
+                  style={{
+                    display:
+                      "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fill,minmax(150px,1fr))",
+                    gap: "10px",
+                  }}
+                >
+                  {sportsCountries.map(
+                    (item) => (
+                      <button
+                        key={
+                          item.name
+                        }
+                        className={
+                          country ===
+                          item.name
+                            ? "country-card active"
+                            : "country-card"
+                        }
+                        onClick={() => {
+                          setCountry(
+                            item.name
+                          );
+                          setLeague(
+                            null
+                          );
+                        }}
+                        style={{
+                          padding:
+                            "14px",
+                          borderRadius:
+                            "10px",
+                          cursor:
+                            "pointer",
+                          textAlign:
+                            "left",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize:
+                              "24px",
+                            display:
+                              "block",
+                            marginBottom:
+                              "5px",
+                          }}
+                        >
+                          {
+                            item.flag
+                          }
+                        </span>
+
+                        <strong>
+                          {
+                            item.name
+                          }
+                        </strong>
+
+                        <small
+                          style={{
+                            display:
+                              "block",
+                            opacity:
+                              ".7",
+                            marginTop:
+                              "4px",
+                          }}
+                        >
+                          {
+                            item
+                              .leagues
+                              .length
+                          }{" "}
+                          leagues
+                        </small>
+                      </button>
+                    )
+                  )}
+                </div>
+              </div>
+
+              {country && (
+                <div
+                  className="sports-panel"
+                  style={{
+                    padding:
+                      "18px",
+                    borderRadius:
+                      "14px",
+                    background:
+                      "#101010",
+                    border:
+                      "1px solid rgba(212,175,55,.2)",
+                    marginBottom:
+                      "20px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display:
+                        "flex",
+                      justifyContent:
+                        "space-between",
+                      alignItems:
+                        "center",
+                      marginBottom:
+                        "15px",
+                    }}
+                  >
+                    <div>
+                      <span className="section-kicker">
+                        {country}
+                      </span>
+
+                      <h2>
+                        🏆 Leagues
+                      </h2>
+                    </div>
+
+                    <button
+                      className="text-button"
+                      onClick={() => {
+                        setCountry(
+                          null
+                        );
+                        setLeague(
+                          null
+                        );
+                      }}
+                    >
+                      All Countries
+                    </button>
+                  </div>
+
+                  <div
+                    className="league-grid"
+                    style={{
+                      display:
+                        "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fill,minmax(180px,1fr))",
+                      gap: "10px",
+                    }}
+                  >
+                    {countryData?.leagues.map(
+                      (item) => (
+                        <button
+                          key={
+                            item
+                          }
+                          className={
+                            league ===
+                            item
+                              ? "league-card active"
+                              : "league-card"
+                          }
+                          onClick={() =>
+                            setLeague(
+                              item
+                            )
+                          }
+                          style={{
+                            padding:
+                              "13px",
+                            borderRadius:
+                              "10px",
+                            cursor:
+                              "pointer",
+                            textAlign:
+                              "left",
+                          }}
+                        >
+                          🏆{" "}
+                          {item}
+                        </button>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div
+                className="sports-panel"
+                style={{
+                  padding:
+                    "18px",
+                  borderRadius:
+                    "14px",
+                  background:
+                    "#101010",
+                  border:
+                    "1px solid rgba(212,175,55,.2)",
+                }}
+              >
+                <div
+                  style={{
+                    display:
+                      "flex",
+                    justifyContent:
+                      "space-between",
+                    alignItems:
+                      "center",
+                    marginBottom:
+                      "15px",
+                  }}
+                >
+                  <div>
+                    <span className="section-kicker">
+                      {league ||
+                        country ||
+                        "TODAY"}
+                    </span>
+
+                    <h2>
+                      🔥 Matches
+                    </h2>
+                  </div>
+
+                  <span>
+                    {
+                      visibleMatches.length
+                    }{" "}
+                    matches
+                  </span>
+                </div>
+
+                {visibleMatches.length >
+                0 ? (
+                  <div className="matches-grid">
+                    {visibleMatches.map(
+                      (
+                        match
+                      ) => (
+                        <MatchCard
+                          key={
+                            match.id
+                          }
+                          match={
+                            match
+                          }
+                          bets={
+                            bets
+                          }
+                          addBet={
+                            addBet
+                          }
+                        />
+                      )
+                    )}
+                  </div>
+                ) : (
+                  <div className="empty-state">
+                    <h3>
+                      No matches yet
+                    </h3>
+
+                    <p>
+                      Select another
+                      country or league.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-/* =========================
-   LIVE
-========================= */
+/* =========================================================
+   LIVE SPORTS
+========================================================= */
 
 function Live() {
   return (
     <div className="page section">
       <div className="page-heading">
+        <span className="section-kicker">
+          GOLDENBET LIVE
+        </span>
+
         <h1>
-          🔴 Live Matches
+          🔴 Live Sports
         </h1>
 
         <p>
@@ -1990,7 +2666,7 @@ function Live() {
 
       <div className="live-grid">
         {matches
-          .slice(0, 3)
+          .slice(0, 4)
           .map((match) => (
             <div
               className="live-card"
@@ -2015,6 +2691,17 @@ function Live() {
               <h3>
                 {match.away}
               </h3>
+
+              <Link
+                to={`/match/${match.id}`}
+                className="btn btn-gold"
+                style={{
+                  marginTop:
+                    "10px",
+                }}
+              >
+                View Markets
+              </Link>
             </div>
           ))}
       </div>
@@ -2022,9 +2709,9 @@ function Live() {
   );
 }
 
-/* =========================
+/* =========================================================
    CASINO
-========================= */
+========================================================= */
 
 function Casino() {
   const [category, setCategory] =
@@ -2040,11 +2727,97 @@ function Casino() {
         );
 
   return (
-    <div className="page section">
-      <div className="page-heading">
+    <div className="page section casino-page">
+      <div
+        className="casino-hero"
+        style={{
+          padding:
+            "30px",
+          borderRadius:
+            "18px",
+          marginBottom:
+            "22px",
+          background:
+            "linear-gradient(135deg,#090909,#17120a,#090909)",
+          border:
+            "1px solid rgba(212,175,55,.35)",
+        }}
+      >
+        <span className="section-kicker">
+          GOLDENBET CASINO
+        </span>
+
         <h1>
           🎰 Casino
         </h1>
+
+        <p>
+          Roulette, Blackjack,
+          Slots, Crash, Jackpot
+          and more.
+        </p>
+
+        <div
+          style={{
+            display:
+              "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(150px,1fr))",
+            gap: "12px",
+            marginTop:
+              "20px",
+          }}
+        >
+          <div className="game-card">
+            <div className="game-image">
+              🎡
+            </div>
+            <h3>
+              Roulette
+            </h3>
+          </div>
+
+          <div className="game-card">
+            <div className="game-image">
+              🃏
+            </div>
+            <h3>
+              Blackjack
+            </h3>
+          </div>
+
+          <div className="game-card">
+            <div className="game-image">
+              💰
+            </div>
+            <h3>
+              Jackpot
+            </h3>
+          </div>
+
+          <div className="game-card">
+            <div className="game-image">
+              🚀
+            </div>
+            <h3>
+              Crash
+            </h3>
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop:
+              "18px",
+          }}
+        >
+          <Link
+            to="/live-casino"
+            className="btn btn-outline"
+          >
+            🔴 Open Live Casino
+          </Link>
+        </div>
       </div>
 
       <div className="category-tabs">
@@ -2085,7 +2858,14 @@ function Casino() {
               {game.category}
             </span>
 
-            <button className="btn btn-gold">
+            <button
+              className="btn btn-gold"
+              onClick={() =>
+                alert(
+                  `${game.name} will be available here.`
+                )
+              }
+            >
               Play
             </button>
           </div>
@@ -2095,9 +2875,9 @@ function Casino() {
   );
 }
 
-/* =========================
+/* =========================================================
    LIVE CASINO
-========================= */
+========================================================= */
 
 function LiveCasino() {
   const [category, setCategory] =
@@ -2109,15 +2889,52 @@ function LiveCasino() {
       : liveGames.filter(
           (game) =>
             game.provider ===
-            category
+              category ||
+            game.category ===
+              category
         );
 
   return (
     <div className="page section">
-      <div className="page-heading">
+      <div
+        className="casino-hero"
+        style={{
+          padding:
+            "30px",
+          borderRadius:
+            "18px",
+          marginBottom:
+            "22px",
+          background:
+            "linear-gradient(135deg,#090909,#160d0d,#090909)",
+          border:
+            "1px solid rgba(212,175,55,.35)",
+        }}
+      >
+        <span className="section-kicker">
+          GOLDENBET LIVE CASINO
+        </span>
+
         <h1>
           🔴 Live Casino
         </h1>
+
+        <p>
+          Live Roulette, Blackjack,
+          Baccarat, Poker and Game
+          Shows.
+        </p>
+
+        <div
+          style={{
+            fontSize:
+              "55px",
+            marginTop:
+              "15px",
+          }}
+        >
+          🎡 🃏 💰 🎲
+        </div>
       </div>
 
       <div className="category-tabs">
@@ -2158,7 +2975,14 @@ function LiveCasino() {
               {game.provider}
             </span>
 
-            <button className="btn btn-gold">
+            <button
+              className="btn btn-gold"
+              onClick={() =>
+                alert(
+                  `${game.name} will be available here.`
+                )
+              }
+            >
               Play Live
             </button>
           </div>
@@ -2168,17 +2992,26 @@ function LiveCasino() {
   );
 }
 
-/* =========================
+/* =========================================================
    GOLDEN GAMES
-========================= */
+========================================================= */
 
 function GoldenGames() {
   return (
     <div className="page section">
       <div className="page-heading">
+        <span className="section-kicker">
+          GOLDENBET ORIGINALS
+        </span>
+
         <h1>
           🟡 Golden Games
         </h1>
+
+        <p>
+          GoldenBet exclusive game
+          collection.
+        </p>
       </div>
 
       <div className="golden-games-grid">
@@ -2196,7 +3029,14 @@ function GoldenGames() {
                 {game}
               </h3>
 
-              <button className="btn btn-gold">
+              <button
+                className="btn btn-gold"
+                onClick={() =>
+                  alert(
+                    `${game} will be available here.`
+                  )
+                }
+              >
                 Play
               </button>
             </div>
@@ -2207,9 +3047,9 @@ function GoldenGames() {
   );
 }
 
-/* =========================
+/* =========================================================
    PROMOTIONS
-========================= */
+========================================================= */
 
 function Promotions() {
   return (
@@ -2267,9 +3107,9 @@ function Promotions() {
   );
 }
 
-/* =========================
+/* =========================================================
    LOGIN
-========================= */
+========================================================= */
 
 function Login() {
   const navigate =
@@ -2309,7 +3149,6 @@ function Login() {
       setError(
         loginError.message
       );
-
       return;
     }
 
@@ -2378,9 +3217,9 @@ function Login() {
   );
 }
 
-/* =========================
+/* =========================================================
    REGISTER
-========================= */
+========================================================= */
 
 function Register() {
   const navigate =
@@ -2422,7 +3261,6 @@ function Register() {
       setError(
         "Passwords do not match."
       );
-
       return;
     }
 
@@ -2430,7 +3268,6 @@ function Register() {
       setError(
         "Password must be at least 6 characters."
       );
-
       return;
     }
 
@@ -2456,7 +3293,6 @@ function Register() {
       setError(
         signUpError.message
       );
-
       return;
     }
 
@@ -2564,9 +3400,9 @@ function Register() {
   );
 }
 
-/* =========================
+/* =========================================================
    PROFILE
-========================= */
+========================================================= */
 
 function Profile({
   session,
@@ -2649,7 +3485,7 @@ function Profile({
     <div className="page section">
       <div className="page-heading">
         <h1>
-          Profile
+          👤 Profile
         </h1>
       </div>
 
@@ -2675,20 +3511,48 @@ function Profile({
           IQD
         </p>
 
-        <Link
-          to="/settings"
-          className="btn btn-gold"
+        <div
+          style={{
+            display:
+              "flex",
+            gap: "10px",
+            flexWrap:
+              "wrap",
+            justifyContent:
+              "center",
+            marginTop:
+              "15px",
+          }}
         >
-          Settings
-        </Link>
+          <Link
+            to="/balance"
+            className="btn btn-gold"
+          >
+            💰 Balance
+          </Link>
+
+          <Link
+            to="/my-bets"
+            className="btn btn-outline"
+          >
+            🧾 My Bets
+          </Link>
+
+          <Link
+            to="/settings"
+            className="btn btn-outline"
+          >
+            ⚙️ Settings
+          </Link>
+        </div>
       </div>
     </div>
   );
 }
 
-/* =========================
+/* =========================================================
    BALANCE
-========================= */
+========================================================= */
 
 function Balance({
   session,
@@ -2787,9 +3651,9 @@ function Balance({
   );
 }
 
-/* =========================
+/* =========================================================
    DEPOSIT
-========================= */
+========================================================= */
 
 function Deposit({
   session,
@@ -2816,9 +3680,9 @@ function Deposit({
   return <PaymentCard />;
 }
 
-/* =========================
+/* =========================================================
    WITHDRAW
-========================= */
+========================================================= */
 
 function Withdraw({
   session,
@@ -2858,7 +3722,6 @@ function Withdraw({
       alert(
         "Please enter a valid amount."
       );
-
       return;
     }
 
@@ -2933,9 +3796,9 @@ function Withdraw({
   );
 }
 
-/* =========================
+/* =========================================================
    MY BETS
-========================= */
+========================================================= */
 
 function MyBets({
   session,
@@ -2953,13 +3816,19 @@ function MyBets({
         return;
       }
 
+      /*
+       * "selection" is intentionally
+       * NOT selected here because
+       * the current bets table does
+       * not contain that column.
+       */
       const {
         data,
         error,
       } = await supabase
         .from("bets")
         .select(
-          "id, match_name, selection, stake, total_odds, potential_win, status, created_at"
+          "id, match_name, stake, total_odds, potential_win, status, created_at"
         )
         .eq(
           "user_id",
@@ -3017,13 +3886,20 @@ function MyBets({
     <div className="page section">
       <div className="page-heading">
         <h1>
-          My Bets
+          🧾 My Bets
         </h1>
       </div>
 
       {!bets.length ? (
         <div className="empty-state">
-          🧾
+          <div
+            style={{
+              fontSize:
+                "40px",
+            }}
+          >
+            🧾
+          </div>
 
           <h3>
             No bets yet
@@ -3074,59 +3950,6 @@ function MyBets({
                       {status.toUpperCase()}
                     </strong>
                   </p>
-
-                  {Array.isArray(
-                    bet.selection
-                  ) && (
-                    <div
-                      style={{
-                        marginTop:
-                          "10px",
-                      }}
-                    >
-                      {bet.selection.map(
-                        (
-                          selection,
-                          index
-                        ) => {
-                          const selectionStatus =
-                            selection.result ||
-                            "pending";
-
-                          return (
-                            <div
-                              key={
-                                index
-                              }
-                              style={{
-                                marginBottom:
-                                  "6px",
-                                color:
-                                  getStatusColor(
-                                    selectionStatus
-                                  ),
-                              }}
-                            >
-                              {getStatusIcon(
-                                selectionStatus
-                              )}{" "}
-                              {
-                                selection.marketTitle
-                              }{" "}
-                              —{" "}
-                              {
-                                selection.selection
-                              }{" "}
-                              @{" "}
-                              {
-                                selection.odds
-                              }
-                            </div>
-                          );
-                        }
-                      )}
-                    </div>
-                  )}
                 </div>
 
                 <div>
@@ -3174,9 +3997,9 @@ function MyBets({
   );
 }
 
-/* =========================
+/* =========================================================
    SETTINGS
-========================= */
+========================================================= */
 
 function Settings() {
   return (
@@ -3200,7 +4023,14 @@ function Settings() {
           />
         </label>
 
-        <button className="btn btn-gold">
+        <button
+          className="btn btn-gold"
+          onClick={() =>
+            alert(
+              "Settings saved."
+            )
+          }
+        >
           Save Settings
         </button>
       </div>
@@ -3208,9 +4038,9 @@ function Settings() {
   );
 }
 
-/* =========================
+/* =========================================================
    NOT FOUND
-========================= */
+========================================================= */
 
 function NotFound() {
   return (
@@ -3235,9 +4065,9 @@ function NotFound() {
   );
 }
 
-/* =========================
+/* =========================================================
    FOOTER
-========================= */
+========================================================= */
 
 function Footer() {
   return (
@@ -3245,6 +4075,10 @@ function Footer() {
       <div className="footer-inner">
         <div>
           <div className="logo">
+            <span className="logo-mark">
+              👑
+            </span>
+
             <span className="logo-gold">
               GOLDEN
             </span>
@@ -3270,6 +4104,10 @@ function Footer() {
 
           <Link to="/live-casino">
             Live Casino
+          </Link>
+
+          <Link to="/my-bets">
+            My Bets
           </Link>
 
           <Link to="/promotions">
