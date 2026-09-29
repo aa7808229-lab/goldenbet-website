@@ -10,6 +10,7 @@ import {
   Routes,
   useNavigate,
   useParams,
+  useLocation,
 } from "react-router-dom";
 
 import AdminDashboard from "./AdminDashboard";
@@ -623,7 +624,6 @@ function TeamLogo({
           border:
             "1px solid rgba(212,175,55,.45)",
           padding: "5px",
-          flex: "0 0 auto",
         }}
       />
     );
@@ -631,15 +631,12 @@ function TeamLogo({
 
   return (
     <div
-      title={name}
-      aria-label={name}
       style={{
         width: size,
         height: size,
-        borderRadius:
-          "14px 14px 18px 18px",
+        borderRadius: "14px",
         background:
-          "linear-gradient(145deg, rgba(212,175,55,.32), rgba(8,8,8,.98))",
+          "linear-gradient(145deg,rgba(212,175,55,.3),#090909)",
         border:
           "1px solid rgba(212,175,55,.55)",
         display: "grid",
@@ -647,9 +644,6 @@ function TeamLogo({
         color: "#f6d66a",
         fontWeight: 900,
         fontSize: size * 0.25,
-        boxShadow:
-          "0 0 18px rgba(212,175,55,.15)",
-        flex: "0 0 auto",
       }}
     >
       {initials}
@@ -667,6 +661,8 @@ function GoldenBetHeader({ bets }) {
 
   const [session, setSession] =
     useState(null);
+
+  const location = useLocation();
 
   useEffect(() => {
     let mounted = true;
@@ -714,6 +710,14 @@ function GoldenBetHeader({ bets }) {
     setMenuOpen(false);
   }
 
+  /*
+    Home has its own new design.
+    Therefore the old global header is hidden only on "/".
+  */
+  if (location.pathname === "/") {
+    return null;
+  }
+
   return (
     <header
       style={{
@@ -732,41 +736,29 @@ function GoldenBetHeader({ bets }) {
         style={{
           maxWidth: "1400px",
           margin: "0 auto",
-          padding:
-            "12px 18px",
+          padding: "12px 18px",
           display: "flex",
           alignItems: "center",
-          justifyContent:
-            "space-between",
+          justifyContent: "space-between",
           gap: "15px",
         }}
       >
         <Link
           to="/"
           style={{
-            textDecoration:
-              "none",
+            textDecoration: "none",
             display: "flex",
-            alignItems:
-              "center",
+            alignItems: "center",
             gap: "6px",
             fontWeight: 900,
             fontSize: "21px",
           }}
         >
           <span>👑</span>
-          <span
-            style={{
-              color: "#d4af37",
-            }}
-          >
+          <span style={{ color: "#d4af37" }}>
             GOLDEN
           </span>
-          <span
-            style={{
-              color: "#fff",
-            }}
-          >
+          <span style={{ color: "#fff" }}>
             BET
           </span>
         </Link>
@@ -806,10 +798,8 @@ function GoldenBetHeader({ bets }) {
             to="/bet-slip"
             className="btn btn-gold"
             style={{
-              padding:
-                "8px 12px",
-              textDecoration:
-                "none",
+              padding: "8px 12px",
+              textDecoration: "none",
             }}
           >
             🧾 {bets.length}
@@ -821,10 +811,8 @@ function GoldenBetHeader({ bets }) {
                 to="/profile"
                 className="btn btn-outline"
                 style={{
-                  padding:
-                    "8px 12px",
-                  textDecoration:
-                    "none",
+                  padding: "8px 12px",
+                  textDecoration: "none",
                 }}
               >
                 👤
@@ -833,12 +821,9 @@ function GoldenBetHeader({ bets }) {
               <button
                 type="button"
                 className="btn btn-outline"
-                onClick={
-                  handleLogout
-                }
+                onClick={handleLogout}
                 style={{
-                  padding:
-                    "8px 12px",
+                  padding: "8px 12px",
                 }}
               >
                 Logout
@@ -850,10 +835,8 @@ function GoldenBetHeader({ bets }) {
                 to="/login"
                 className="btn btn-outline"
                 style={{
-                  padding:
-                    "8px 12px",
-                  textDecoration:
-                    "none",
+                  padding: "8px 12px",
+                  textDecoration: "none",
                 }}
               >
                 Login
@@ -863,10 +846,8 @@ function GoldenBetHeader({ bets }) {
                 to="/register"
                 className="btn btn-gold"
                 style={{
-                  padding:
-                    "8px 12px",
-                  textDecoration:
-                    "none",
+                  padding: "8px 12px",
+                  textDecoration: "none",
                 }}
               >
                 Register
@@ -881,19 +862,14 @@ function GoldenBetHeader({ bets }) {
                 (value) => !value
               )
             }
-            aria-label="Menu"
             style={{
-              display: "none",
               padding: "8px",
-              borderRadius:
-                "8px",
-              background:
-                "#111",
+              borderRadius: "8px",
+              background: "#111",
               color: "#fff",
               border:
                 "1px solid rgba(212,175,55,.3)",
-              cursor:
-                "pointer",
+              cursor: "pointer",
             }}
           >
             ☰
@@ -904,94 +880,28 @@ function GoldenBetHeader({ bets }) {
       {menuOpen && (
         <div
           style={{
-            padding:
-              "12px 18px 18px",
+            padding: "12px 18px 18px",
             borderTop:
               "1px solid rgba(212,175,55,.15)",
             display: "grid",
             gap: "10px",
           }}
         >
-          <Link
-            to="/"
-            onClick={() =>
-              setMenuOpen(false)
-            }
-          >
-            Home
-          </Link>
-
-          <Link
-            to="/sports"
-            onClick={() =>
-              setMenuOpen(false)
-            }
-          >
-            Sports
-          </Link>
-
-          <Link
-            to="/live"
-            onClick={() =>
-              setMenuOpen(false)
-            }
-          >
-            Live Sports
-          </Link>
-
-          <Link
-            to="/casino"
-            onClick={() =>
-              setMenuOpen(false)
-            }
-          >
-            Casino
-          </Link>
-
-          <Link
-            to="/live-casino"
-            onClick={() =>
-              setMenuOpen(false)
-            }
-          >
+          <Link to="/">Home</Link>
+          <Link to="/sports">Sports</Link>
+          <Link to="/live">Live Sports</Link>
+          <Link to="/casino">Casino</Link>
+          <Link to="/live-casino">
             Live Casino
           </Link>
-
-          <Link
-            to="/golden-games"
-            onClick={() =>
-              setMenuOpen(false)
-            }
-          >
+          <Link to="/golden-games">
             Golden Games
           </Link>
-
-          <Link
-            to="/promotions"
-            onClick={() =>
-              setMenuOpen(false)
-            }
-          >
+          <Link to="/promotions">
             Promotions
           </Link>
-
-          <Link
-            to="/profile"
-            onClick={() =>
-              setMenuOpen(false)
-            }
-          >
-            Profile
-          </Link>
-
-          <Link
-            to="/balance"
-            onClick={() =>
-              setMenuOpen(false)
-            }
-          >
-            Balance
-          </Link>
+          <Link to="/profile">Profile</Link>
+          <Link to="/balance">Balance</Link>
         </div>
       )}
     </header>
@@ -1017,10 +927,7 @@ export default function App() {
 
     async function loadSession() {
       try {
-        const {
-          data,
-          error,
-        } =
+        const { data, error } =
           await supabase.auth.getSession();
 
         if (error) {
@@ -1057,9 +964,7 @@ export default function App() {
       supabase.auth.onAuthStateChange(
         (_event, newSession) => {
           if (mounted) {
-            setSession(
-              newSession
-            );
+            setSession(newSession);
             setAuthLoading(false);
           }
         }
@@ -1147,9 +1052,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <GoldenBetHeader
-        bets={bets}
-      />
+      <GoldenBetHeader bets={bets} />
 
       <main>
         <Routes>
@@ -1236,45 +1139,35 @@ export default function App() {
           <Route
             path="/profile"
             element={
-              <Profile
-                session={session}
-              />
+              <Profile session={session} />
             }
           />
 
           <Route
             path="/balance"
             element={
-              <Balance
-                session={session}
-              />
+              <Balance session={session} />
             }
           />
 
           <Route
             path="/deposit"
             element={
-              <Deposit
-                session={session}
-              />
+              <Deposit session={session} />
             }
           />
 
           <Route
             path="/withdraw"
             element={
-              <Withdraw
-                session={session}
-              />
+              <Withdraw session={session} />
             }
           />
 
           <Route
             path="/my-bets"
             element={
-              <MyBets
-                session={session}
-              />
+              <MyBets session={session} />
             }
           />
 
@@ -1303,6 +1196,692 @@ export default function App() {
 }
 
 /* =========================================================
+   NEW GOLDENBET HOME
+========================================================= */
+
+function Home({ session }) {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at top,#19140a 0%,#080808 38%,#030303 100%)",
+        color: "#fff",
+        paddingBottom: "105px",
+      }}
+    >
+      {/* TOP BAR */}
+
+      <div
+        style={{
+          width: "100%",
+          padding:
+            "18px 16px 14px",
+          display: "grid",
+          gridTemplateColumns:
+            "1fr auto 1fr",
+          alignItems: "center",
+          gap: "10px",
+          position: "relative",
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent:
+              "flex-start",
+          }}
+        >
+          <Link
+            to="/profile"
+            style={{
+              width: "45px",
+              height: "45px",
+              borderRadius: "14px",
+              display: "grid",
+              placeItems: "center",
+              textDecoration: "none",
+              color: "#fff",
+              fontSize: "21px",
+              background:
+                "linear-gradient(145deg,#1c1c1c,#0b0b0b)",
+              border:
+                "1px solid rgba(212,175,55,.4)",
+              boxShadow:
+                "0 5px 25px rgba(0,0,0,.45)",
+            }}
+          >
+            👤
+          </Link>
+        </div>
+
+        <Link
+          to="/"
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent:
+              "center",
+            gap: "3px",
+            whiteSpace:
+              "nowrap",
+          }}
+        >
+          <span
+            style={{
+              fontSize: "24px",
+              marginRight: "2px",
+            }}
+          >
+            👑
+          </span>
+
+          <span
+            style={{
+              color: "#e1b93e",
+              fontSize: "24px",
+              fontWeight: 1000,
+              letterSpacing: "1px",
+            }}
+          >
+            GOLDEN
+          </span>
+
+          <span
+            style={{
+              color: "#fff",
+              fontSize: "24px",
+              fontWeight: 1000,
+              letterSpacing: "1px",
+            }}
+          >
+            BET
+          </span>
+        </Link>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent:
+              "flex-end",
+          }}
+        >
+          <Link
+            to="/register"
+            style={{
+              textDecoration: "none",
+              color: "#050505",
+              fontWeight: 900,
+              fontSize: "12px",
+              padding:
+                "11px 13px",
+              borderRadius: "12px",
+              background:
+                "linear-gradient(135deg,#ffe89a,#d4af37)",
+              boxShadow:
+                "0 7px 24px rgba(212,175,55,.18)",
+              whiteSpace:
+                "nowrap",
+            }}
+          >
+            Register
+          </Link>
+        </div>
+      </div>
+
+      {/* WELCOME TEXT */}
+
+      <div
+        style={{
+          textAlign: "center",
+          padding:
+            "8px 18px 18px",
+        }}
+      >
+        <div
+          style={{
+            display: "inline-block",
+            padding:
+              "6px 12px",
+            borderRadius: "30px",
+            background:
+              "rgba(212,175,55,.08)",
+            border:
+              "1px solid rgba(212,175,55,.2)",
+            color: "#d4af37",
+            fontSize: "11px",
+            fontWeight: 800,
+            letterSpacing: "1.5px",
+          }}
+        >
+          PREMIUM BETTING EXPERIENCE
+        </div>
+      </div>
+
+      {/* THREE MAIN IMAGE CARDS */}
+
+      <section
+        style={{
+          padding:
+            "0 14px 20px",
+          maxWidth: "1400px",
+          margin: "0 auto",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(3,minmax(0,1fr))",
+            gap: "10px",
+          }}
+        >
+          {/* ROULETTE */}
+
+          <Link
+            to="/casino"
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              display: "block",
+              minWidth: 0,
+              aspectRatio:
+                "1 / 1.22",
+              borderRadius: "18px",
+              textDecoration:
+                "none",
+              background:
+                "linear-gradient(145deg,#1c1407,#090909)",
+              border:
+                "1px solid rgba(212,175,55,.4)",
+              boxShadow:
+                "0 12px 35px rgba(0,0,0,.55)",
+            }}
+          >
+            <img
+              src="/roulette.jpg"
+              alt="Roulette"
+              onError={(e) => {
+                e.currentTarget.style.display =
+                  "none";
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(180deg,transparent 35%,rgba(0,0,0,.9) 100%)",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                left: "10px",
+                right: "10px",
+                bottom: "10px",
+                color: "#fff",
+                fontWeight: 900,
+                fontSize: "13px",
+              }}
+            >
+              🎰 Roulette
+            </div>
+          </Link>
+
+          {/* GOLDENBET */}
+
+          <Link
+            to="/golden-games"
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              display: "block",
+              minWidth: 0,
+              aspectRatio:
+                "1 / 1.22",
+              borderRadius: "18px",
+              textDecoration:
+                "none",
+              background:
+                "linear-gradient(145deg,#241b08,#090909)",
+              border:
+                "1px solid rgba(212,175,55,.55)",
+              boxShadow:
+                "0 12px 40px rgba(212,175,55,.12)",
+            }}
+          >
+            <img
+              src="/goldenbet.jpg"
+              alt="GoldenBet"
+              onError={(e) => {
+                e.currentTarget.style.display =
+                  "none";
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(180deg,transparent 30%,rgba(0,0,0,.92) 100%)",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                left: "10px",
+                right: "10px",
+                bottom: "10px",
+                color: "#d4af37",
+                fontWeight: 1000,
+                fontSize: "13px",
+              }}
+            >
+              👑 GoldenBet
+            </div>
+          </Link>
+
+          {/* FOOTBALL */}
+
+          <Link
+            to="/sports"
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              display: "block",
+              minWidth: 0,
+              aspectRatio:
+                "1 / 1.22",
+              borderRadius: "18px",
+              textDecoration:
+                "none",
+              background:
+                "linear-gradient(145deg,#07150a,#090909)",
+              border:
+                "1px solid rgba(212,175,55,.4)",
+              boxShadow:
+                "0 12px 35px rgba(0,0,0,.55)",
+            }}
+          >
+            <img
+              src="/football.jpg"
+              alt="Football"
+              onError={(e) => {
+                e.currentTarget.style.display =
+                  "none";
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(180deg,transparent 35%,rgba(0,0,0,.92) 100%)",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                left: "10px",
+                right: "10px",
+                bottom: "10px",
+                color: "#fff",
+                fontWeight: 900,
+                fontSize: "13px",
+              }}
+            >
+              ⚽ Football
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* QUICK ACCESS */}
+
+      <section
+        style={{
+          padding:
+            "4px 14px 22px",
+          maxWidth: "900px",
+          margin: "0 auto",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "13px",
+            fontWeight: 900,
+            marginBottom: "12px",
+            color: "#d4af37",
+          }}
+        >
+          QUICK ACCESS
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(4,minmax(0,1fr))",
+            gap: "8px",
+          }}
+        >
+          <HomeQuickButton
+            to="/sports"
+            icon="⚽"
+            title="Sports"
+          />
+
+          <HomeQuickButton
+            to="/bet-slip"
+            icon="🎫"
+            title="Coupons"
+            count={bets?.length || 0}
+          />
+
+          <HomeQuickButton
+            to="/golden-games"
+            icon="🎮"
+            title="Golden Games"
+          />
+
+          <HomeQuickButton
+            to="/casino"
+            icon="🎰"
+            title="Casino"
+          />
+        </div>
+      </section>
+
+      {/* LOGIN PROMO */}
+
+      {!session && (
+        <section
+          style={{
+            margin:
+              "0 14px 25px",
+            padding:
+              "18px",
+            borderRadius: "18px",
+            background:
+              "linear-gradient(135deg,#171207,#0b0b0b)",
+            border:
+              "1px solid rgba(212,175,55,.25)",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "22px",
+              marginBottom: "7px",
+            }}
+          >
+            👑
+          </div>
+
+          <h3
+            style={{
+              margin:
+                "0 0 5px",
+            }}
+          >
+            Join GoldenBet
+          </h3>
+
+          <p
+            style={{
+              margin:
+                "0 0 13px",
+              opacity: 0.7,
+              fontSize: "13px",
+            }}
+          >
+            Create your account and
+            start your GoldenBet
+            experience.
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent:
+                "center",
+              gap: "8px",
+            }}
+          >
+            <Link
+              to="/register"
+              className="btn btn-gold"
+            >
+              Register
+            </Link>
+
+            <Link
+              to="/login"
+              className="btn btn-outline"
+            >
+              Login
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* MOBILE BOTTOM NAV */}
+
+      <div
+        style={{
+          position: "fixed",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 2000,
+          padding:
+            "8px 10px calc(8px + env(safe-area-inset-bottom))",
+          background:
+            "rgba(4,4,4,.97)",
+          backdropFilter:
+            "blur(18px)",
+          borderTop:
+            "1px solid rgba(212,175,55,.25)",
+          boxShadow:
+            "0 -8px 30px rgba(0,0,0,.45)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "650px",
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(4,1fr)",
+            gap: "5px",
+          }}
+        >
+          <HomeBottomButton
+            to="/sports"
+            icon="⚽"
+            title="Sports"
+          />
+
+          <HomeBottomButton
+            to="/bet-slip"
+            icon="🎫"
+            title="Coupons"
+            count={bets?.length || 0}
+          />
+
+          <HomeBottomButton
+            to="/golden-games"
+            icon="🎮"
+            title="Golden Games"
+          />
+
+          <HomeBottomButton
+            to="/casino"
+            icon="🎰"
+            title="Casino"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HomeQuickButton({
+  to,
+  icon,
+  title,
+  count,
+}) {
+  return (
+    <Link
+      to={to}
+      style={{
+        minWidth: 0,
+        minHeight: "85px",
+        padding: "8px 4px",
+        borderRadius: "15px",
+        background:
+          "linear-gradient(145deg,#161616,#090909)",
+        border:
+          "1px solid rgba(212,175,55,.22)",
+        textDecoration: "none",
+        color: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "6px",
+        position: "relative",
+      }}
+    >
+      <span
+        style={{
+          fontSize: "26px",
+        }}
+      >
+        {icon}
+      </span>
+
+      <span
+        style={{
+          fontSize: "11px",
+          fontWeight: 800,
+          textAlign: "center",
+          lineHeight: 1.2,
+        }}
+      >
+        {title}
+      </span>
+
+      {count > 0 && (
+        <span
+          style={{
+            position: "absolute",
+            top: "6px",
+            right: "7px",
+            minWidth: "18px",
+            height: "18px",
+            borderRadius: "50%",
+            display: "grid",
+            placeItems: "center",
+            background: "#d4af37",
+            color: "#050505",
+            fontSize: "10px",
+            fontWeight: 900,
+          }}
+        >
+          {count}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+function HomeBottomButton({
+  to,
+  icon,
+  title,
+  count,
+}) {
+  return (
+    <Link
+      to={to}
+      style={{
+        color: "#fff",
+        textDecoration: "none",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "2px",
+        minHeight: "50px",
+        position: "relative",
+        fontSize: "10px",
+        fontWeight: 800,
+      }}
+    >
+      <span
+        style={{
+          fontSize: "21px",
+        }}
+      >
+        {icon}
+      </span>
+
+      <span>{title}</span>
+
+      {count > 0 && (
+        <span
+          style={{
+            position: "absolute",
+            top: "-1px",
+            right: "17%",
+            minWidth: "16px",
+            height: "16px",
+            borderRadius: "50%",
+            background: "#d4af37",
+            color: "#050505",
+            display: "grid",
+            placeItems: "center",
+            fontSize: "9px",
+            fontWeight: 900,
+          }}
+        >
+          {count}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+/* =========================================================
    BET SLIP PAGE
 ========================================================= */
 
@@ -1319,9 +1898,7 @@ function BetSlipPage({
           GOLDENBET
         </span>
 
-        <h1>
-          🧾 Bet Slip
-        </h1>
+        <h1>🧾 Bet Slip</h1>
 
         <p>
           Review your selections,
@@ -1343,146 +1920,6 @@ function BetSlipPage({
           session={session}
         />
       </div>
-    </div>
-  );
-}
-
-/* =========================================================
-   HOME
-========================================================= */
-
-function Home({
-  bets,
-  addBet,
-  removeBet,
-  clearBets,
-  session,
-}) {
-  const [search, setSearch] =
-    useState("");
-
-  const filteredMatches =
-    matches.filter((match) =>
-      `${match.home} ${match.away} ${match.league} ${match.country}`
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
-    );
-
-  return (
-    <div className="page">
-      <section
-        className="hero"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0,0,0,.42), rgba(0,0,0,.78)), url('/goldenbet-hero.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition:
-            "center",
-          backgroundRepeat:
-            "no-repeat",
-        }}
-      >
-        <div className="hero-content">
-          <span className="hero-badge">
-            👑 GOLDENBET
-          </span>
-
-          <h1>
-            Sports, Casino & Live Betting
-          </h1>
-
-          <p>
-            Premium sports betting,
-            casino games and live
-            entertainment.
-          </p>
-
-          <div className="hero-buttons">
-            <Link
-              to="/sports"
-              className="btn btn-gold"
-            >
-              ⚽ Explore Sports
-            </Link>
-
-            <Link
-              to="/casino"
-              className="btn btn-outline"
-            >
-              🎰 Casino
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="section-title">
-          <h2>
-            🔥 Popular Matches
-          </h2>
-
-          <Link
-            to="/sports"
-            className="view-all-markets"
-          >
-            All Sports →
-          </Link>
-        </div>
-
-        <div
-          style={{
-            marginBottom:
-              "20px",
-          }}
-        >
-          <input
-            type="search"
-            value={search}
-            onChange={(e) =>
-              setSearch(
-                e.target.value
-              )
-            }
-            placeholder="🔎 Search team, league or country..."
-            style={{
-              width: "100%",
-              maxWidth: "520px",
-            }}
-          />
-        </div>
-
-        <div className="home-layout">
-          <div className="matches-grid">
-            {filteredMatches.map(
-              (match) => (
-                <MatchCard
-                  key={match.id}
-                  match={match}
-                  bets={bets}
-                  addBet={addBet}
-                />
-              )
-            )}
-
-            {!filteredMatches.length && (
-              <div className="empty-state">
-                <h3>
-                  No matches found
-                </h3>
-              </div>
-            )}
-          </div>
-
-          <BetSlip
-            bets={bets}
-            removeBet={removeBet}
-            clearBets={clearBets}
-            session={session}
-          />
-        </div>
-      </section>
     </div>
   );
 }
@@ -1530,8 +1967,7 @@ function MatchCard({
         </span>
 
         <span>
-          {match.date} •{" "}
-          {match.time}
+          {match.date} • {match.time}
         </span>
       </div>
 
@@ -1541,8 +1977,7 @@ function MatchCard({
           display: "grid",
           gridTemplateColumns:
             "1fr auto 1fr",
-          alignItems:
-            "center",
+          alignItems: "center",
           gap: "12px",
           textAlign: "center",
         }}
@@ -1550,10 +1985,8 @@ function MatchCard({
         <div
           style={{
             display: "flex",
-            flexDirection:
-              "column",
-            alignItems:
-              "center",
+            flexDirection: "column",
+            alignItems: "center",
             gap: "8px",
           }}
         >
@@ -1563,13 +1996,10 @@ function MatchCard({
             size={50}
           />
 
-          <strong>
-            {match.home}
-          </strong>
+          <strong>{match.home}</strong>
         </div>
 
         <span
-          className="vs"
           style={{
             fontWeight: 900,
             color: "#d4af37",
@@ -1581,10 +2011,8 @@ function MatchCard({
         <div
           style={{
             display: "flex",
-            flexDirection:
-              "column",
-            alignItems:
-              "center",
+            flexDirection: "column",
+            alignItems: "center",
             gap: "8px",
           }}
         >
@@ -1594,9 +2022,7 @@ function MatchCard({
             size={50}
           />
 
-          <strong>
-            {match.away}
-          </strong>
+          <strong>{match.away}</strong>
         </div>
       </div>
 
@@ -1618,7 +2044,6 @@ function MatchCard({
 
       {selectedBets.length > 0 && (
         <div
-          className="match-bet-builder"
           style={{
             marginTop: "14px",
             padding: "12px",
@@ -1628,25 +2053,9 @@ function MatchCard({
               "1px solid rgba(212,175,55,.35)",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent:
-                "space-between",
-              alignItems:
-                "center",
-              marginBottom: "8px",
-            }}
-          >
-            <strong>
-              🎯 Bet Builder
-            </strong>
-
-            <span>
-              {selectedBets.length}{" "}
-              selections
-            </span>
-          </div>
+          <strong>
+            🎯 Bet Builder
+          </strong>
 
           {selectedBets.map(
             (bet) => {
@@ -1659,8 +2068,7 @@ function MatchCard({
                 <div
                   key={bet.id}
                   style={{
-                    padding:
-                      "7px 0",
+                    padding: "7px 0",
                     borderTop:
                       "1px solid rgba(255,255,255,.08)",
                     color:
@@ -1677,15 +2085,11 @@ function MatchCard({
                       bet.marketTitle
                     }
                   </strong>
-
                   {" — "}
-
                   {bet.selection}
-
                   <span
                     style={{
-                      marginLeft:
-                        "6px",
+                      marginLeft: "6px",
                     }}
                   >
                     @ {bet.odds}
@@ -1749,9 +2153,7 @@ function MatchPage({
     return (
       <div className="page section">
         <div className="empty-state">
-          <h2>
-            Match not found.
-          </h2>
+          <h2>Match not found.</h2>
 
           <Link
             to="/sports"
@@ -1788,24 +2190,18 @@ function MatchPage({
         <div
           style={{
             display: "flex",
-            justifyContent:
-              "center",
-            alignItems:
-              "center",
+            justifyContent: "center",
+            alignItems: "center",
             gap: "25px",
-            flexWrap:
-              "wrap",
-            margin:
-              "20px 0",
+            flexWrap: "wrap",
+            margin: "20px 0",
           }}
         >
           <div
             style={{
               display: "flex",
-              flexDirection:
-                "column",
-              alignItems:
-                "center",
+              flexDirection: "column",
+              alignItems: "center",
               gap: "8px",
             }}
           >
@@ -1815,9 +2211,7 @@ function MatchPage({
               size={72}
             />
 
-            <h2>
-              {match.home}
-            </h2>
+            <h2>{match.home}</h2>
           </div>
 
           <div
@@ -1833,10 +2227,8 @@ function MatchPage({
           <div
             style={{
               display: "flex",
-              flexDirection:
-                "column",
-              alignItems:
-                "center",
+              flexDirection: "column",
+              alignItems: "center",
               gap: "8px",
             }}
           >
@@ -1846,9 +2238,7 @@ function MatchPage({
               size={72}
             />
 
-            <h2>
-              {match.away}
-            </h2>
+            <h2>{match.away}</h2>
           </div>
         </div>
 
@@ -1860,8 +2250,7 @@ function MatchPage({
 
         {selectedBets.length > 0 && (
           <div className="selected-count">
-            🎯{" "}
-            {selectedBets.length}{" "}
+            🎯 {selectedBets.length}{" "}
             selections in Bet Builder
           </div>
         )}
@@ -1880,64 +2269,6 @@ function MatchPage({
           )
         )}
       </div>
-
-      {selectedBets.length > 0 && (
-        <div
-          className="match-detail-builder"
-          style={{
-            marginTop: "24px",
-            padding: "16px",
-            borderRadius: "12px",
-            background: "#111",
-            border:
-              "1px solid rgba(212,175,55,.35)",
-          }}
-        >
-          <h3>
-            🎯 Your Bet Builder
-          </h3>
-
-          {selectedBets.map(
-            (bet) => {
-              const status =
-                getSelectionStatus(
-                  bet
-                );
-
-              return (
-                <div
-                  key={bet.id}
-                  style={{
-                    padding:
-                      "8px 0",
-                    color:
-                      getStatusColor(
-                        status
-                      ),
-                  }}
-                >
-                  {getStatusIcon(
-                    status
-                  )}{" "}
-                  <strong>
-                    {
-                      bet.marketTitle
-                    }
-                  </strong>
-
-                  {" — "}
-
-                  {bet.selection}
-
-                  {" @ "}
-
-                  {bet.odds}
-                </div>
-              );
-            }
-          )}
-        </div>
-      )}
 
       <div className="mobile-bet-slip-link">
         <Link
@@ -1975,9 +2306,7 @@ function MarketGroup({
       }`}
     >
       <div className="market-group-title">
-        <h3>
-          {group.title}
-        </h3>
+        <h3>{group.title}</h3>
       </div>
 
       {group.markets.map(
@@ -1989,7 +2318,6 @@ function MarketGroup({
             match={match}
             bets={bets}
             addBet={addBet}
-            compact={compact}
           />
         )
       )}
@@ -2038,53 +2366,25 @@ function Market({
 
     addBet({
       id: `${match.id}-${market.id}-${selection.key}`,
-
       matchId: match.id,
-
       match:
         `${match.home} vs ${match.away}`,
-
       home: match.home,
-
       away: match.away,
-
-      homeCode:
-        match.homeCode,
-
-      awayCode:
-        match.awayCode,
-
+      homeCode: match.homeCode,
+      awayCode: match.awayCode,
       league: match.league,
-
-      country:
-        match.country,
-
+      country: match.country,
       time: match.time,
-
       date: match.date,
-
       groupId: group.id,
-
-      groupTitle:
-        group.title,
-
-      marketId:
-        market.id,
-
-      marketTitle:
-        market.title,
-
-      selectionKey:
-        selection.key,
-
-      selection:
-        selection.name,
-
-      label:
-        selection.label,
-
+      groupTitle: group.title,
+      marketId: market.id,
+      marketTitle: market.title,
+      selectionKey: selection.key,
+      selection: selection.name,
+      label: selection.label,
       odds,
-
       result: "pending",
     });
   }
@@ -2211,9 +2511,7 @@ function BetSlip({
           groups.push(group);
         }
 
-        group.selections.push(
-          bet
-        );
+        group.selections.push(bet);
       });
 
       return groups;
@@ -2251,9 +2549,7 @@ function BetSlip({
 
   const totalOdds =
     useMemo(() => {
-      if (
-        !matchOdds.length
-      ) {
+      if (!matchOdds.length) {
         return "0.00";
       }
 
@@ -2284,9 +2580,6 @@ function BetSlip({
         ).toFixed(2)
       : "0.00";
 
-  const totalSelections =
-    bets.length;
-
   async function placeBet() {
     if (!bets.length) {
       alert(
@@ -2309,46 +2602,7 @@ function BetSlip({
     }
 
     if (!session?.user?.id) {
-      alert(
-        "Please login first."
-      );
-      return;
-    }
-
-    const stakeAmount =
-      stakeNumber;
-
-    const oddsAmount =
-      Number(totalOdds);
-
-    const returnAmount =
-      Number(
-        potentialReturn
-      );
-
-    if (
-      !Number.isFinite(
-        stakeAmount
-      ) ||
-      !Number.isFinite(
-        oddsAmount
-      ) ||
-      !Number.isFinite(
-        returnAmount
-      )
-    ) {
-      alert(
-        "Invalid bet amount."
-      );
-      return;
-    }
-
-    if (
-      oddsAmount <= 0
-    ) {
-      alert(
-        "Invalid total odds."
-      );
+      alert("Please login first.");
       return;
     }
 
@@ -2370,47 +2624,34 @@ function BetSlip({
         .insert({
           user_id:
             session.user.id,
-
           match_name:
             matchNames,
-
           stake:
-            stakeAmount,
-
+            stakeNumber,
           total_odds:
-            oddsAmount,
-
+            Number(totalOdds),
           potential_win:
-            returnAmount,
-
-          status:
-            "pending",
+            Number(potentialReturn),
+          status: "pending",
         });
 
       if (error) {
-        console.error(
-          "Place bet error:",
-          error
-        );
-
         alert(
           `Bet failed: ${error.message}`
         );
-
         return;
       }
 
       alert(
-        `Bet placed successfully!\n\nMatches: ${groupedBets.length}/20\nSelections: ${totalSelections}\nTotal Odds: ${totalOdds}\nStake: ${stakeAmount.toLocaleString()} IQD\nPotential Return: ${returnAmount.toLocaleString()} IQD`
+        `Bet placed successfully!\n\nTotal Odds: ${totalOdds}\nStake: ${stakeNumber.toLocaleString()} IQD\nPotential Return: ${Number(
+          potentialReturn
+        ).toLocaleString()} IQD`
       );
 
       setStake("");
       clearBets();
     } catch (error) {
-      console.error(
-        "Unexpected bet error:",
-        error
-      );
+      console.error(error);
 
       alert(
         "Something went wrong while placing the bet."
@@ -2424,9 +2665,7 @@ function BetSlip({
     <aside className="bet-slip">
       <div className="bet-slip-header">
         <div>
-          <h3>
-            🧾 Bet Slip
-          </h3>
+          <h3>🧾 Bet Slip</h3>
 
           <span>
             {groupedBets.length}/20 Matches
@@ -2438,7 +2677,6 @@ function BetSlip({
             type="button"
             className="clear-bets"
             onClick={clearBets}
-            disabled={placing}
           >
             Clear
           </button>
@@ -2459,18 +2697,12 @@ function BetSlip({
             Choose markets from a match.
           </p>
 
-          <small>
-            Maximum 20 matches.
-          </small>
-
           <Link
             to="/sports"
             className="btn btn-gold"
             style={{
-              marginTop:
-                "15px",
-              display:
-                "inline-flex",
+              marginTop: "15px",
+              display: "inline-flex",
             }}
           >
             ⚽ Browse Sports
@@ -2480,10 +2712,7 @@ function BetSlip({
         <>
           <div className="bet-list">
             {matchOdds.map(
-              (
-                group,
-                groupIndex
-              ) => (
+              (group, index) => (
                 <div
                   className="bet-match-group"
                   key={
@@ -2502,78 +2731,16 @@ function BetSlip({
                       "1px solid rgba(212,175,55,.25)",
                   }}
                 >
-                  <div
+                  <strong
                     style={{
-                      display:
-                        "flex",
-                      alignItems:
-                        "center",
-                      gap: "10px",
+                      color:
+                        "#d4af37",
                     }}
                   >
-                    <TeamLogo
-                      name={
-                        group.home
-                      }
-                      code={
-                        group.homeCode
-                      }
-                      size={36}
-                    />
-
-                    <div
-                      style={{
-                        flex: 1,
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontWeight:
-                            "700",
-                          color:
-                            "#d4af37",
-                        }}
-                      >
-                        {groupIndex +
-                          1}
-                        .{" "}
-                        {group.home}{" "}
-                        vs{" "}
-                        {group.away}
-                      </div>
-
-                      <small>
-                        {group.country &&
-                          `${group.country} • `}
-                        {
-                          group.league
-                        }{" "}
-                        •{" "}
-                        {group.time}
-                      </small>
-                    </div>
-
-                    <TeamLogo
-                      name={
-                        group.away
-                      }
-                      code={
-                        group.awayCode
-                      }
-                      size={36}
-                    />
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop:
-                        "10px",
-                    }}
-                  >
-                    <strong>
-                      🎯 Bet Builder
-                    </strong>
-                  </div>
+                    {index + 1}.{" "}
+                    {group.home} vs{" "}
+                    {group.away}
+                  </strong>
 
                   {group.selections.map(
                     (bet) => {
@@ -2591,10 +2758,6 @@ function BetSlip({
                           style={{
                             marginTop:
                               "8px",
-                            padding:
-                              "8px",
-                            borderTop:
-                              "1px solid rgba(255,255,255,.07)",
                           }}
                         >
                           <div className="bet-info">
@@ -2624,9 +2787,7 @@ function BetSlip({
 
                             <b>
                               @{" "}
-                              {
-                                bet.odds
-                              }
+                              {bet.odds}
                             </b>
                           </div>
 
@@ -2637,9 +2798,6 @@ function BetSlip({
                               removeBet(
                                 bet.id
                               )
-                            }
-                            disabled={
-                              placing
                             }
                           >
                             ×
@@ -2654,7 +2812,7 @@ function BetSlip({
                       marginTop:
                         "10px",
                       paddingTop:
-                        "9px",
+                        "8px",
                       borderTop:
                         "1px solid rgba(255,255,255,.1)",
                       display:
@@ -2680,30 +2838,21 @@ function BetSlip({
 
           <div className="bet-summary">
             <div>
-              <span>
-                Matches
-              </span>
-
+              <span>Matches</span>
               <strong>
                 {groupedBets.length}
               </strong>
             </div>
 
             <div>
-              <span>
-                Selections
-              </span>
-
+              <span>Selections</span>
               <strong>
-                {totalSelections}
+                {bets.length}
               </strong>
             </div>
 
             <div>
-              <span>
-                Total Odds
-              </span>
-
+              <span>Total Odds</span>
               <strong>
                 {totalOdds}
               </strong>
@@ -2727,7 +2876,6 @@ function BetSlip({
                 )
               }
               placeholder="0"
-              disabled={placing}
             />
           </div>
 
@@ -2758,10 +2906,8 @@ function BetSlip({
           {!session && (
             <p
               style={{
-                marginTop:
-                  "10px",
-                textAlign:
-                  "center",
+                marginTop: "10px",
+                textAlign: "center",
               }}
             >
               Please{" "}
@@ -2806,8 +2952,7 @@ function Sports({
   const visibleMatches =
     matches.filter((match) => {
       if (
-        sport !==
-        "Football"
+        sport !== "Football"
       ) {
         return false;
       }
@@ -2849,9 +2994,7 @@ function Sports({
           GOLDENBET SPORTS
         </span>
 
-        <h1>
-          ⚽ Sports
-        </h1>
+        <h1>⚽ Sports</h1>
 
         <p>
           Select sport, country,
@@ -2860,14 +3003,11 @@ function Sports({
       </div>
 
       <div
-        className="sports-mode-bar"
         style={{
           display: "flex",
           gap: "10px",
-          flexWrap:
-            "wrap",
-          marginBottom:
-            "20px",
+          flexWrap: "wrap",
+          marginBottom: "20px",
         }}
       >
         <Link
@@ -2876,20 +3016,6 @@ function Sports({
         >
           🔴 Live Sports
         </Link>
-
-        <div
-          className="sports-mode-title"
-          style={{
-            padding:
-              "10px 16px",
-            borderRadius:
-              "10px",
-            border:
-              "1px solid rgba(212,175,55,.35)",
-          }}
-        >
-          ⚽ All Sports
-        </div>
 
         <input
           type="search"
@@ -2902,8 +3028,7 @@ function Sports({
           placeholder="🔎 Search teams..."
           style={{
             flex: 1,
-            minWidth:
-              "220px",
+            minWidth: "220px",
           }}
         />
       </div>
@@ -2921,79 +3046,53 @@ function Sports({
           className="sports-sidebar"
           style={{
             padding: "16px",
-            borderRadius:
-              "14px",
-            background:
-              "#101010",
+            borderRadius: "14px",
+            background: "#101010",
             border:
               "1px solid rgba(212,175,55,.2)",
-            height:
-              "fit-content",
+            height: "fit-content",
           }}
         >
           <div
-            className="sidebar-title"
             style={{
-              fontWeight:
-                "700",
-              marginBottom:
-                "12px",
+              fontWeight: 700,
+              marginBottom: "12px",
             }}
           >
             🏆 Sports
           </div>
 
-          <div className="sports-list">
-            {sports.map(
-              (item) => (
-                <button
-                  type="button"
-                  key={item}
-                  className={
-                    sport === item
-                      ? "sport-side-item active"
-                      : "sport-side-item"
-                  }
-                  onClick={() => {
-                    setSport(item);
-                    setCountry(
-                      null
-                    );
-                    setLeague(
-                      null
-                    );
-                  }}
-                  style={{
-                    width:
-                      "100%",
-                    textAlign:
-                      "left",
-                    marginBottom:
-                      "6px",
-                    padding:
-                      "10px",
-                    borderRadius:
-                      "8px",
-                    cursor:
-                      "pointer",
-                  }}
-                >
-                  ⚽ {item}
-                </button>
-              )
-            )}
-          </div>
+          {sports.map(
+            (item) => (
+              <button
+                type="button"
+                key={item}
+                onClick={() => {
+                  setSport(item);
+                  setCountry(null);
+                  setLeague(null);
+                }}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  marginBottom: "6px",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                ⚽ {item}
+              </button>
+            )
+          )}
         </aside>
 
-        <div className="sports-content">
+        <div>
           {sport !==
           "Football" ? (
             <div className="sports-panel">
               <div className="empty-state">
-                <h2>
-                  {sport}
-                </h2>
-
+                <h2>{sport}</h2>
                 <p>
                   League and match
                   data can be connected
@@ -3006,48 +3105,17 @@ function Sports({
               <div
                 className="sports-panel"
                 style={{
-                  padding:
-                    "18px",
-                  borderRadius:
-                    "14px",
-                  background:
-                    "#101010",
+                  padding: "18px",
+                  borderRadius: "14px",
+                  background: "#101010",
                   border:
                     "1px solid rgba(212,175,55,.2)",
-                  marginBottom:
-                    "20px",
+                  marginBottom: "20px",
                 }}
               >
-                <div
-                  className="sports-panel-head"
-                  style={{
-                    display:
-                      "flex",
-                    justifyContent:
-                      "space-between",
-                    alignItems:
-                      "center",
-                    marginBottom:
-                      "15px",
-                  }}
-                >
-                  <div>
-                    <span className="section-kicker">
-                      WORLDWIDE
-                    </span>
-
-                    <h2>
-                      🌍 Countries
-                    </h2>
-                  </div>
-
-                  <span>
-                    {
-                      sportsCountries.length
-                    }{" "}
-                    countries
-                  </span>
-                </div>
+                <h2>
+                  🌍 Countries
+                </h2>
 
                 <div
                   className="country-grid"
@@ -3065,12 +3133,6 @@ function Sports({
                         type="button"
                         key={
                           item.name
-                        }
-                        className={
-                          country ===
-                          item.name
-                            ? "country-card active"
-                            : "country-card"
                         }
                         onClick={() => {
                           setCountry(
@@ -3095,10 +3157,6 @@ function Sports({
                           style={{
                             fontSize:
                               "24px",
-                            display:
-                              "block",
-                            marginBottom:
-                              "5px",
                           }}
                         >
                           {
@@ -3118,8 +3176,6 @@ function Sports({
                               "block",
                             opacity:
                               ".7",
-                            marginTop:
-                              "4px",
                           }}
                         >
                           {
@@ -3151,46 +3207,11 @@ function Sports({
                       "20px",
                   }}
                 >
-                  <div
-                    style={{
-                      display:
-                        "flex",
-                      justifyContent:
-                        "space-between",
-                      alignItems:
-                        "center",
-                      marginBottom:
-                        "15px",
-                    }}
-                  >
-                    <div>
-                      <span className="section-kicker">
-                        {country}
-                      </span>
-
-                      <h2>
-                        🏆 Leagues
-                      </h2>
-                    </div>
-
-                    <button
-                      type="button"
-                      className="text-button"
-                      onClick={() => {
-                        setCountry(
-                          null
-                        );
-                        setLeague(
-                          null
-                        );
-                      }}
-                    >
-                      All Countries
-                    </button>
-                  </div>
+                  <h2>
+                    🏆 Leagues
+                  </h2>
 
                   <div
-                    className="league-grid"
                     style={{
                       display:
                         "grid",
@@ -3205,12 +3226,6 @@ function Sports({
                           type="button"
                           key={
                             item
-                          }
-                          className={
-                            league ===
-                            item
-                              ? "league-card active"
-                              : "league-card"
                           }
                           onClick={() =>
                             setLeague(
@@ -3240,65 +3255,28 @@ function Sports({
               <div
                 className="sports-panel"
                 style={{
-                  padding:
-                    "18px",
-                  borderRadius:
-                    "14px",
-                  background:
-                    "#101010",
+                  padding: "18px",
+                  borderRadius: "14px",
+                  background: "#101010",
                   border:
                     "1px solid rgba(212,175,55,.2)",
                 }}
               >
-                <div
-                  style={{
-                    display:
-                      "flex",
-                    justifyContent:
-                      "space-between",
-                    alignItems:
-                      "center",
-                    marginBottom:
-                      "15px",
-                  }}
-                >
-                  <div>
-                    <span className="section-kicker">
-                      {league ||
-                        country ||
-                        "TODAY"}
-                    </span>
-
-                    <h2>
-                      🔥 Matches
-                    </h2>
-                  </div>
-
-                  <span>
-                    {
-                      visibleMatches.length
-                    }{" "}
-                    matches
-                  </span>
-                </div>
+                <h2>
+                  🔥 Matches
+                </h2>
 
                 {visibleMatches.length >
                 0 ? (
                   <div className="matches-grid">
                     {visibleMatches.map(
-                      (
-                        match
-                      ) => (
+                      (match) => (
                         <MatchCard
                           key={
                             match.id
                           }
-                          match={
-                            match
-                          }
-                          bets={
-                            bets
-                          }
+                          match={match}
+                          bets={bets}
                           addBet={
                             addBet
                           }
@@ -3311,11 +3289,6 @@ function Sports({
                     <h3>
                       No matches yet
                     </h3>
-
-                    <p>
-                      Select another
-                      country or league.
-                    </p>
                   </div>
                 )}
               </div>
@@ -3328,7 +3301,7 @@ function Sports({
 }
 
 /* =========================================================
-   LIVE SPORTS
+   LIVE
 ========================================================= */
 
 function Live() {
@@ -3339,35 +3312,11 @@ function Live() {
           GOLDENBET LIVE
         </span>
 
-        <h1>
-          🔴 Live Sports
-        </h1>
+        <h1>🔴 Live Sports</h1>
 
         <p>
           Live interface preview.
-          Real scores require a live
-          sports data provider.
         </p>
-      </div>
-
-      <div
-        style={{
-          padding:
-            "12px 16px",
-          marginBottom:
-            "18px",
-          borderRadius:
-            "10px",
-          background:
-            "rgba(212,175,55,.08)",
-          border:
-            "1px solid rgba(212,175,55,.25)",
-          color:
-            "#d4af37",
-        }}
-      >
-        ⚠️ Demo live data — scores
-        shown here are not live.
       </div>
 
       <div className="live-grid">
@@ -3389,78 +3338,34 @@ function Live() {
 
               <div
                 style={{
-                  display:
-                    "flex",
-                  alignItems:
-                    "center",
+                  display: "flex",
+                  alignItems: "center",
                   justifyContent:
                     "center",
                   gap: "15px",
-                  margin:
-                    "15px 0",
+                  margin: "15px 0",
                 }}
               >
-                <div
-                  style={{
-                    display:
-                      "flex",
-                    flexDirection:
-                      "column",
-                    alignItems:
-                      "center",
-                    gap: "6px",
-                  }}
-                >
-                  <TeamLogo
-                    name={
-                      match.home
-                    }
-                    code={
-                      match.homeCode
-                    }
-                    size={46}
-                  />
-
-                  <strong>
-                    {match.home}
-                  </strong>
-                </div>
+                <TeamLogo
+                  name={match.home}
+                  code={match.homeCode}
+                  size={46}
+                />
 
                 <div>
                   <div className="live-score">
                     1 - 0
                   </div>
-
                   <small>
                     2nd Half
                   </small>
                 </div>
 
-                <div
-                  style={{
-                    display:
-                      "flex",
-                    flexDirection:
-                      "column",
-                    alignItems:
-                      "center",
-                    gap: "6px",
-                  }}
-                >
-                  <TeamLogo
-                    name={
-                      match.away
-                    }
-                    code={
-                      match.awayCode
-                    }
-                    size={46}
-                  />
-
-                  <strong>
-                    {match.away}
-                  </strong>
-                </div>
+                <TeamLogo
+                  name={match.away}
+                  code={match.awayCode}
+                  size={46}
+                />
               </div>
 
               <Link
@@ -3499,10 +3404,8 @@ function Casino() {
         className="casino-hero"
         style={{
           padding: "30px",
-          borderRadius:
-            "18px",
-          marginBottom:
-            "22px",
+          borderRadius: "18px",
+          marginBottom: "22px",
           background:
             "linear-gradient(135deg,#090909,#17120a,#090909)",
           border:
@@ -3513,9 +3416,7 @@ function Casino() {
           GOLDENBET CASINO
         </span>
 
-        <h1>
-          🎰 Casino
-        </h1>
+        <h1>🎰 Casino</h1>
 
         <p>
           Roulette, Blackjack,
@@ -3525,41 +3426,16 @@ function Casino() {
 
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(150px,1fr))",
-            gap: "12px",
-            marginTop:
-              "20px",
+            fontSize: "55px",
+            marginTop: "15px",
           }}
         >
-          {[
-            ["🎡", "Roulette"],
-            ["🃏", "Blackjack"],
-            ["💰", "Jackpot"],
-            ["🚀", "Crash"],
-          ].map(
-            ([icon, name]) => (
-              <div
-                className="game-card"
-                key={name}
-              >
-                <div className="game-image">
-                  {icon}
-                </div>
-
-                <h3>
-                  {name}
-                </h3>
-              </div>
-            )
-          )}
+          🎡 🃏 💰 🚀
         </div>
 
         <div
           style={{
-            marginTop:
-              "18px",
+            marginTop: "18px",
           }}
         >
           <Link
@@ -3615,7 +3491,7 @@ function Casino() {
               className="btn btn-gold"
               onClick={() =>
                 alert(
-                  `${game.name} is a UI demo. A real casino provider integration is required to play.`
+                  `${game.name} is a UI demo.`
                 )
               }
             >
@@ -3653,10 +3529,8 @@ function LiveCasino() {
         className="casino-hero"
         style={{
           padding: "30px",
-          borderRadius:
-            "18px",
-          marginBottom:
-            "22px",
+          borderRadius: "18px",
+          marginBottom: "22px",
           background:
             "linear-gradient(135deg,#090909,#160d0d,#090909)",
           border:
@@ -3667,9 +3541,7 @@ function LiveCasino() {
           GOLDENBET LIVE CASINO
         </span>
 
-        <h1>
-          🔴 Live Casino
-        </h1>
+        <h1>🔴 Live Casino</h1>
 
         <p>
           Live Roulette, Blackjack,
@@ -3679,10 +3551,8 @@ function LiveCasino() {
 
         <div
           style={{
-            fontSize:
-              "55px",
-            marginTop:
-              "15px",
+            fontSize: "55px",
+            marginTop: "15px",
           }}
         >
           🎡 🃏 💰 🎲
@@ -3733,7 +3603,7 @@ function LiveCasino() {
               className="btn btn-gold"
               onClick={() =>
                 alert(
-                  `${game.name} is a UI demo. Real live casino integration requires a licensed provider.`
+                  `${game.name} is a UI demo.`
                 )
               }
             >
@@ -3779,9 +3649,7 @@ function GoldenGames() {
                 ⭐
               </div>
 
-              <h3>
-                {game}
-              </h3>
+              <h3>{game}</h3>
 
               <p
                 style={{
@@ -3822,16 +3690,12 @@ function Promotions() {
           GOLDENBET OFFERS
         </span>
 
-        <h1>
-          🎁 Promotions
-        </h1>
+        <h1>🎁 Promotions</h1>
       </div>
 
       <div className="promotion-grid">
         <div className="promotion-card">
-          <span>
-            WELCOME
-          </span>
+          <span>WELCOME</span>
 
           <h2>
             Welcome Bonus
@@ -3850,13 +3714,9 @@ function Promotions() {
         </div>
 
         <div className="promotion-card">
-          <span>
-            VIP
-          </span>
+          <span>VIP</span>
 
-          <h2>
-            Golden VIP
-          </h2>
+          <h2>Golden VIP</h2>
 
           <p>
             Exclusive VIP benefits.
@@ -4286,9 +4146,7 @@ function Profile({
   return (
     <div className="page section">
       <div className="page-heading">
-        <h1>
-          👤 Profile
-        </h1>
+        <h1>👤 Profile</h1>
       </div>
 
       <div className="profile-card">
@@ -4297,9 +4155,7 @@ function Profile({
             "👤"}
         </div>
 
-        <h2>
-          {username}
-        </h2>
+        <h2>{username}</h2>
 
         <p>
           {session.user.email}
@@ -4315,15 +4171,11 @@ function Profile({
 
         <div
           style={{
-            display:
-              "flex",
+            display: "flex",
             gap: "10px",
-            flexWrap:
-              "wrap",
+            flexWrap: "wrap",
             justifyContent:
               "center",
-            marginTop:
-              "15px",
           }}
         >
           <Link
@@ -4552,9 +4404,7 @@ function Withdraw({
   return (
     <div className="page section">
       <div className="page-heading">
-        <h1>
-          💸 Withdraw
-        </h1>
+        <h1>💸 Withdraw</h1>
 
         <p>
           Choose your withdrawal
@@ -4587,7 +4437,7 @@ function Withdraw({
               setMethod(
                 e.target.value
               )
-          }
+            }
           >
             <option value="Korek">
               Korek
@@ -4719,25 +4569,20 @@ function MyBets({
   return (
     <div className="page section">
       <div className="page-heading">
-        <h1>
-          🧾 My Bets
-        </h1>
+        <h1>🧾 My Bets</h1>
       </div>
 
       {!bets.length ? (
         <div className="empty-state">
           <div
             style={{
-              fontSize:
-                "40px",
+              fontSize: "40px",
             }}
           >
             🧾
           </div>
 
-          <h3>
-            No bets yet
-          </h3>
+          <h3>No bets yet</h3>
 
           <Link
             to="/sports"
@@ -4783,9 +4628,7 @@ function MyBets({
                 </div>
 
                 <div>
-                  <span>
-                    Stake
-                  </span>
+                  <span>Stake</span>
 
                   <strong>
                     {Number(
@@ -4796,9 +4639,7 @@ function MyBets({
                 </div>
 
                 <div>
-                  <span>
-                    Odds
-                  </span>
+                  <span>Odds</span>
 
                   <strong>
                     {bet.total_odds}
@@ -4847,15 +4688,12 @@ function Settings() {
   return (
     <div className="page section">
       <div className="page-heading">
-        <h1>
-          ⚙️ Settings
-        </h1>
+        <h1>⚙️ Settings</h1>
       </div>
 
       <div className="settings-card">
         <label>
           Notifications
-
           <input
             type="checkbox"
             defaultChecked
@@ -4864,7 +4702,6 @@ function Settings() {
 
         <label>
           Dark Mode
-
           <input
             type="checkbox"
             defaultChecked
@@ -4874,9 +4711,7 @@ function Settings() {
         <button
           type="button"
           className="btn btn-gold"
-          onClick={
-            saveSettings
-          }
+          onClick={saveSettings}
         >
           Save Settings
         </button>
@@ -4884,10 +4719,8 @@ function Settings() {
         {saved && (
           <p
             style={{
-              color:
-                "#35d06f",
-              marginTop:
-                "12px",
+              color: "#35d06f",
+              marginTop: "12px",
             }}
           >
             ✓ Settings saved
@@ -4906,9 +4739,7 @@ function NotFound() {
   return (
     <div className="page section">
       <div className="empty-state">
-        <h1>
-          404
-        </h1>
+        <h1>404</h1>
 
         <p>
           Page not found.
