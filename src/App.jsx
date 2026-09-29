@@ -547,12 +547,6 @@ export default function App() {
     };
   }, []);
 
-  /*
-   * Maximum 20 DIFFERENT MATCHES.
-   *
-   * Multiple markets from the same match
-   * stay inside one Bet Builder.
-   */
   function addBet(bet) {
     setBets((current) => {
       const sameMarket = current.find(
@@ -561,14 +555,6 @@ export default function App() {
           item.marketId === bet.marketId
       );
 
-      /*
-       * Same market:
-       * replace old selection.
-       *
-       * Example:
-       * Real Madrid Win
-       * -> Barcelona Win
-       */
       if (sameMarket) {
         return current.map((item) =>
           item.matchId === bet.matchId &&
@@ -978,7 +964,16 @@ function Home({
 }) {
   return (
     <div className="page">
-      <section className="hero">
+      <section
+        className="hero"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.70)), url('/goldenbet-hero.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
         <div className="hero-content">
           <span className="hero-badge">
             👑 GOLDENBET
@@ -1723,18 +1718,6 @@ function BetSlip({
     setPlacing(true);
 
     try {
-      /*
-       * IMPORTANT:
-       *
-       * We do NOT insert "selection"
-       * because your current Supabase
-       * bets table does not have that
-       * column.
-       *
-       * This prevents:
-       * Could not find the 'selection'
-       * column...
-       */
       const matchNames =
         groupedBets
           .map(
@@ -3816,12 +3799,6 @@ function MyBets({
         return;
       }
 
-      /*
-       * "selection" is intentionally
-       * NOT selected here because
-       * the current bets table does
-       * not contain that column.
-       */
       const {
         data,
         error,
