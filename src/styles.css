@@ -25,11 +25,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--white);
-  font-family:
-    Inter,
-    Arial,
-    Helvetica,
-    sans-serif;
+  font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
 button,
@@ -440,29 +436,24 @@ a {
   background: transparent;
 }
 
-.compact-market
-  .market-group-title {
+.compact-market .market-group-title {
   display: none;
 }
 
-.compact-market
-  .market {
+.compact-market .market {
   padding: 0;
   border: 0;
 }
 
-.compact-market
-  .market-title {
+.compact-market .market-title {
   display: none;
 }
 
-.compact-market
-  .market-selections {
+.compact-market .market-selections {
   grid-template-columns: repeat(3, 1fr);
 }
 
-.compact-market
-  .market-selection {
+.compact-market .market-selection {
   min-height: 45px;
 }
 
@@ -570,8 +561,7 @@ a {
   border: 1px solid #333;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow:
-    0 15px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
 }
 
 .bet-slip-header {
@@ -792,8 +782,7 @@ a {
 
 .sports-grid {
   display: grid;
-  grid-template-columns:
-    repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -823,8 +812,7 @@ a {
 
 .live-grid {
   display: grid;
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -895,8 +883,7 @@ a {
 
 .games-grid {
   display: grid;
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -935,8 +922,7 @@ a {
 
 .golden-games-grid {
   display: grid;
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -969,8 +955,7 @@ a {
 
 .promotion-grid {
   display: grid;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
 
@@ -1127,8 +1112,7 @@ a {
 
 .payment-grid {
   display: grid;
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -1286,13 +1270,11 @@ a {
   }
 
   .sports-grid {
-    grid-template-columns:
-      repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .games-grid {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -1311,13 +1293,26 @@ a {
     font-size: 20px;
   }
 
+  /* FIX:
+     Login / Register / Profile / Logout
+     are now visible on mobile
+  */
   .header-actions {
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
   }
 
-  .header-actions
-    .btn {
-    display: none;
+  .header-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-actions .language-select {
+    display: inline-block;
   }
 
   .language-select {
@@ -1376,14 +1371,11 @@ a {
   }
 
   .market-selections {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .compact-market
-    .market-selections {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
+  .compact-market .market-selections {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .market-selection {
@@ -1414,8 +1406,7 @@ a {
   }
 
   .sports-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .live-grid {
@@ -1423,13 +1414,11 @@ a {
   }
 
   .games-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .golden-games-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .promotion-grid {
@@ -1437,8 +1426,7 @@ a {
   }
 
   .payment-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .footer-inner {
@@ -1456,6 +1444,21 @@ a {
 ========================= */
 
 @media (max-width: 480px) {
+  .header-actions {
+    gap: 6px;
+  }
+
+  .header-actions .btn {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .language-select {
+    height: 34px;
+    max-width: 90px;
+    font-size: 11px;
+  }
+
   .bet-slip-top {
     padding: 7px 9px;
     font-size: 11px;
@@ -1481,10 +1484,8 @@ a {
     grid-template-columns: 1fr 1fr;
   }
 
-  .compact-market
-    .market-selections {
-    grid-template-columns:
-      repeat(3, 1fr);
+  .compact-market .market-selections {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .market-selection {
@@ -1496,8 +1497,7 @@ a {
   }
 
   .sports-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .games-grid {
@@ -1524,6 +1524,7 @@ a {
     width: 100%;
   }
 }
+
 /* =========================
    GOLDENBET PAYMENT CENTER
 ========================= */
@@ -1734,7 +1735,9 @@ a {
   line-height: 1.5;
 }
 
-/* MOBILE */
+/* =========================
+   PAYMENT MOBILE
+========================= */
 
 @media (max-width: 700px) {
   .payment-card {
