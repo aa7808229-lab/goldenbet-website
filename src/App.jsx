@@ -12,12 +12,9 @@ import {
   useParams,
 } from "react-router-dom";
 
-import { LanguageContext } from "./main";
-import { t } from "./translations";
 import AdminDashboard from "./AdminDashboard";
 import { marketGroups } from "./markets";
 import PaymentCard from "./PaymentCard";
-import GoldenBetHeader from "./GoldenBetHeader";
 import { supabase } from "../lib/supabase";
 
 /* =========================================================
@@ -586,12 +583,6 @@ function getStatusColor(status) {
   return "#f2c94c";
 }
 
-function getStatusLabel(status) {
-  if (status === "won") return "WON";
-  if (status === "lost") return "LOST";
-  return "PENDING";
-}
-
 /* =========================================================
    TEAM LOGO
 ========================================================= */
@@ -667,18 +658,357 @@ function TeamLogo({
 }
 
 /* =========================================================
+   HEADER
+========================================================= */
+
+function GoldenBetHeader({ bets }) {
+  const [menuOpen, setMenuOpen] =
+    useState(false);
+
+  const [session, setSession] =
+    useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function getSession() {
+      const { data } =
+        await supabase.auth.getSession();
+
+      if (mounted) {
+        setSession(
+          data?.session ?? null
+        );
+      }
+    }
+
+    getSession();
+
+    const {
+      data: listener,
+    } =
+      supabase.auth.onAuthStateChange(
+        (_event, newSession) => {
+          if (mounted) {
+            setSession(newSession);
+          }
+        }
+      );
+
+    return () => {
+      mounted = false;
+      listener?.subscription?.unsubscribe();
+    };
+  }, []);
+
+  async function handleLogout() {
+    const { error } =
+      await supabase.auth.signOut();
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    setSession(null);
+    setMenuOpen(false);
+  }
+
+  return (
+    <header
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        background:
+          "rgba(5,5,5,.96)",
+        backdropFilter:
+          "blur(12px)",
+        borderBottom:
+          "1px solid rgba(212,175,55,.2)",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "1400px",
+          margin: "0 auto",
+          padding:
+            "12px 18px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent:
+            "space-between",
+          gap: "15px",
+        }}
+      >
+        <Link
+          to="/"
+          style={{
+            textDecoration:
+              "none",
+            display: "flex",
+            alignItems:
+              "center",
+            gap: "6px",
+            fontWeight: 900,
+            fontSize: "21px",
+          }}
+        >
+          <span>👑</span>
+          <span
+            style={{
+              color: "#d4af37",
+            }}
+          >
+            GOLDEN
+          </span>
+          <span
+            style={{
+              color: "#fff",
+            }}
+          >
+            BET
+          </span>
+        </Link>
+
+        <nav
+          className="goldenbet-main-nav"
+          style={{
+            display: "flex",
+            gap: "14px",
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <Link to="/">Home</Link>
+          <Link to="/sports">Sports</Link>
+          <Link to="/live">Live</Link>
+          <Link to="/casino">Casino</Link>
+          <Link to="/live-casino">
+            Live Casino
+          </Link>
+          <Link to="/golden-games">
+            Golden Games
+          </Link>
+          <Link to="/promotions">
+            Promotions
+          </Link>
+        </nav>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <Link
+            to="/bet-slip"
+            className="btn btn-gold"
+            style={{
+              padding:
+                "8px 12px",
+              textDecoration:
+                "none",
+            }}
+          >
+            🧾 {bets.length}
+          </Link>
+
+          {session ? (
+            <>
+              <Link
+                to="/profile"
+                className="btn btn-outline"
+                style={{
+                  padding:
+                    "8px 12px",
+                  textDecoration:
+                    "none",
+                }}
+              >
+                👤
+              </Link>
+
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={
+                  handleLogout
+                }
+                style={{
+                  padding:
+                    "8px 12px",
+                }}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="btn btn-outline"
+                style={{
+                  padding:
+                    "8px 12px",
+                  textDecoration:
+                    "none",
+                }}
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/register"
+                className="btn btn-gold"
+                style={{
+                  padding:
+                    "8px 12px",
+                  textDecoration:
+                    "none",
+                }}
+              >
+                Register
+              </Link>
+            </>
+          )}
+
+          <button
+            type="button"
+            onClick={() =>
+              setMenuOpen(
+                (value) => !value
+              )
+            }
+            aria-label="Menu"
+            style={{
+              display: "none",
+              padding: "8px",
+              borderRadius:
+                "8px",
+              background:
+                "#111",
+              color: "#fff",
+              border:
+                "1px solid rgba(212,175,55,.3)",
+              cursor:
+                "pointer",
+            }}
+          >
+            ☰
+          </button>
+        </div>
+      </div>
+
+      {menuOpen && (
+        <div
+          style={{
+            padding:
+              "12px 18px 18px",
+            borderTop:
+              "1px solid rgba(212,175,55,.15)",
+            display: "grid",
+            gap: "10px",
+          }}
+        >
+          <Link
+            to="/"
+            onClick={() =>
+              setMenuOpen(false)
+            }
+          >
+            Home
+          </Link>
+
+          <Link
+            to="/sports"
+            onClick={() =>
+              setMenuOpen(false)
+            }
+          >
+            Sports
+          </Link>
+
+          <Link
+            to="/live"
+            onClick={() =>
+              setMenuOpen(false)
+            }
+          >
+            Live Sports
+          </Link>
+
+          <Link
+            to="/casino"
+            onClick={() =>
+              setMenuOpen(false)
+            }
+          >
+            Casino
+          </Link>
+
+          <Link
+            to="/live-casino"
+            onClick={() =>
+              setMenuOpen(false)
+            }
+          >
+            Live Casino
+          </Link>
+
+          <Link
+            to="/golden-games"
+            onClick={() =>
+              setMenuOpen(false)
+            }
+          >
+            Golden Games
+          </Link>
+
+          <Link
+            to="/promotions"
+            onClick={() =>
+              setMenuOpen(false)
+            }
+          >
+            Promotions
+          </Link>
+
+          <Link
+            to="/profile"
+            onClick={() =>
+              setMenuOpen(false)
+            }
+          >
+            Profile
+          </Link>
+
+          <Link
+            to="/balance"
+            onClick={() =>
+              setMenuOpen(false)
+            }
+          >
+            Balance
+          </Link>
+        </div>
+      )}
+    </header>
+  );
+}
+
+/* =========================================================
    APP
 ========================================================= */
 
 export default function App() {
-  const {
-    language,
-    setLanguage,
-  } = useContext(LanguageContext);
+  const [bets, setBets] =
+    useState([]);
 
-  const [bets, setBets] = useState([]);
   const [session, setSession] =
     useState(null);
+
   const [authLoading, setAuthLoading] =
     useState(true);
 
@@ -686,24 +1016,36 @@ export default function App() {
     let mounted = true;
 
     async function loadSession() {
-      const {
-        data,
-        error,
-      } =
-        await supabase.auth.getSession();
+      try {
+        const {
+          data,
+          error,
+        } =
+          await supabase.auth.getSession();
 
-      if (error) {
+        if (error) {
+          console.error(
+            "Session error:",
+            error
+          );
+        }
+
+        if (mounted) {
+          setSession(
+            data?.session ?? null
+          );
+          setAuthLoading(false);
+        }
+      } catch (error) {
         console.error(
-          "Session error:",
+          "Unexpected session error:",
           error
         );
-      }
 
-      if (mounted) {
-        setSession(
-          data?.session ?? null
-        );
-        setAuthLoading(false);
+        if (mounted) {
+          setSession(null);
+          setAuthLoading(false);
+        }
       }
     }
 
@@ -714,8 +1056,12 @@ export default function App() {
     } =
       supabase.auth.onAuthStateChange(
         (_event, newSession) => {
-          setSession(newSession);
-          setAuthLoading(false);
+          if (mounted) {
+            setSession(
+              newSession
+            );
+            setAuthLoading(false);
+          }
         }
       );
 
@@ -751,7 +1097,8 @@ export default function App() {
       const uniqueMatchIds =
         new Set(
           current.map(
-            (item) => item.matchId
+            (item) =>
+              item.matchId
           )
         );
 
@@ -781,19 +1128,6 @@ export default function App() {
   }
 
   function clearBets() {
-    setBets([]);
-  }
-
-  async function logout() {
-    const { error } =
-      await supabase.auth.signOut();
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    setSession(null);
     setBets([]);
   }
 
@@ -951,7 +1285,9 @@ export default function App() {
 
           <Route
             path="/super-admin"
-            element={<AdminDashboard />}
+            element={
+              <AdminDashboard />
+            }
           />
 
           <Route
@@ -1042,8 +1378,10 @@ function Home({
           backgroundImage:
             "linear-gradient(rgba(0,0,0,.42), rgba(0,0,0,.78)), url('/goldenbet-hero.jpg')",
           backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
+          backgroundPosition:
+            "center",
+          backgroundRepeat:
+            "no-repeat",
         }}
       >
         <div className="hero-content">
@@ -1095,7 +1433,8 @@ function Home({
 
         <div
           style={{
-            marginBottom: "20px",
+            marginBottom:
+              "20px",
           }}
         >
           <input
@@ -1202,7 +1541,8 @@ function MatchCard({
           display: "grid",
           gridTemplateColumns:
             "1fr auto 1fr",
-          alignItems: "center",
+          alignItems:
+            "center",
           gap: "12px",
           textAlign: "center",
         }}
@@ -1210,8 +1550,10 @@ function MatchCard({
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            flexDirection:
+              "column",
+            alignItems:
+              "center",
             gap: "8px",
           }}
         >
@@ -1239,8 +1581,10 @@ function MatchCard({
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            flexDirection:
+              "column",
+            alignItems:
+              "center",
             gap: "8px",
           }}
         >
@@ -1257,13 +1601,19 @@ function MatchCard({
       </div>
 
       <div className="match-markets-preview">
-        <MarketGroup
-          group={marketGroups[0]}
-          match={match}
-          bets={bets}
-          addBet={addBet}
-          compact
-        />
+        {marketGroups?.[0] ? (
+          <MarketGroup
+            group={marketGroups[0]}
+            match={match}
+            bets={bets}
+            addBet={addBet}
+            compact
+          />
+        ) : (
+          <div className="empty-state">
+            Market data unavailable.
+          </div>
+        )}
       </div>
 
       {selectedBets.length > 0 && (
@@ -1283,7 +1633,8 @@ function MatchCard({
               display: "flex",
               justifyContent:
                 "space-between",
-              alignItems: "center",
+              alignItems:
+                "center",
               marginBottom: "8px",
             }}
           >
@@ -1297,42 +1648,52 @@ function MatchCard({
             </span>
           </div>
 
-          {selectedBets.map((bet) => {
-            const status =
-              getSelectionStatus(bet);
+          {selectedBets.map(
+            (bet) => {
+              const status =
+                getSelectionStatus(
+                  bet
+                );
 
-            return (
-              <div
-                key={bet.id}
-                style={{
-                  padding: "7px 0",
-                  borderTop:
-                    "1px solid rgba(255,255,255,.08)",
-                  color:
-                    getStatusColor(
-                      status
-                    ),
-                }}
-              >
-                {getStatusIcon(status)}{" "}
-                <strong>
-                  {bet.marketTitle}
-                </strong>
-
-                {" — "}
-
-                {bet.selection}
-
-                <span
+              return (
+                <div
+                  key={bet.id}
                   style={{
-                    marginLeft: "6px",
+                    padding:
+                      "7px 0",
+                    borderTop:
+                      "1px solid rgba(255,255,255,.08)",
+                    color:
+                      getStatusColor(
+                        status
+                      ),
                   }}
                 >
-                  @ {bet.odds}
-                </span>
-              </div>
-            );
-          })}
+                  {getStatusIcon(
+                    status
+                  )}{" "}
+                  <strong>
+                    {
+                      bet.marketTitle
+                    }
+                  </strong>
+
+                  {" — "}
+
+                  {bet.selection}
+
+                  <span
+                    style={{
+                      marginLeft:
+                        "6px",
+                    }}
+                  >
+                    @ {bet.odds}
+                  </span>
+                </div>
+              );
+            }
+          )}
 
           <div
             style={{
@@ -1429,9 +1790,11 @@ function MatchPage({
             display: "flex",
             justifyContent:
               "center",
-            alignItems: "center",
+            alignItems:
+              "center",
             gap: "25px",
-            flexWrap: "wrap",
+            flexWrap:
+              "wrap",
             margin:
               "20px 0",
           }}
@@ -1505,15 +1868,17 @@ function MatchPage({
       </div>
 
       <div className="markets-container">
-        {marketGroups.map((group) => (
-          <MarketGroup
-            key={group.id}
-            group={group}
-            match={match}
-            bets={bets}
-            addBet={addBet}
-          />
-        ))}
+        {(marketGroups || []).map(
+          (group) => (
+            <MarketGroup
+              key={group.id}
+              group={group}
+              match={match}
+              bets={bets}
+              addBet={addBet}
+            />
+          )
+        )}
       </div>
 
       {selectedBets.length > 0 && (
@@ -1532,36 +1897,45 @@ function MatchPage({
             🎯 Your Bet Builder
           </h3>
 
-          {selectedBets.map((bet) => {
-            const status =
-              getSelectionStatus(bet);
+          {selectedBets.map(
+            (bet) => {
+              const status =
+                getSelectionStatus(
+                  bet
+                );
 
-            return (
-              <div
-                key={bet.id}
-                style={{
-                  padding: "8px 0",
-                  color:
-                    getStatusColor(
-                      status
-                    ),
-                }}
-              >
-                {getStatusIcon(status)}{" "}
-                <strong>
-                  {bet.marketTitle}
-                </strong>
+              return (
+                <div
+                  key={bet.id}
+                  style={{
+                    padding:
+                      "8px 0",
+                    color:
+                      getStatusColor(
+                        status
+                      ),
+                  }}
+                >
+                  {getStatusIcon(
+                    status
+                  )}{" "}
+                  <strong>
+                    {
+                      bet.marketTitle
+                    }
+                  </strong>
 
-                {" — "}
+                  {" — "}
 
-                {bet.selection}
+                  {bet.selection}
 
-                {" @ "}
+                  {" @ "}
 
-                {bet.odds}
-              </div>
-            );
-          })}
+                  {bet.odds}
+                </div>
+              );
+            }
+          )}
         </div>
       )}
 
@@ -1588,6 +1962,10 @@ function MarketGroup({
   addBet,
   compact = false,
 }) {
+  if (!group?.markets) {
+    return null;
+  }
+
   return (
     <div
       className={`market-group ${
@@ -1644,6 +2022,20 @@ function Market({
   function selectMarket(
     selection
   ) {
+    const odds = Number(
+      selection.odds
+    );
+
+    if (
+      !Number.isFinite(odds) ||
+      odds <= 0
+    ) {
+      alert(
+        "Invalid market odds."
+      );
+      return;
+    }
+
     addBet({
       id: `${match.id}-${market.id}-${selection.key}`,
 
@@ -1656,9 +2048,16 @@ function Market({
 
       away: match.away,
 
+      homeCode:
+        match.homeCode,
+
+      awayCode:
+        match.awayCode,
+
       league: match.league,
 
-      country: match.country,
+      country:
+        match.country,
 
       time: match.time,
 
@@ -1669,7 +2068,8 @@ function Market({
       groupTitle:
         group.title,
 
-      marketId: market.id,
+      marketId:
+        market.id,
 
       marketTitle:
         market.title,
@@ -1683,12 +2083,14 @@ function Market({
       label:
         selection.label,
 
-      odds: Number(
-        selection.odds
-      ),
+      odds,
 
       result: "pending",
     });
+  }
+
+  if (!market?.selections) {
+    return null;
   }
 
   return (
@@ -1702,6 +2104,7 @@ function Market({
           (selection) => (
             <button
               key={selection.key}
+              type="button"
               className={`market-selection ${
                 selected(
                   selection.key
@@ -1759,35 +2162,49 @@ function BetSlip({
           );
 
         if (!group) {
+          const match =
+            matches.find(
+              (m) =>
+                m.id ===
+                bet.matchId
+            );
+
           group = {
             matchId:
               bet.matchId,
             match:
-              bet.match,
+              bet.match ||
+              `${bet.home} vs ${bet.away}`,
             home:
-              bet.home,
+              bet.home ||
+              match?.home ||
+              "",
             away:
-              bet.away,
+              bet.away ||
+              match?.away ||
+              "",
             homeCode:
-              matches.find(
-                (m) =>
-                  m.id ===
-                  bet.matchId
-              )?.homeCode,
+              bet.homeCode ||
+              match?.homeCode,
             awayCode:
-              matches.find(
-                (m) =>
-                  m.id ===
-                  bet.matchId
-              )?.awayCode,
+              bet.awayCode ||
+              match?.awayCode,
             league:
-              bet.league,
+              bet.league ||
+              match?.league ||
+              "",
             country:
-              bet.country,
+              bet.country ||
+              match?.country ||
+              "",
             time:
-              bet.time,
+              bet.time ||
+              match?.time ||
+              "",
             date:
-              bet.date,
+              bet.date ||
+              match?.date ||
+              "",
             selections: [],
           };
 
@@ -1808,11 +2225,18 @@ function BetSlip({
         (group) => {
           const odds =
             group.selections.reduce(
-              (total, bet) =>
-                total *
-                Number(
-                  bet.odds
-                ),
+              (total, bet) => {
+                const value =
+                  Number(
+                    bet.odds
+                  );
+
+                return Number.isFinite(
+                  value
+                ) && value > 0
+                  ? total * value
+                  : total;
+              },
               1
             );
 
@@ -1846,10 +2270,16 @@ function BetSlip({
       return value.toFixed(2);
     }, [matchOdds]);
 
+  const stakeNumber =
+    Number(stake);
+
   const potentialReturn =
-    Number(stake) > 0
+    Number.isFinite(
+      stakeNumber
+    ) &&
+    stakeNumber > 0
       ? (
-          Number(stake) *
+          stakeNumber *
           Number(totalOdds)
         ).toFixed(2)
       : "0.00";
@@ -1867,10 +2297,13 @@ function BetSlip({
 
     if (
       !stake ||
-      Number(stake) <= 0
+      !Number.isFinite(
+        stakeNumber
+      ) ||
+      stakeNumber <= 0
     ) {
       alert(
-        "Please enter your stake."
+        "Please enter a valid stake."
       );
       return;
     }
@@ -1883,13 +2316,15 @@ function BetSlip({
     }
 
     const stakeAmount =
-      Number(stake);
+      stakeNumber;
 
     const oddsAmount =
       Number(totalOdds);
 
     const returnAmount =
-      Number(potentialReturn);
+      Number(
+        potentialReturn
+      );
 
     if (
       !Number.isFinite(
@@ -1904,6 +2339,15 @@ function BetSlip({
     ) {
       alert(
         "Invalid bet amount."
+      );
+      return;
+    }
+
+    if (
+      oddsAmount <= 0
+    ) {
+      alert(
+        "Invalid total odds."
       );
       return;
     }
@@ -1926,14 +2370,19 @@ function BetSlip({
         .insert({
           user_id:
             session.user.id,
+
           match_name:
             matchNames,
+
           stake:
             stakeAmount,
+
           total_odds:
             oddsAmount,
+
           potential_win:
             returnAmount,
+
           status:
             "pending",
         });
@@ -1986,6 +2435,7 @@ function BetSlip({
 
         {bets.length > 0 && (
           <button
+            type="button"
             className="clear-bets"
             onClick={clearBets}
             disabled={placing}
@@ -2017,8 +2467,10 @@ function BetSlip({
             to="/sports"
             className="btn btn-gold"
             style={{
-              marginTop: "15px",
-              display: "inline-flex",
+              marginTop:
+                "15px",
+              display:
+                "inline-flex",
             }}
           >
             ⚽ Browse Sports
@@ -2093,7 +2545,9 @@ function BetSlip({
                       <small>
                         {group.country &&
                           `${group.country} • `}
-                        {group.league}{" "}
+                        {
+                          group.league
+                        }{" "}
                         •{" "}
                         {group.time}
                       </small>
@@ -2177,6 +2631,7 @@ function BetSlip({
                           </div>
 
                           <button
+                            type="button"
                             className="remove-bet"
                             onClick={() =>
                               removeBet(
@@ -2256,11 +2711,12 @@ function BetSlip({
           </div>
 
           <div className="stake-box">
-            <label>
+            <label htmlFor="stake">
               Stake
             </label>
 
             <input
+              id="stake"
               type="number"
               min="0"
               step="0.01"
@@ -2289,6 +2745,7 @@ function BetSlip({
           </div>
 
           <button
+            type="button"
             className="place-bet-btn"
             onClick={placeBet}
             disabled={placing}
@@ -2407,8 +2864,10 @@ function Sports({
         style={{
           display: "flex",
           gap: "10px",
-          flexWrap: "wrap",
-          marginBottom: "20px",
+          flexWrap:
+            "wrap",
+          marginBottom:
+            "20px",
         }}
       >
         <Link
@@ -2443,7 +2902,8 @@ function Sports({
           placeholder="🔎 Search teams..."
           style={{
             flex: 1,
-            minWidth: "220px",
+            minWidth:
+              "220px",
           }}
         />
       </div>
@@ -2487,6 +2947,7 @@ function Sports({
             {sports.map(
               (item) => (
                 <button
+                  type="button"
                   key={item}
                   className={
                     sport === item
@@ -2601,6 +3062,7 @@ function Sports({
                   {sportsCountries.map(
                     (item) => (
                       <button
+                        type="button"
                         key={
                           item.name
                         }
@@ -2712,6 +3174,7 @@ function Sports({
                     </div>
 
                     <button
+                      type="button"
                       className="text-button"
                       onClick={() => {
                         setCountry(
@@ -2739,6 +3202,7 @@ function Sports({
                     {countryData?.leagues.map(
                       (item) => (
                         <button
+                          type="button"
                           key={
                             item
                           }
@@ -2888,14 +3352,18 @@ function Live() {
 
       <div
         style={{
-          padding: "12px 16px",
-          marginBottom: "18px",
-          borderRadius: "10px",
+          padding:
+            "12px 16px",
+          marginBottom:
+            "18px",
+          borderRadius:
+            "10px",
           background:
             "rgba(212,175,55,.08)",
           border:
             "1px solid rgba(212,175,55,.25)",
-          color: "#d4af37",
+          color:
+            "#d4af37",
         }}
       >
         ⚠️ Demo live data — scores
@@ -2921,7 +3389,8 @@ function Live() {
 
               <div
                 style={{
-                  display: "flex",
+                  display:
+                    "flex",
                   alignItems:
                     "center",
                   justifyContent:
@@ -3030,8 +3499,10 @@ function Casino() {
         className="casino-hero"
         style={{
           padding: "30px",
-          borderRadius: "18px",
-          marginBottom: "22px",
+          borderRadius:
+            "18px",
+          marginBottom:
+            "22px",
           background:
             "linear-gradient(135deg,#090909,#17120a,#090909)",
           border:
@@ -3058,7 +3529,8 @@ function Casino() {
             gridTemplateColumns:
               "repeat(auto-fit,minmax(150px,1fr))",
             gap: "12px",
-            marginTop: "20px",
+            marginTop:
+              "20px",
           }}
         >
           {[
@@ -3066,25 +3538,28 @@ function Casino() {
             ["🃏", "Blackjack"],
             ["💰", "Jackpot"],
             ["🚀", "Crash"],
-          ].map(([icon, name]) => (
-            <div
-              className="game-card"
-              key={name}
-            >
-              <div className="game-image">
-                {icon}
-              </div>
+          ].map(
+            ([icon, name]) => (
+              <div
+                className="game-card"
+                key={name}
+              >
+                <div className="game-image">
+                  {icon}
+                </div>
 
-              <h3>
-                {name}
-              </h3>
-            </div>
-          ))}
+                <h3>
+                  {name}
+                </h3>
+              </div>
+            )
+          )}
         </div>
 
         <div
           style={{
-            marginTop: "18px",
+            marginTop:
+              "18px",
           }}
         >
           <Link
@@ -3100,6 +3575,7 @@ function Casino() {
         {casinoCategories.map(
           (item) => (
             <button
+              type="button"
               key={item}
               className={
                 category === item
@@ -3135,6 +3611,7 @@ function Casino() {
             </span>
 
             <button
+              type="button"
               className="btn btn-gold"
               onClick={() =>
                 alert(
@@ -3176,8 +3653,10 @@ function LiveCasino() {
         className="casino-hero"
         style={{
           padding: "30px",
-          borderRadius: "18px",
-          marginBottom: "22px",
+          borderRadius:
+            "18px",
+          marginBottom:
+            "22px",
           background:
             "linear-gradient(135deg,#090909,#160d0d,#090909)",
           border:
@@ -3200,8 +3679,10 @@ function LiveCasino() {
 
         <div
           style={{
-            fontSize: "55px",
-            marginTop: "15px",
+            fontSize:
+              "55px",
+            marginTop:
+              "15px",
           }}
         >
           🎡 🃏 💰 🎲
@@ -3212,6 +3693,7 @@ function LiveCasino() {
         {liveCasinoCategories.map(
           (item) => (
             <button
+              type="button"
               key={item}
               className={
                 category === item
@@ -3247,6 +3729,7 @@ function LiveCasino() {
             </span>
 
             <button
+              type="button"
               className="btn btn-gold"
               onClick={() =>
                 alert(
@@ -3309,6 +3792,7 @@ function GoldenGames() {
               </p>
 
               <button
+                type="button"
                 className="btn btn-gold"
                 onClick={() =>
                   alert(
@@ -3416,26 +3900,38 @@ function Login() {
     setError("");
     setLoading(true);
 
-    const {
-      error: loginError,
-    } =
-      await supabase.auth.signInWithPassword(
-        {
-          email,
-          password,
-        }
+    try {
+      const {
+        error: loginError,
+      } =
+        await supabase.auth.signInWithPassword(
+          {
+            email:
+              email.trim(),
+            password,
+          }
+        );
+
+      if (loginError) {
+        setError(
+          loginError.message
+        );
+        return;
+      }
+
+      navigate("/");
+    } catch (error) {
+      console.error(
+        "Login error:",
+        error
       );
 
-    setLoading(false);
-
-    if (loginError) {
       setError(
-        loginError.message
+        "Unable to login right now."
       );
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    navigate("/");
   }
 
   return (
@@ -3556,37 +4052,50 @@ function Register() {
 
     setLoading(true);
 
-    const {
-      data,
-      error: signUpError,
-    } =
-      await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            username,
+    try {
+      const {
+        data,
+        error: signUpError,
+      } =
+        await supabase.auth.signUp({
+          email:
+            email.trim(),
+          password,
+          options: {
+            data: {
+              username:
+                username.trim(),
+            },
           },
-        },
-      });
+        });
 
-    setLoading(false);
+      if (signUpError) {
+        setError(
+          signUpError.message
+        );
+        return;
+      }
 
-    if (signUpError) {
-      setError(
-        signUpError.message
+      if (data?.session) {
+        navigate("/");
+        return;
+      }
+
+      setSuccess(
+        "Registration successful. Please check your email to confirm your account."
       );
-      return;
-    }
+    } catch (error) {
+      console.error(
+        "Registration error:",
+        error
+      );
 
-    if (data?.session) {
-      navigate("/");
-      return;
+      setError(
+        "Unable to create account right now."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    setSuccess(
-      "Registration successful. Please check your email to confirm your account."
-    );
   }
 
   return (
@@ -3697,9 +4206,13 @@ function Profile({
     useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     async function loadProfile() {
       if (!session?.user?.id) {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
         return;
       }
 
@@ -3724,11 +4237,17 @@ function Profile({
         );
       }
 
-      setProfile(data);
-      setLoading(false);
+      if (mounted) {
+        setProfile(data);
+        setLoading(false);
+      }
     }
 
     loadProfile();
+
+    return () => {
+      mounted = false;
+    };
   }, [session]);
 
   if (!session) {
@@ -3847,9 +4366,13 @@ function Balance({
     useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     async function loadBalance() {
       if (!session?.user?.id) {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
         return;
       }
 
@@ -3872,14 +4395,22 @@ function Balance({
         );
       }
 
-      setBalance(
-        Number(data?.balance || 0)
-      );
+      if (mounted) {
+        setBalance(
+          Number(
+            data?.balance || 0
+          )
+        );
 
-      setLoading(false);
+        setLoading(false);
+      }
     }
 
     loadBalance();
+
+    return () => {
+      mounted = false;
+    };
   }, [session]);
 
   if (!session) {
@@ -3998,9 +4529,14 @@ function Withdraw({
   function requestWithdrawal(e) {
     e.preventDefault();
 
+    const amountNumber =
+      Number(amount);
+
     if (
-      !amount ||
-      Number(amount) <= 0
+      !Number.isFinite(
+        amountNumber
+      ) ||
+      amountNumber <= 0
     ) {
       alert(
         "Please enter a valid amount."
@@ -4009,9 +4545,7 @@ function Withdraw({
     }
 
     alert(
-      `Withdrawal request prepared.\nAmount: ${Number(
-        amount
-      ).toLocaleString()} IQD\nMethod: ${method}`
+      `Withdrawal request prepared.\nAmount: ${amountNumber.toLocaleString()} IQD\nMethod: ${method}`
     );
   }
 
@@ -4053,29 +4587,29 @@ function Withdraw({
               setMethod(
                 e.target.value
               )
-            }
+          }
           >
-            <option>
+            <option value="Korek">
               Korek
             </option>
 
-            <option>
+            <option value="Zain">
               Zain
             </option>
 
-            <option>
+            <option value="Zain Cash">
               Zain Cash
             </option>
 
-            <option>
+            <option value="Asiacell">
               Asiacell
             </option>
 
-            <option>
+            <option value="FIB">
               FIB
             </option>
 
-            <option>
+            <option value="FastPay">
               FastPay
             </option>
           </select>
@@ -4106,9 +4640,13 @@ function MyBets({
     useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     async function loadBets() {
       if (!session?.user?.id) {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
         return;
       }
 
@@ -4138,11 +4676,17 @@ function MyBets({
         );
       }
 
-      setBets(data || []);
-      setLoading(false);
+      if (mounted) {
+        setBets(data || []);
+        setLoading(false);
+      }
     }
 
     loadBets();
+
+    return () => {
+      mounted = false;
+    };
   }, [session]);
 
   if (!session) {
@@ -4228,13 +4772,9 @@ function MyBets({
                     <strong
                       style={{
                         color:
-                          status ===
-                          "won"
-                            ? "#35d06f"
-                            : status ===
-                              "lost"
-                            ? "#ff4d4f"
-                            : "#f2c94c",
+                          getStatusColor(
+                            status
+                          ),
                       }}
                     >
                       {status.toUpperCase()}
@@ -4332,6 +4872,7 @@ function Settings() {
         </label>
 
         <button
+          type="button"
           className="btn btn-gold"
           onClick={
             saveSettings
