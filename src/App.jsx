@@ -192,12 +192,62 @@ const matches = [
 ];
 
 /* =========================
+   HELPERS
+========================= */
+
+function getSelectionStatus(bet) {
+  return (
+    bet?.result ||
+    bet?.selectionResult ||
+    "pending"
+  );
+}
+
+function getStatusIcon(status) {
+  if (status === "won") {
+    return "🟢";
+  }
+
+  if (status === "lost") {
+    return "🔴";
+  }
+
+  return "🟡";
+}
+
+function getStatusColor(status) {
+  if (status === "won") {
+    return "#35d06f";
+  }
+
+  if (status === "lost") {
+    return "#ff4d4f";
+  }
+
+  return "#f2c94c";
+}
+
+function getStatusLabel(status) {
+  if (status === "won") {
+    return "WON";
+  }
+
+  if (status === "lost") {
+    return "LOST";
+  }
+
+  return "PENDING";
+}
+
+/* =========================
    APP
 ========================= */
 
 export default function App() {
-  const { language, setLanguage } =
-    useContext(LanguageContext);
+  const {
+    language,
+    setLanguage,
+  } = useContext(LanguageContext);
 
   const [bets, setBets] = useState([]);
   const [session, setSession] = useState(null);
@@ -221,7 +271,10 @@ export default function App() {
       }
 
       if (mounted) {
-        setSession(data?.session ?? null);
+        setSession(
+          data?.session ?? null
+        );
+
         setAuthLoading(false);
       }
     }
@@ -230,12 +283,13 @@ export default function App() {
 
     const {
       data: authListener,
-    } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
-        setSession(newSession);
-        setAuthLoading(false);
-      }
-    );
+    } =
+      supabase.auth.onAuthStateChange(
+        (_event, newSession) => {
+          setSession(newSession);
+          setAuthLoading(false);
+        }
+      );
 
     return () => {
       mounted = false;
@@ -244,15 +298,33 @@ export default function App() {
     };
   }, []);
 
+  /*
+   * IMPORTANT:
+   * Maximum = 20 MATCHES.
+   *
+   * Multiple selections from the same
+   * match stay inside the same Bet Builder.
+   */
   function addBet(bet) {
     setBets((current) => {
-      const exists = current.find(
+      const sameMarket = current.find(
         (item) =>
           item.matchId === bet.matchId &&
           item.marketId === bet.marketId
       );
 
-      if (exists) {
+      /*
+       * Same market:
+       * replace previous selection.
+       *
+       * Example:
+       * Real Madrid Win
+       * -> Barcelona Win
+       *
+       * Only one selection remains
+       * for that market.
+       */
+      if (sameMarket) {
         return current.map((item) =>
           item.matchId === bet.matchId &&
           item.marketId === bet.marketId
@@ -261,9 +333,27 @@ export default function App() {
         );
       }
 
-      if (current.length >= 20) {
+      /*
+       * Count unique matches.
+       */
+      const uniqueMatchIds =
+        new Set(
+          current.map(
+            (item) => item.matchId
+          )
+        );
+
+      /*
+       * New match + already 20 matches.
+       */
+      if (
+        !uniqueMatchIds.has(
+          bet.matchId
+        ) &&
+        uniqueMatchIds.size >= 20
+      ) {
         alert(
-          "Maximum 20 selections allowed."
+          "Maximum 20 matches allowed in the Bet Slip."
         );
 
         return current;
@@ -317,7 +407,6 @@ export default function App() {
       <Header
         language={language}
         setLanguage={setLanguage}
-        betCount={bets.length}
         session={session}
         logout={logout}
       />
@@ -466,7 +555,6 @@ export default function App() {
 function Header({
   language,
   setLanguage,
-  betCount,
   session,
   logout,
 }) {
@@ -608,10 +696,6 @@ function Header({
               </Link>
             </>
           )}
-
-          <div className="bet-slip-top">
-            🧾 {betCount}/20
-          </div>
         </div>
       </div>
     </header>
@@ -704,11 +788,23 @@ function MatchCard({
   bets,
   addBet,
 }) {
-  const selectedCount =
+  const selectedBets =
     bets.filter(
       (bet) =>
         bet.matchId === match.id
-    ).length;
+    );
+
+  const combinedOdds =
+    selectedBets.length
+      ? selectedBets
+          .reduce(
+            (total, bet) =>
+              total *
+              Number(bet.odds),
+            1
+          )
+          .toFixed(2)
+      : "0.00";
 
   return (
     <div className="match-card">
@@ -746,12 +842,116 @@ function MatchCard({
         />
       </div>
 
+      {selectedBets.length > 0 && (
+        <div
+          className="match-bet-builder"
+          style={{
+            marginTop: "14px",
+            padding: "12px",
+            borderRadius: "10px",
+            background: "#111",
+            border:
+              "1px solid rgba(212,175,55,.35)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent:
+                "space-between",
+              alignItems: "center",
+              marginBottom: "8px",
+            }}
+          >
+            <strong>
+              🎯 Bet Builder
+            </strong>
+
+            <span>
+              {selectedBets.length}{" "}
+              selections
+            </span>
+          </div>
+
+          {selectedBets.map((bet) => {
+            const status =
+              getSelectionStatus(bet);
+
+            return (
+              <div
+                key={bet.id}
+                style={{
+                  padding: "7px 0",
+                  borderTop:
+                    "1px solid rgba(255,255,255,.08)",
+                  color:
+                    getStatusColor(
+                      status
+                    ),
+                }}
+              >
+                {getStatusIcon(status)}{" "}
+
+                <strong>
+                  {bet.marketTitle}
+                </strong>
+
+                {" — "}
+
+                {bet.selection}
+
+                <span
+                  style={{
+                    marginLeft: "6px",
+                  }}
+                >
+                  @ {bet.odds}
+                </span>
+
+                {status !==
+                  "pending" && (
+                  <strong
+                    style={{
+                      marginLeft: "6px",
+                    }}
+                  >
+                    {getStatusLabel(
+                      status
+                    )}
+                  </strong>
+                )}
+              </div>
+            );
+          })}
+
+          <div
+            style={{
+              marginTop: "10px",
+              paddingTop: "8px",
+              borderTop:
+                "1px solid rgba(255,255,255,.08)",
+              display: "flex",
+              justifyContent:
+                "space-between",
+            }}
+          >
+            <span>
+              Combined Odds
+            </span>
+
+            <strong>
+              {combinedOdds}
+            </strong>
+          </div>
+        </div>
+      )}
+
       <Link
         to={`/match/${match.id}`}
         className="view-all-markets"
       >
-        {selectedCount > 0
-          ? `✓ ${selectedCount} selected — View all markets`
+        {selectedBets.length > 0
+          ? `✓ ${selectedBets.length} selected — View all markets`
           : "View all markets →"}
       </Link>
     </div>
@@ -770,7 +970,9 @@ function MatchPage({
     window.location.pathname;
 
   const id =
-    Number(path.split("/").pop());
+    Number(
+      path.split("/").pop()
+    );
 
   const match =
     matches.find(
@@ -785,11 +987,11 @@ function MatchPage({
     );
   }
 
-  const selectedCount =
+  const selectedBets =
     bets.filter(
       (bet) =>
         bet.matchId === match.id
-    ).length;
+    );
 
   return (
     <div className="page section">
@@ -818,7 +1020,9 @@ function MatchPage({
         </div>
 
         <div className="selected-count">
-          🧾 {selectedCount} selections
+          🎯{" "}
+          {selectedBets.length}{" "}
+          selections
         </div>
       </div>
 
@@ -834,13 +1038,61 @@ function MatchPage({
         ))}
       </div>
 
+      {selectedBets.length > 0 && (
+        <div
+          className="match-detail-builder"
+          style={{
+            marginTop: "24px",
+            padding: "16px",
+            borderRadius: "12px",
+            background: "#111",
+            border:
+              "1px solid rgba(212,175,55,.35)",
+          }}
+        >
+          <h3>
+            🎯 Your Bet Builder
+          </h3>
+
+          {selectedBets.map((bet) => {
+            const status =
+              getSelectionStatus(bet);
+
+            return (
+              <div
+                key={bet.id}
+                style={{
+                  padding: "8px 0",
+                  color:
+                    getStatusColor(
+                      status
+                    ),
+                }}
+              >
+                {getStatusIcon(status)}{" "}
+                <strong>
+                  {bet.marketTitle}
+                </strong>
+
+                {" — "}
+
+                {bet.selection}
+
+                {" @ "}
+
+                {bet.odds}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       <div className="mobile-bet-slip-link">
         <Link
           to="/"
           className="btn btn-gold"
         >
-          🧾 Open Bet Slip (
-          {bets.length}/20)
+          🧾 Open Bet Slip
         </Link>
       </div>
     </div>
@@ -916,20 +1168,50 @@ function Market({
   ) {
     addBet({
       id: `${match.id}-${market.id}-${selection.key}`,
+
       matchId: match.id,
-      match: `${match.home} vs ${match.away}`,
+
+      match:
+        `${match.home} vs ${match.away}`,
+
       home: match.home,
+
       away: match.away,
+
       league: match.league,
+
       time: match.time,
+
       groupId: group.id,
-      groupTitle: group.title,
+
+      groupTitle:
+        group.title,
+
       marketId: market.id,
-      marketTitle: market.title,
-      selectionKey: selection.key,
-      selection: selection.name,
-      label: selection.label,
-      odds: Number(selection.odds),
+
+      marketTitle:
+        market.title,
+
+      selectionKey:
+        selection.key,
+
+      selection:
+        selection.name,
+
+      label:
+        selection.label,
+
+      odds:
+        Number(
+          selection.odds
+        ),
+
+      /*
+       * Result starts as pending.
+       * Later the admin/result system
+       * can change this to won/lost.
+       */
+      result: "pending",
     });
   }
 
@@ -988,22 +1270,118 @@ function BetSlip({
   const [placing, setPlacing] =
     useState(false);
 
+  /*
+   * GROUP BY MATCH
+   *
+   * Example:
+   *
+   * Real Madrid vs Barcelona
+   *   4 selections
+   *
+   * Arsenal vs Chelsea
+   *   3 selections
+   *
+   * Milan vs Inter
+   *   2 selections
+   *
+   * Top count = 3 matches.
+   */
+  const groupedBets =
+    useMemo(() => {
+      const groups = [];
+
+      bets.forEach((bet) => {
+        let group =
+          groups.find(
+            (item) =>
+              item.matchId ===
+              bet.matchId
+          );
+
+        if (!group) {
+          group = {
+            matchId:
+              bet.matchId,
+
+            match:
+              bet.match,
+
+            home:
+              bet.home,
+
+            away:
+              bet.away,
+
+            league:
+              bet.league,
+
+            time:
+              bet.time,
+
+            selections: [],
+          };
+
+          groups.push(group);
+        }
+
+        group.selections.push(
+          bet
+        );
+      });
+
+      return groups;
+    }, [bets]);
+
+  /*
+   * Combined odds per match.
+   */
+  const matchOdds =
+    useMemo(() => {
+      return groupedBets.map(
+        (group) => {
+          const odds =
+            group.selections.reduce(
+              (total, bet) =>
+                total *
+                Number(
+                  bet.odds
+                ),
+              1
+            );
+
+          return {
+            ...group,
+            combinedOdds:
+              odds.toFixed(2),
+          };
+        }
+      );
+    }, [groupedBets]);
+
+  /*
+   * Total odds:
+   * product of every Bet Builder.
+   */
   const totalOdds =
     useMemo(() => {
-      if (!bets.length) {
+      if (
+        !matchOdds.length
+      ) {
         return "0.00";
       }
 
       const value =
-        bets.reduce(
-          (total, bet) =>
+        matchOdds.reduce(
+          (total, group) =>
             total *
-            Number(bet.odds),
+            Number(
+              group.combinedOdds
+            ),
           1
         );
 
       return value.toFixed(2);
-    }, [bets]);
+    }, [matchOdds]);
 
   const potentialReturn =
     Number(stake) > 0
@@ -1012,6 +1390,9 @@ function BetSlip({
           Number(totalOdds)
         ).toFixed(2)
       : "0.00";
+
+  const totalSelections =
+    bets.length;
 
   async function placeBet() {
     if (!bets.length) {
@@ -1068,39 +1449,66 @@ function BetSlip({
 
     try {
       const matchNames =
-        [
-          ...new Set(
-            bets.map(
-              (bet) =>
-                `${bet.home} vs ${bet.away}`
-            )
-          ),
-        ].join(" | ");
+        groupedBets
+          .map(
+            (group) =>
+              group.match
+          )
+          .join(" | ");
 
-      const selections = bets.map(
-        (bet) => ({
-          matchId: bet.matchId,
-          match: bet.match,
-          home: bet.home,
-          away: bet.away,
-          league: bet.league,
-          time: bet.time,
-          groupId: bet.groupId,
-          groupTitle:
-            bet.groupTitle,
-          marketId: bet.marketId,
-          marketTitle:
-            bet.marketTitle,
-          selectionKey:
-            bet.selectionKey,
-          selection:
-            bet.selection,
-          label: bet.label,
-          odds: Number(
-            bet.odds
-          ),
-        })
-      );
+      const selections =
+        bets.map(
+          (bet) => ({
+            matchId:
+              bet.matchId,
+
+            match:
+              bet.match,
+
+            home:
+              bet.home,
+
+            away:
+              bet.away,
+
+            league:
+              bet.league,
+
+            time:
+              bet.time,
+
+            groupId:
+              bet.groupId,
+
+            groupTitle:
+              bet.groupTitle,
+
+            marketId:
+              bet.marketId,
+
+            marketTitle:
+              bet.marketTitle,
+
+            selectionKey:
+              bet.selectionKey,
+
+            selection:
+              bet.selection,
+
+            label:
+              bet.label,
+
+            odds:
+              Number(
+                bet.odds
+              ),
+
+            result:
+              getSelectionStatus(
+                bet
+              ),
+          })
+        );
 
       const {
         error,
@@ -1143,7 +1551,7 @@ function BetSlip({
       }
 
       alert(
-        `Bet placed successfully!\n\nSelections: ${bets.length}\nTotal Odds: ${totalOdds}\nStake: ${stakeAmount}\nPotential Return: ${returnAmount}`
+        `Bet placed successfully!\n\nMatches: ${groupedBets.length}/20\nSelections: ${totalSelections}\nTotal Odds: ${totalOdds}\nStake: ${stakeAmount}\nPotential Return: ${returnAmount}`
       );
 
       setStake("");
@@ -1171,7 +1579,7 @@ function BetSlip({
           </h3>
 
           <span>
-            {bets.length}/20
+            {groupedBets.length}/20 Matches
           </span>
         </div>
 
@@ -1197,57 +1605,217 @@ function BetSlip({
           </h4>
 
           <p>
-            Choose any market from a match.
+            Choose markets from a match.
           </p>
 
           <small>
-            Maximum 20 selections.
+            Maximum 20 matches.
           </small>
         </div>
       ) : (
         <>
           <div className="bet-list">
-            {bets.map(
-              (bet, index) => (
+            {matchOdds.map(
+              (
+                group,
+                groupIndex
+              ) => (
                 <div
-                  className="bet-item"
-                  key={bet.id}
+                  className="bet-match-group"
+                  key={
+                    group.matchId
+                  }
+                  style={{
+                    marginBottom:
+                      "14px",
+                    padding:
+                      "12px",
+                    borderRadius:
+                      "12px",
+                    background:
+                      "#111",
+                    border:
+                      "1px solid rgba(212,175,55,.25)",
+                  }}
                 >
-                  <div className="bet-number">
-                    {index + 1}
-                  </div>
-
-                  <div className="bet-info">
-                    <strong>
-                      {bet.home}
-                      {" vs "}
-                      {bet.away}
-                    </strong>
-
-                    <span>
-                      {bet.marketTitle}
-                    </span>
-
-                    <span className="bet-selection">
-                      {bet.selection}
-                    </span>
-
-                    <b>
-                      @ {bet.odds}
-                    </b>
-                  </div>
-
-                  <button
-                    className="remove-bet"
-                    onClick={() =>
-                      removeBet(
-                        bet.id
-                      )
-                    }
-                    disabled={placing}
+                  <div
+                    style={{
+                      display:
+                        "flex",
+                      justifyContent:
+                        "space-between",
+                      alignItems:
+                        "flex-start",
+                      gap: "8px",
+                    }}
                   >
-                    ×
-                  </button>
+                    <div>
+                      <div
+                        style={{
+                          fontWeight:
+                            "700",
+                          color:
+                            "#d4af37",
+                        }}
+                      >
+                        {groupIndex +
+                          1}
+                        .{" "}
+                        {group.home}{" "}
+                        vs{" "}
+                        {group.away}
+                      </div>
+
+                      <small>
+                        {group.league}{" "}
+                        •{" "}
+                        {group.time}
+                      </small>
+                    </div>
+
+                    <span
+                      style={{
+                        whiteSpace:
+                          "nowrap",
+                      }}
+                    >
+                      {
+                        group
+                          .selections
+                          .length
+                      }{" "}
+                      selections
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop:
+                        "10px",
+                    }}
+                  >
+                    <strong>
+                      🎯 Bet Builder
+                    </strong>
+                  </div>
+
+                  {group.selections.map(
+                    (bet) => {
+                      const status =
+                        getSelectionStatus(
+                          bet
+                        );
+
+                      return (
+                        <div
+                          className="bet-item"
+                          key={
+                            bet.id
+                          }
+                          style={{
+                            marginTop:
+                              "8px",
+                            padding:
+                              "8px",
+                            borderTop:
+                              "1px solid rgba(255,255,255,.07)",
+                          }}
+                        >
+                          <div
+                            className="bet-info"
+                          >
+                            <span
+                              style={{
+                                color:
+                                  getStatusColor(
+                                    status
+                                  ),
+                              }}
+                            >
+                              {getStatusIcon(
+                                status
+                              )}{" "}
+                              <strong>
+                                {
+                                  bet.marketTitle
+                                }
+                              </strong>
+                            </span>
+
+                            <span>
+                              {
+                                bet.selection
+                              }
+                            </span>
+
+                            <b>
+                              @{" "}
+                              {
+                                bet.odds
+                              }
+                            </b>
+
+                            {status !==
+                              "pending" && (
+                              <small
+                                style={{
+                                  color:
+                                    getStatusColor(
+                                      status
+                                    ),
+                                  fontWeight:
+                                    "700",
+                                }}
+                              >
+                                {getStatusLabel(
+                                  status
+                                )}
+                              </small>
+                            )}
+                          </div>
+
+                          <button
+                            className="remove-bet"
+                            onClick={() =>
+                              removeBet(
+                                bet.id
+                              )
+                            }
+                            disabled={
+                              placing
+                            }
+                          >
+                            ×
+                          </button>
+                        </div>
+                      );
+                    }
+                  )}
+
+                  <div
+                    style={{
+                      marginTop:
+                        "10px",
+                      paddingTop:
+                        "9px",
+                      borderTop:
+                        "1px solid rgba(255,255,255,.1)",
+                      display:
+                        "flex",
+                      justifyContent:
+                        "space-between",
+                    }}
+                  >
+                    <span>
+                      Combined Odds
+                    </span>
+
+                    <strong>
+                      {
+                        group.combinedOdds
+                      }
+                    </strong>
+                  </div>
                 </div>
               )
             )}
@@ -1256,11 +1824,21 @@ function BetSlip({
           <div className="bet-summary">
             <div>
               <span>
+                Matches
+              </span>
+
+              <strong>
+                {groupedBets.length}
+              </strong>
+            </div>
+
+            <div>
+              <span>
                 Selections
               </span>
 
               <strong>
-                {bets.length}
+                {totalSelections}
               </strong>
             </div>
 
@@ -1318,8 +1896,10 @@ function BetSlip({
           {!session && (
             <p
               style={{
-                marginTop: "10px",
-                textAlign: "center",
+                marginTop:
+                  "10px",
+                textAlign:
+                  "center",
               }}
             >
               Please{" "}
@@ -1347,7 +1927,7 @@ function Sports({
     <div className="page section">
       <div className="page-heading">
         <h1>
-          Sports
+          ⚽ Sports
         </h1>
 
         <p>
@@ -1363,6 +1943,7 @@ function Sports({
             className="sport-card"
           >
             ⚽
+
             <span>
               {sport}
             </span>
@@ -1728,6 +2309,7 @@ function Login() {
       setError(
         loginError.message
       );
+
       return;
     }
 
@@ -1840,6 +2422,7 @@ function Register() {
       setError(
         "Passwords do not match."
       );
+
       return;
     }
 
@@ -1847,6 +2430,7 @@ function Register() {
       setError(
         "Password must be at least 6 characters."
       );
+
       return;
     }
 
@@ -1872,6 +2456,7 @@ function Register() {
       setError(
         signUpError.message
       );
+
       return;
     }
 
@@ -2273,6 +2858,7 @@ function Withdraw({
       alert(
         "Please enter a valid amount."
       );
+
       return;
     }
 
@@ -2452,64 +3038,136 @@ function MyBets({
         </div>
       ) : (
         <div className="bet-history-list">
-          {bets.map((bet) => (
-            <div
-              className="bet-history-card"
-              key={bet.id}
-            >
-              <div>
-                <strong>
-                  Bet #{bet.id}
-                </strong>
+          {bets.map((bet) => {
+            const status =
+              bet.status ||
+              "pending";
 
-                <p>
-                  {bet.match_name}
-                </p>
+            return (
+              <div
+                className="bet-history-card"
+                key={bet.id}
+              >
+                <div>
+                  <strong>
+                    Bet #{bet.id}
+                  </strong>
 
-                <p>
-                  Status:{" "}
-                  {bet.status}
-                </p>
+                  <p>
+                    {bet.match_name}
+                  </p>
+
+                  <p>
+                    Status:{" "}
+                    <strong
+                      style={{
+                        color:
+                          status ===
+                          "won"
+                            ? "#35d06f"
+                            : status ===
+                              "lost"
+                            ? "#ff4d4f"
+                            : "#f2c94c",
+                      }}
+                    >
+                      {status.toUpperCase()}
+                    </strong>
+                  </p>
+
+                  {Array.isArray(
+                    bet.selection
+                  ) && (
+                    <div
+                      style={{
+                        marginTop:
+                          "10px",
+                      }}
+                    >
+                      {bet.selection.map(
+                        (
+                          selection,
+                          index
+                        ) => {
+                          const selectionStatus =
+                            selection.result ||
+                            "pending";
+
+                          return (
+                            <div
+                              key={
+                                index
+                              }
+                              style={{
+                                marginBottom:
+                                  "6px",
+                                color:
+                                  getStatusColor(
+                                    selectionStatus
+                                  ),
+                              }}
+                            >
+                              {getStatusIcon(
+                                selectionStatus
+                              )}{" "}
+                              {
+                                selection.marketTitle
+                              }{" "}
+                              —{" "}
+                              {
+                                selection.selection
+                              }{" "}
+                              @{" "}
+                              {
+                                selection.odds
+                              }
+                            </div>
+                          );
+                        }
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <span>
+                    Stake
+                  </span>
+
+                  <strong>
+                    {Number(
+                      bet.stake || 0
+                    ).toLocaleString()}{" "}
+                    IQD
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Odds
+                  </span>
+
+                  <strong>
+                    {bet.total_odds}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Potential Win
+                  </span>
+
+                  <strong>
+                    {Number(
+                      bet.potential_win ||
+                        0
+                    ).toLocaleString()}{" "}
+                    IQD
+                  </strong>
+                </div>
               </div>
-
-              <div>
-                <span>
-                  Stake
-                </span>
-
-                <strong>
-                  {Number(
-                    bet.stake || 0
-                  ).toLocaleString()}{" "}
-                  IQD
-                </strong>
-              </div>
-
-              <div>
-                <span>
-                  Odds
-                </span>
-
-                <strong>
-                  {bet.total_odds}
-                </strong>
-              </div>
-
-              <div>
-                <span>
-                  Potential Win
-                </span>
-
-                <strong>
-                  {Number(
-                    bet.potential_win ||
-                      0
-                  ).toLocaleString()}{" "}
-                  IQD
-                </strong>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
