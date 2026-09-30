@@ -28,8 +28,22 @@
   --transition: 0.22s ease;
 }
 
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 html {
   scroll-behavior: smooth;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 320px;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 body {
@@ -80,12 +94,15 @@ img {
 }
 
 /* =========================================================
-   APP
+   APP / PAGE
 ========================================================= */
 
 .app {
+  width: 100%;
   min-height: 100vh;
   padding-bottom: 100px;
+  overflow-x: hidden;
+
   background:
     radial-gradient(
       circle at 50% 0%,
@@ -101,18 +118,23 @@ img {
 }
 
 .page {
+  width: 100%;
   min-height: 70vh;
+  overflow: hidden;
+}
+
+.section,
+.page-container {
+  width: min(1450px, calc(100% - 24px));
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .section {
-  width: min(1450px, 94%);
-  margin: auto;
   padding: 55px 0;
 }
 
 .page-container {
-  width: min(1450px, 94%);
-  margin: auto;
   padding: 45px 0;
 }
 
@@ -124,16 +146,22 @@ img {
   position: sticky;
   top: 0;
   z-index: 900;
+  width: 100%;
+
   background: rgba(5, 5, 5, 0.94);
+
   border-bottom: 1px solid rgba(245, 197, 66, 0.14);
+
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
 }
 
 .header-inner {
-  width: min(1450px, 94%);
+  width: min(1450px, calc(100% - 24px));
   min-height: 76px;
+
   margin: auto;
 
   display: flex;
@@ -147,17 +175,20 @@ img {
 
 .logo {
   position: relative;
+
   display: inline-flex;
   align-items: center;
 
   font-size: 25px;
   font-weight: 950;
   letter-spacing: -1.5px;
+
   white-space: nowrap;
 }
 
 .logo-gold {
   color: var(--gold);
+
   text-shadow:
     0 0 12px rgba(245, 197, 66, 0.45),
     0 0 28px rgba(245, 197, 66, 0.18);
@@ -169,22 +200,26 @@ img {
 
 .logo::after {
   content: "";
+
   position: absolute;
+
   left: 3px;
   right: 3px;
   bottom: -6px;
+
   height: 2px;
 
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--gold),
-    transparent
-  );
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--gold),
+      transparent
+    );
 }
 
 /* =========================================================
-   NAV
+   NAVIGATION
 ========================================================= */
 
 .nav {
@@ -192,9 +227,11 @@ img {
 
   display: flex;
   align-items: center;
+
   gap: 4px;
 
   overflow-x: auto;
+
   scrollbar-width: none;
 }
 
@@ -206,11 +243,14 @@ img {
   position: relative;
 
   padding: 10px 12px;
+
   border-radius: 9px;
 
   color: #aaa;
+
   font-size: 13px;
   font-weight: 750;
+
   white-space: nowrap;
 
   transition: var(--transition);
@@ -218,6 +258,7 @@ img {
 
 .nav a:hover {
   color: var(--gold);
+
   background: rgba(245, 197, 66, 0.06);
 }
 
@@ -225,6 +266,7 @@ img {
   content: "";
 
   position: absolute;
+
   left: 12px;
   right: 12px;
   bottom: 3px;
@@ -234,6 +276,7 @@ img {
   background: var(--gold);
 
   transform: scaleX(0);
+
   transition: var(--transition);
 }
 
@@ -253,12 +296,15 @@ img {
 
 .language-select {
   height: 39px;
+
   padding: 0 10px;
 
   color: #fff;
+
   background: #101010;
 
   border: 1px solid #303030;
+
   border-radius: 9px;
 
   outline: none;
@@ -280,6 +326,7 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   gap: 7px;
 
   border: 0;
@@ -320,6 +367,7 @@ img {
 
 .btn-outline {
   color: #eee;
+
   background: rgba(255, 255, 255, 0.02);
 
   border: 1px solid #373737;
@@ -327,7 +375,9 @@ img {
 
 .btn-outline:hover {
   color: var(--gold);
+
   border-color: var(--gold-dark);
+
   background: rgba(245, 197, 66, 0.06);
 }
 
@@ -339,6 +389,7 @@ img {
   padding: 9px 13px;
 
   border: 1px solid var(--gold-dark);
+
   border-radius: 9px;
 
   color: var(--gold);
@@ -356,12 +407,14 @@ img {
 }
 
 /* =========================================================
-   PREMIUM GOLDEN HEADER
+   GOLDEN TOP HEADER
 ========================================================= */
 
 .golden-top-header {
   position: relative;
+
   z-index: 50;
+
   overflow: hidden;
 
   background:
@@ -384,9 +437,11 @@ img {
 
 .golden-top-visual {
   width: min(1180px, 100%);
+
   min-height: 175px;
 
   margin: auto;
+
   padding: 12px 18px;
 
   display: grid;
@@ -397,6 +452,7 @@ img {
     1fr;
 
   align-items: center;
+
   gap: 14px;
 }
 
@@ -418,11 +474,13 @@ img {
 .golden-side-image img {
   width: 100%;
   max-width: 330px;
+
   height: 150px;
 
   object-fit: cover;
 
   border-radius: 22px;
+
   border: 1px solid rgba(245, 197, 66, 0.35);
 
   box-shadow:
@@ -435,12 +493,15 @@ img {
   color: #f6d66a;
 
   font-size: clamp(2rem, 4vw, 3.8rem);
+
   line-height: 1;
 
   font-weight: 1000;
 
   letter-spacing: 0.07em;
+
   text-align: center;
+
   white-space: nowrap;
 
   text-shadow:
@@ -461,6 +522,8 @@ img {
 
 .hero {
   position: relative;
+
+  width: 100%;
 
   min-height: 610px;
 
@@ -521,9 +584,11 @@ img {
 
 .hero-content {
   position: relative;
+
   z-index: 3;
 
-  width: min(1450px, 94%);
+  width: min(1450px, calc(100% - 24px));
+
   margin: auto;
 }
 
@@ -534,6 +599,7 @@ img {
   padding: 8px 14px;
 
   border: 1px solid rgba(245, 197, 66, 0.3);
+
   border-radius: 999px;
 
   color: var(--gold);
@@ -541,6 +607,7 @@ img {
   background: rgba(245, 197, 66, 0.06);
 
   font-size: 11px;
+
   font-weight: 950;
 
   letter-spacing: 3px;
@@ -550,6 +617,8 @@ img {
   max-width: 850px;
 
   margin: 20px 0;
+
+  color: #fff;
 
   font-size: clamp(44px, 6.5vw, 86px);
 
@@ -577,6 +646,7 @@ img {
   margin-top: 30px;
 
   display: flex;
+
   gap: 12px;
 }
 
@@ -619,7 +689,9 @@ img {
 .section-title h2,
 .page-heading h1 {
   font-size: 30px;
+
   line-height: 1.15;
+
   margin-bottom: 7px;
 }
 
@@ -629,6 +701,7 @@ img {
 
 .page-heading p {
   color: var(--muted);
+
   line-height: 1.6;
 }
 
@@ -637,6 +710,8 @@ img {
 ========================================================= */
 
 .quick-access {
+  width: 100%;
+
   display: grid;
 
   grid-template-columns:
@@ -648,15 +723,18 @@ img {
 }
 
 .quick-access-card {
-  min-height: 125px;
-
   position: relative;
-  overflow: hidden;
+
+  min-height: 125px;
 
   padding: 20px;
 
   display: flex;
+
   flex-direction: column;
+
+  align-items: flex-start;
+
   justify-content: center;
 
   border-radius: 17px;
@@ -690,6 +768,7 @@ img {
 
 .quick-access-card .quick-icon {
   font-size: 29px;
+
   margin-bottom: 10px;
 }
 
@@ -699,7 +778,9 @@ img {
 
 .quick-access-card span {
   margin-top: 5px;
+
   color: #777;
+
   font-size: 11px;
 }
 
@@ -720,6 +801,8 @@ img {
 }
 
 .matches-grid {
+  width: 100%;
+
   display: grid;
 
   grid-template-columns:
@@ -729,10 +812,12 @@ img {
 }
 
 /* =========================================================
-   SHOWCASE
+   HOME SHOWCASE
 ========================================================= */
 
 .home-visual-showcase {
+  width: 100%;
+
   display: grid;
 
   grid-template-columns:
@@ -746,9 +831,15 @@ img {
 .showcase-card {
   position: relative;
 
+  width: 100%;
+
   min-height: 210px;
 
   overflow: hidden;
+
+  padding: 0;
+
+  text-align: left;
 
   border-radius: 18px;
 
@@ -759,11 +850,14 @@ img {
 
 .showcase-card img {
   width: 100%;
+
   height: 100%;
+
   min-height: 210px;
 
-  object-fit: cover;
   display: block;
+
+  object-fit: cover;
 
   transition: transform 0.35s ease;
 }
@@ -776,6 +870,7 @@ img {
   content: "";
 
   position: absolute;
+
   inset: 0;
 
   background:
@@ -803,12 +898,15 @@ img {
   right: 20px;
   bottom: 18px;
 
-  z-index: 2;
+  z-index: 3;
 
   color: #fff;
 
   font-size: 17px;
+
   font-weight: 900;
+
+  text-align: left;
 
   text-shadow:
     0 2px 12px rgba(0, 0, 0, 0.9);
@@ -821,7 +919,7 @@ img {
   right: 20px;
   bottom: 18px;
 
-  z-index: 2;
+  z-index: 3;
 }
 
 .showcase-card-content strong {
@@ -840,6 +938,7 @@ img {
   color: var(--gold);
 
   font-size: 11px;
+
   font-weight: 800;
 }
 
@@ -884,11 +983,13 @@ img {
 
 .match-top {
   display: flex;
+
   justify-content: space-between;
 
   margin-bottom: 18px;
 
   color: #777;
+
   font-size: 11px;
 }
 
@@ -911,6 +1012,7 @@ img {
 
 .match-teams strong {
   font-size: 15px;
+
   line-height: 1.35;
 }
 
@@ -932,6 +1034,7 @@ img {
   background: rgba(245, 197, 66, 0.08);
 
   font-size: 10px;
+
   font-weight: 950;
 }
 
@@ -940,6 +1043,7 @@ img {
   height: 38px;
 
   display: grid;
+
   place-items: center;
 
   margin: auto;
@@ -953,6 +1057,7 @@ img {
   color: var(--gold);
 
   font-size: 12px;
+
   font-weight: 900;
 }
 
@@ -962,6 +1067,7 @@ img {
 
 .markets-container {
   width: 100%;
+
   max-width: 1050px;
 
   margin: auto;
@@ -999,11 +1105,13 @@ img {
 
 .market-group-title h3 {
   font-size: 16px;
+
   font-weight: 850;
 }
 
 .market {
   padding: 15px 17px;
+
   border-bottom: 1px solid #202020;
 }
 
@@ -1017,6 +1125,7 @@ img {
   color: #999;
 
   font-size: 12px;
+
   font-weight: 800;
 }
 
@@ -1038,7 +1147,9 @@ img {
   padding: 9px 12px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   gap: 8px;
@@ -1053,6 +1164,7 @@ img {
     );
 
   border: 1px solid #303030;
+
   border-radius: 9px;
 
   transition: var(--transition);
@@ -1073,6 +1185,7 @@ img {
   color: var(--gold);
 
   font-size: 14px;
+
   font-weight: 900;
 }
 
@@ -1099,8 +1212,11 @@ img {
 
 .compact-market {
   border: 0;
+
   margin: 0;
+
   background: transparent;
+
   box-shadow: none;
 }
 
@@ -1111,6 +1227,7 @@ img {
 
 .compact-market .market {
   padding: 0;
+
   border: 0;
 }
 
@@ -1127,6 +1244,7 @@ img {
   display: block;
 
   margin-top: 13px;
+
   padding-top: 13px;
 
   border-top: 1px solid #292929;
@@ -1134,6 +1252,7 @@ img {
   color: var(--gold);
 
   font-size: 12px;
+
   font-weight: 900;
 
   text-align: center;
@@ -1193,6 +1312,7 @@ img {
   color: var(--gold);
 
   font-size: 12px;
+
   font-weight: 900;
 }
 
@@ -1212,6 +1332,7 @@ img {
 
 .match-detail-time {
   color: #888;
+
   font-size: 13px;
 }
 
@@ -1231,6 +1352,7 @@ img {
   border: 1px solid rgba(245, 197, 66, 0.22);
 
   font-size: 11px;
+
   font-weight: 900;
 }
 
@@ -1240,6 +1362,7 @@ img {
 
 .bet-slip {
   position: sticky;
+
   top: 92px;
 
   overflow: hidden;
@@ -1268,7 +1391,9 @@ img {
   padding: 18px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   border-bottom: 1px solid #292929;
@@ -1276,21 +1401,25 @@ img {
 
 .bet-slip-header h3 {
   margin-bottom: 4px;
+
   font-size: 18px;
 }
 
 .bet-slip-header span {
   color: #777;
+
   font-size: 11px;
 }
 
 .clear-bets {
   border: 0;
+
   background: transparent;
 
   color: #ef7777;
 
   font-size: 11px;
+
   font-weight: 850;
 }
 
@@ -1304,16 +1433,19 @@ img {
 
 .empty-icon {
   margin-bottom: 13px;
+
   font-size: 42px;
 }
 
 .empty-bets h4 {
   margin-bottom: 8px;
+
   color: #fff;
 }
 
 .empty-bets p {
   margin-bottom: 7px;
+
   font-size: 12px;
 }
 
@@ -1323,6 +1455,7 @@ img {
 
 .bet-list {
   max-height: 450px;
+
   overflow-y: auto;
 }
 
@@ -1330,6 +1463,7 @@ img {
   position: relative;
 
   display: flex;
+
   gap: 9px;
 
   padding: 14px;
@@ -1344,6 +1478,7 @@ img {
   flex: 0 0 25px;
 
   display: grid;
+
   place-items: center;
 
   border-radius: 50%;
@@ -1355,6 +1490,7 @@ img {
   border: 1px solid rgba(245, 197, 66, 0.13);
 
   font-size: 10px;
+
   font-weight: 950;
 }
 
@@ -1362,6 +1498,7 @@ img {
   min-width: 0;
 
   display: flex;
+
   flex-direction: column;
 
   gap: 4px;
@@ -1379,6 +1516,7 @@ img {
 
 .bet-info span {
   color: #777;
+
   font-size: 10px;
 }
 
@@ -1388,6 +1526,7 @@ img {
 
 .bet-info b {
   color: var(--gold);
+
   font-size: 12px;
 }
 
@@ -1412,12 +1551,15 @@ img {
 
 .bet-summary {
   padding: 15px;
+
   border-bottom: 1px solid #292929;
 }
 
 .bet-summary > div {
   display: flex;
+
   justify-content: space-between;
+
   margin-bottom: 10px;
 }
 
@@ -1427,6 +1569,7 @@ img {
 
 .bet-summary span {
   color: #777;
+
   font-size: 12px;
 }
 
@@ -1450,14 +1593,17 @@ img {
 
 .stake-box input {
   width: 100%;
+
   height: 47px;
 
   padding: 0 12px;
 
   color: white;
+
   background: #070707;
 
   border: 1px solid #333;
+
   border-radius: 9px;
 
   outline: none;
@@ -1473,6 +1619,7 @@ img {
   padding: 14px;
 
   display: flex;
+
   justify-content: space-between;
 
   border-radius: 10px;
@@ -1484,11 +1631,13 @@ img {
 
 .return-box span {
   color: #888;
+
   font-size: 11px;
 }
 
 .return-box strong {
   color: var(--green);
+
   font-size: 16px;
 }
 
@@ -1500,6 +1649,7 @@ img {
   min-height: 49px;
 
   border: 0;
+
   border-radius: 10px;
 
   color: #070707;
@@ -1557,6 +1707,7 @@ img {
   color: #999;
 
   font-size: 12px;
+
   font-weight: 800;
 
   cursor: pointer;
@@ -1606,6 +1757,8 @@ img {
 }
 
 .sports-grid {
+  width: 100%;
+
   display: grid;
 
   grid-template-columns:
@@ -1618,9 +1771,11 @@ img {
   min-height: 105px;
 
   display: flex;
+
   flex-direction: column;
 
   align-items: center;
+
   justify-content: center;
 
   gap: 8px;
@@ -1628,6 +1783,7 @@ img {
   color: #ccc;
 
   border: 1px solid #292929;
+
   border-radius: 15px;
 
   background:
@@ -1653,13 +1809,14 @@ img {
 }
 
 /* =========================================================
-   FILTERS / CATEGORY
+   FILTERS / CATEGORIES
 ========================================================= */
 
 .filter-btn {
   padding: 9px 14px;
 
   border: 1px solid #303030;
+
   border-radius: 9px;
 
   color: #999;
@@ -1667,6 +1824,7 @@ img {
   background: #101010;
 
   font-size: 12px;
+
   font-weight: 750;
 
   transition: var(--transition);
@@ -1724,6 +1882,7 @@ img {
   background: #101010;
 
   font-size: 12px;
+
   font-weight: 750;
 
   transition: var(--transition);
@@ -1782,27 +1941,30 @@ img {
   border-color: rgba(245, 197, 66, 0.3);
 }
 
-.live-badge {
+.live-badge,
+.live-indicator {
   display: inline-flex;
 
-  padding: 5px 10px;
+  width: fit-content;
 
-  margin-bottom: 15px;
+  padding: 5px 9px;
 
   border-radius: 999px;
 
-  color: #ff6868;
+  color: #ff7070;
 
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.08);
 
   border: 1px solid rgba(239, 68, 68, 0.2);
 
   font-size: 10px;
-  font-weight: 950;
+
+  font-weight: 900;
 }
 
 .live-card > span {
   color: #777;
+
   font-size: 11px;
 }
 
@@ -1816,15 +1978,16 @@ img {
   color: var(--gold);
 
   font-size: 32px;
+
   font-weight: 950;
 
   text-shadow:
     0 0 20px rgba(245, 197, 66, 0.2);
 }
 
-/* NEW LIVE MATCH LIST */
 .live-list {
   display: grid;
+
   gap: 14px;
 }
 
@@ -1861,43 +2024,22 @@ img {
   border-color: rgba(245, 197, 66, 0.35);
 }
 
-.live-indicator {
-  display: inline-flex;
-
-  width: fit-content;
-
-  padding: 5px 9px;
-
-  border-radius: 999px;
-
-  color: #ff7070;
-
-  background: rgba(239, 68, 68, 0.08);
-
-  border: 1px solid rgba(239, 68, 68, 0.2);
-
-  font-size: 10px;
-  font-weight: 900;
-}
-
 .live-teams {
   display: grid;
+
   gap: 7px;
 }
 
 .live-teams strong {
   color: #eee;
+
   font-size: 14px;
 }
 
-.live-score {
+.live-match-card .live-score {
   text-align: right;
 
-  color: var(--gold);
-
   font-size: 25px;
-
-  font-weight: 950;
 }
 
 /* =========================================================
@@ -1908,6 +2050,7 @@ img {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   gap: 15px;
@@ -1985,8 +2128,7 @@ img {
   display: grid;
 
   grid-template-columns:
-    1fr
-    380px;
+    1fr 380px;
 
   gap: 20px;
 
@@ -1995,6 +2137,7 @@ img {
 
 .betslip-right {
   position: sticky;
+
   top: 95px;
 }
 
@@ -2094,8 +2237,99 @@ img {
   gap: 15px;
 }
 
+.profile-card {
+  width: min(560px, 100%);
+
+  margin: auto;
+
+  padding: 38px;
+
+  text-align: center;
+
+  border: 1px solid #292929;
+
+  border-radius: 18px;
+
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(245, 197, 66, 0.08),
+      transparent 45%
+    ),
+    #111;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.profile-avatar,
+.avatar {
+  width: 84px;
+  height: 84px;
+
+  margin: 0 auto 16px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: var(--gold);
+
+  background:
+    radial-gradient(
+      circle,
+      #292929,
+      #111
+    );
+
+  border: 2px solid rgba(245, 197, 66, 0.35);
+
+  font-size: 35px;
+}
+
+.profile-card p {
+  margin: 8px 0 20px;
+
+  color: #888;
+}
+
+.profile-links {
+  display: grid;
+
+  gap: 10px;
+}
+
+.card-link {
+  padding: 14px;
+
+  border: 1px solid #292929;
+
+  border-radius: 11px;
+
+  background: #101010;
+
+  color: #ddd;
+
+  transition: var(--transition);
+}
+
+.card-link:hover {
+  color: var(--gold);
+
+  border-color: var(--gold-dark);
+
+  background: rgba(245, 197, 66, 0.05);
+}
+
+/* =========================================================
+   MY BETS
+========================================================= */
+
 .my-bets-list {
   display: grid;
+
   gap: 13px;
 }
 
@@ -2123,6 +2357,7 @@ img {
   border: 1px solid rgba(245, 197, 66, 0.2);
 
   font-size: 10px;
+
   font-weight: 900;
 }
 
@@ -2134,6 +2369,7 @@ img {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   gap: 15px;
@@ -2174,6 +2410,7 @@ img {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   color: #ddd;
@@ -2334,96 +2571,6 @@ img {
 }
 
 /* =========================================================
-   PROFILE CARD
-========================================================= */
-
-.profile-card {
-  width: min(560px, 100%);
-
-  margin: auto;
-
-  padding: 38px;
-
-  text-align: center;
-
-  border: 1px solid #292929;
-
-  border-radius: 18px;
-
-  background:
-    radial-gradient(
-      circle at top,
-      rgba(245, 197, 66, 0.08),
-      transparent 45%
-    ),
-    #111;
-
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.4);
-}
-
-.profile-avatar,
-.avatar {
-  width: 84px;
-  height: 84px;
-
-  margin: 0 auto 16px;
-
-  display: grid;
-
-  place-items: center;
-
-  border-radius: 50%;
-
-  color: var(--gold);
-
-  background:
-    radial-gradient(
-      circle,
-      #292929,
-      #111
-    );
-
-  border: 2px solid rgba(245, 197, 66, 0.35);
-
-  font-size: 35px;
-}
-
-.profile-card p {
-  margin: 8px 0 20px;
-
-  color: #888;
-}
-
-.profile-links {
-  display: grid;
-
-  gap: 10px;
-}
-
-.card-link {
-  padding: 14px;
-
-  border: 1px solid #292929;
-
-  border-radius: 11px;
-
-  background: #101010;
-
-  color: #ddd;
-
-  transition: var(--transition);
-}
-
-.card-link:hover {
-  color: var(--gold);
-
-  border-color: var(--gold-dark);
-
-  background: rgba(245, 197, 66, 0.05);
-}
-
-/* =========================================================
    BALANCE
 ========================================================= */
 
@@ -2475,7 +2622,7 @@ img {
 }
 
 /* =========================================================
-   FORM
+   FORMS
 ========================================================= */
 
 .form-card {
@@ -2597,6 +2744,7 @@ img {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   gap: 20px;
@@ -2661,6 +2809,7 @@ img {
   flex-direction: column;
 
   align-items: center;
+
   justify-content: center;
 
   gap: 6px;
@@ -2713,6 +2862,7 @@ img {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   gap: 15px;
@@ -2865,6 +3015,165 @@ img {
 }
 
 /* =========================================================
+   CASINO / GAMES
+========================================================= */
+
+.games-grid,
+.golden-games-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+.game-card {
+  position: relative;
+
+  overflow: hidden;
+
+  min-height: 230px;
+
+  padding: 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: flex-end;
+
+  border-radius: 18px;
+
+  border: 1px solid #292929;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(245, 197, 66, 0.12),
+      transparent 45%
+    ),
+    linear-gradient(
+      145deg,
+      #171717,
+      #090909
+    );
+
+  transition: var(--transition);
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+
+  border-color: var(--gold-dark);
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.45);
+}
+
+.game-card h3 {
+  margin-bottom: 6px;
+
+  color: #fff;
+
+  font-size: 17px;
+}
+
+.game-card p {
+  margin-bottom: 14px;
+
+  color: #777;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+.game-card .btn {
+  width: 100%;
+}
+
+/* =========================================================
+   PROMOTIONS
+========================================================= */
+
+.promotion-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+.vip-banner {
+  position: relative;
+
+  overflow: hidden;
+
+  padding: 35px;
+
+  margin-bottom: 25px;
+
+  border-radius: 22px;
+
+  border: 1px solid rgba(245, 197, 66, 0.3);
+
+  background:
+    radial-gradient(
+      circle at right,
+      rgba(245, 197, 66, 0.2),
+      transparent 40%
+    ),
+    linear-gradient(
+      145deg,
+      #191919,
+      #080808
+    );
+}
+
+.vip-banner::before {
+  content: "VIP";
+
+  position: absolute;
+
+  right: 30px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: rgba(245, 197, 66, 0.08);
+
+  font-size: 140px;
+
+  font-weight: 1000;
+}
+
+.vip-banner h2 {
+  position: relative;
+
+  z-index: 2;
+
+  margin-bottom: 10px;
+
+  color: var(--gold);
+
+  font-size: 34px;
+}
+
+.vip-banner p {
+  position: relative;
+
+  z-index: 2;
+
+  max-width: 650px;
+
+  color: #aaa;
+
+  line-height: 1.6;
+}
+
+/* =========================================================
    EMPTY / ERROR
 ========================================================= */
 
@@ -2876,6 +3185,7 @@ img {
   flex-direction: column;
 
   align-items: center;
+
   justify-content: center;
 
   gap: 14px;
@@ -2899,18 +3209,15 @@ img {
    FOOTER
 ========================================================= */
 
-.site-footer {
+.site-footer,
+.footer {
+  width: 100%;
+
   margin-top: 50px;
 
-  padding: 45px 0 90px;
+  overflow: hidden;
 
   border-top: 1px solid rgba(245, 197, 66, 0.1);
-
-  background: #050505;
-}
-
-.footer {
-  margin-top: 50px;
 
   background:
     linear-gradient(
@@ -2918,12 +3225,14 @@ img {
       #080808,
       #030303
     );
+}
 
-  border-top: 1px solid rgba(245, 197, 66, 0.1);
+.site-footer {
+  padding: 45px 0 90px;
 }
 
 .footer-inner {
-  width: min(1450px, 94%);
+  width: min(1450px, calc(100% - 24px));
 
   margin: auto;
 
@@ -3043,7 +3352,47 @@ img {
     0 0 30px rgba(245, 197, 66, 0.1);
 
   backdrop-filter: blur(18px);
+
   -webkit-backdrop-filter: blur(18px);
+}
+
+.golden-bottom-item {
+  min-height: 52px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 3px;
+
+  color: #aaa;
+
+  border-radius: 13px;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  transition: var(--transition);
+}
+
+.golden-bottom-item:hover,
+.golden-bottom-item.active {
+  color: var(--gold);
+
+  background: rgba(245, 197, 66, 0.07);
+}
+
+.golden-bottom-icon {
+  font-size: 1.35rem;
+}
+
+.golden-bet-count {
+  position: absolute;
 }
 
 /* =========================================================
@@ -3086,6 +3435,8 @@ img {
     0 0 25px rgba(245, 197, 66, 0.08);
 
   backdrop-filter: blur(18px);
+
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .mobile-bottom-nav a,
@@ -3113,6 +3464,10 @@ img {
   font-size: 9px;
 
   font-weight: 800;
+
+  padding: 4px 2px;
+
+  transition: var(--transition);
 }
 
 .mobile-bottom-nav a:hover,
@@ -3154,7 +3509,8 @@ img {
       repeat(4, 1fr);
   }
 
-  .games-grid {
+  .games-grid,
+  .golden-games-grid {
     grid-template-columns:
       repeat(3, 1fr);
   }
@@ -3163,7 +3519,16 @@ img {
     grid-template-columns:
       repeat(2, 1fr);
   }
+
+  .promotion-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
 }
+
+/* =========================================================
+   TABLET SMALL
+========================================================= */
 
 @media (max-width: 1000px) {
   .home-visual-showcase {
@@ -3191,6 +3556,11 @@ img {
     grid-template-columns:
       85px 1fr 80px;
   }
+
+  .payment-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
 }
 
 /* =========================================================
@@ -3202,37 +3572,36 @@ img {
     padding-bottom: 100px;
   }
 
-  .section,
-  .page-container {
-    width: calc(100% - 24px);
-
-    padding: 35px 0;
+  .header {
+    position: relative;
   }
 
   .header-inner {
     width: calc(100% - 20px);
 
-    min-height: 62px;
+    min-height: 58px;
+
+    padding: 8px 0;
 
     gap: 8px;
+
+    flex-wrap: nowrap;
   }
 
   .logo {
-    font-size: 20px;
+    flex: 0 0 auto;
+
+    font-size: 18px;
   }
 
   .nav {
-    gap: 3px;
-  }
-
-  .nav a {
-    padding: 8px 9px;
-
-    font-size: 10px;
+    display: none;
   }
 
   .header-actions {
     margin-left: auto;
+
+    flex: 0 0 auto;
 
     gap: 4px;
   }
@@ -3240,7 +3609,7 @@ img {
   .header-actions .btn {
     min-height: 34px;
 
-    padding: 7px 9px;
+    padding: 6px 9px;
 
     font-size: 10px;
   }
@@ -3252,6 +3621,15 @@ img {
 
     font-size: 10px;
   }
+
+  .section,
+  .page-container {
+    width: calc(100% - 20px);
+
+    padding: 28px 0;
+  }
+
+  /* TOP GOLDEN HEADER */
 
   .golden-top-visual {
     min-height: 120px;
@@ -3284,21 +3662,55 @@ img {
     letter-spacing: 0.035em;
   }
 
+  /* HERO */
+
   .hero {
-    min-height: 500px;
+    min-height: 470px;
+
+    display: flex;
+
+    align-items: center;
+  }
+
+  .hero-content {
+    width: calc(100% - 30px);
+
+    text-align: center;
+  }
+
+  .hero-badge {
+    font-size: 9px;
+
+    letter-spacing: 1.5px;
   }
 
   .hero h1 {
-    font-size: 45px;
+    max-width: 100%;
 
-    letter-spacing: -2px;
+    margin: 16px auto;
+
+    font-size: clamp(34px, 10vw, 48px);
+
+    line-height: 1;
+
+    letter-spacing: -1.5px;
   }
 
   .hero p {
-    font-size: 14px;
+    max-width: 100%;
+
+    margin: 0 auto;
+
+    font-size: 13px;
+
+    line-height: 1.5;
   }
 
   .hero-buttons {
+    width: 100%;
+
+    margin-top: 22px;
+
     flex-direction: column;
   }
 
@@ -3306,27 +3718,111 @@ img {
     width: 100%;
   }
 
+  /* QUICK ACCESS */
+
   .quick-access {
     grid-template-columns:
       repeat(2, 1fr);
 
-    gap: 10px;
+    gap: 9px;
   }
 
   .quick-access-card {
-    min-height: 110px;
+    min-height: 105px;
 
-    padding: 15px;
+    padding: 14px;
+
+    text-align: left;
+
+    align-items: flex-start;
   }
+
+  .quick-access-card .quick-icon {
+    font-size: 23px;
+
+    margin-bottom: 7px;
+  }
+
+  .quick-access-card strong {
+    font-size: 12px;
+  }
+
+  .quick-access-card span {
+    font-size: 9px;
+  }
+
+  /* SHOWCASE */
+
+  .home-visual-showcase {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+
+    margin: 20px 0 28px;
+  }
+
+  .showcase-card,
+  .showcase-main {
+    width: 100%;
+
+    min-height: 180px;
+  }
+
+  .showcase-card img,
+  .showcase-main img {
+    width: 100%;
+
+    height: 180px;
+
+    min-height: 180px;
+
+    object-fit: cover;
+  }
+
+  .showcase-card > span {
+    left: 16px;
+
+    right: 16px;
+
+    bottom: 15px;
+
+    font-size: 15px;
+  }
+
+  .showcase-card-content {
+    left: 16px;
+
+    right: 16px;
+
+    bottom: 15px;
+  }
+
+  /* MATCHES */
 
   .matches-grid {
     grid-template-columns: 1fr;
   }
 
+  /* SPORTS */
+
   .sports-grid {
     grid-template-columns:
       repeat(2, 1fr);
   }
+
+  .sports-tabs {
+    margin-bottom: 15px;
+  }
+
+  .sports-tabs button {
+    padding: 9px 12px;
+
+    font-size: 10px;
+  }
+
+  /* LIVE */
 
   .live-grid {
     grid-template-columns: 1fr;
@@ -3336,39 +3832,26 @@ img {
     grid-template-columns: 1fr;
 
     gap: 10px;
+
+    padding: 15px;
   }
 
-  .live-score {
+  .live-match-card .live-score {
     text-align: left;
   }
 
-  .games-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
+  /* GAMES */
 
+  .games-grid,
   .golden-games-grid {
     grid-template-columns:
       repeat(2, 1fr);
   }
 
+  /* PROMOTIONS */
+
   .promotion-grid {
     grid-template-columns: 1fr;
-  }
-
-  .payment-grid {
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
-
-  .footer-inner {
-    flex-direction: column;
-  }
-
-  .footer-links {
-    flex-direction: column;
-
-    gap: 10px;
   }
 
   .vip-banner {
@@ -3385,24 +3868,11 @@ img {
     font-size: 90px;
   }
 
-  .match-detail-header {
-    padding: 23px 14px;
-  }
+  /* PAYMENT */
 
-  .match-detail-header h1 {
-    font-size: 25px;
-  }
-
-  .match-detail-header h1 span {
-    display: block;
-
-    margin: 6px;
-  }
-
-  .mobile-bet-slip-link {
-    display: block;
-
-    text-align: center;
+  .payment-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .payment-card {
@@ -3432,11 +3902,33 @@ img {
     text-align: left;
   }
 
+  /* MATCH DETAIL */
+
+  .match-detail-header {
+    padding: 23px 14px;
+  }
+
+  .match-detail-header h1 {
+    font-size: 25px;
+  }
+
+  .match-detail-header h1 span {
+    display: block;
+
+    margin: 6px;
+  }
+
+  /* COUNTRY */
+
   .country-header {
     align-items: flex-start;
 
     flex-direction: column;
+
+    padding: 14px;
   }
+
+  /* PROFILE */
 
   .profile-hero {
     align-items: flex-start;
@@ -3444,13 +3936,69 @@ img {
     flex-direction: column;
   }
 
+  .profile-card {
+    padding: 27px 18px;
+  }
+
+  /* SETTINGS */
+
+  .settings-row {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  /* BALANCE */
+
+  .balance-card {
+    padding: 28px 18px;
+  }
+
+  .balance-card strong {
+    font-size: 32px;
+  }
+
+  .balance-actions {
+    flex-direction: column;
+  }
+
+  .balance-actions .btn {
+    width: 100%;
+  }
+
+  /* AUTH */
+
+  .auth-card {
+    padding: 24px 18px;
+  }
+
+  /* FORM */
+
+  .form-card {
+    padding: 20px 16px;
+  }
+
+  /* FOOTER */
+
   .site-footer {
     padding-bottom: 100px;
   }
 
-  .mobile-bottom-nav {
-    display: grid;
+  .footer-inner {
+    width: calc(100% - 24px);
+
+    padding: 30px 0 90px;
+
+    flex-direction: column;
   }
+
+  .footer-links {
+    flex-direction: column;
+
+    gap: 9px;
+  }
+
+  /* GOLDEN BOTTOM NAV */
 
   .golden-bottom-nav {
     bottom: 7px;
@@ -3473,11 +4021,33 @@ img {
   .golden-bottom-icon {
     font-size: 1.25rem;
   }
-}
 
-@media (min-width: 761px) {
+  /* MOBILE BOTTOM NAV */
+
   .mobile-bottom-nav {
-    display: none;
+    display: grid;
+
+    width: calc(100% - 10px);
+
+    grid-template-columns:
+      repeat(5, 1fr);
+
+    bottom: 5px;
+
+    min-height: 63px;
+
+    padding: 6px;
+
+    border-radius: 18px;
+  }
+
+  .mobile-bottom-nav a,
+  .mobile-bottom-nav button {
+    min-height: 49px;
+
+    font-size: 8px;
+
+    padding: 4px 2px;
   }
 }
 
@@ -3486,57 +4056,9 @@ img {
 ========================================================= */
 
 @media (max-width: 480px) {
-  .showcase-card,
-  .showcase-main,
-  .showcase-card img,
-  .showcase-main img {
-    min-height: 155px;
-  }
-
-  .showcase-card > span {
-    left: 14px;
-    right: 14px;
-    bottom: 13px;
-
-    font-size: 15px;
-  }
-
-  .showcase-card-content {
-    left: 14px;
-    right: 14px;
-    bottom: 13px;
-  }
-
-  .showcase-card-content strong {
-    font-size: 16px;
-  }
-
-  .sports-tabs button {
-    padding: 9px 12px;
-
-    font-size: 10px;
-  }
-
-  .live-match-card {
-    padding: 14px;
-  }
-
-  .country-header {
-    padding: 14px;
-  }
-
-  .betslip-summary {
-    padding: 15px;
-  }
-
-  .profile-hero {
-    padding: 18px;
-  }
-
-  .settings-row {
-    align-items: flex-start;
-
-    flex-direction: column;
+  .section-title h2,
+  .page-heading h1 {
+    font-size: 24px;
   }
 
   .hero {
@@ -3553,11 +4075,6 @@ img {
     font-size: 9px;
 
     letter-spacing: 2px;
-  }
-
-  .section-title h2,
-  .page-heading h1 {
-    font-size: 24px;
   }
 
   .golden-top-visual {
@@ -3640,30 +4157,6 @@ img {
     grid-template-columns: 1fr;
   }
 
-  .balance-card strong {
-    font-size: 32px;
-  }
-
-  .balance-actions {
-    flex-direction: column;
-  }
-
-  .balance-actions .btn {
-    width: 100%;
-  }
-
-  .auth-card {
-    padding: 24px 18px;
-  }
-
-  .profile-card {
-    padding: 27px 18px;
-  }
-
-  .form-card {
-    padding: 20px 16px;
-  }
-
   .payment-card {
     padding: 18px;
   }
@@ -3723,21 +4216,57 @@ img {
 
     font-size: 8px;
   }
+
+  .footer-inner {
+    width: calc(100% - 24px);
+  }
 }
 
 /* =========================================================
    VERY SMALL DEVICES
 ========================================================= */
 
-@media (max-width: 360px) {
+@media (max-width: 380px) {
+  .header-inner {
+    width: calc(100% - 14px);
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
   .header-actions .btn {
-    padding: 6px 7px;
+    padding: 5px 7px;
 
     font-size: 9px;
   }
 
   .language-select {
     max-width: 65px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .quick-access {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-access-card {
+    min-height: 85px;
+  }
+
+  .showcase-card,
+  .showcase-main {
+    min-height: 160px;
+  }
+
+  .showcase-card img,
+  .showcase-main img {
+    height: 160px;
+
+    min-height: 160px;
   }
 
   .golden-center-logo {
@@ -3773,347 +4302,5 @@ img {
     animation-duration: 0.01ms !important;
 
     animation-iteration-count: 1 !important;
-  }
-}
-/* =========================================================
-   GOLDENBET MOBILE FINAL FIX
-========================================================= */
-
-html,
-body,
-#root {
-  width: 100%;
-  min-width: 320px;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-body {
-  background: #050505;
-  color: #fff;
-}
-
-/* MAIN APP */
-.app {
-  width: 100%;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* HEADER */
-.header {
-  width: 100%;
-}
-
-.header-inner {
-  width: min(1450px, calc(100% - 24px));
-  margin: 0 auto;
-}
-
-/* PAGE */
-.page {
-  width: 100%;
-  overflow: hidden;
-}
-
-.section,
-.page-container {
-  width: min(1450px, calc(100% - 24px));
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* HERO */
-.hero {
-  width: 100%;
-  min-height: 560px;
-  background:
-    radial-gradient(
-      circle at 80% 35%,
-      rgba(245, 197, 66, 0.12),
-      transparent 30%
-    ),
-    linear-gradient(
-      180deg,
-      #090909 0%,
-      #050505 100%
-    );
-}
-
-.hero-content {
-  width: min(1450px, calc(100% - 24px));
-  margin: 0 auto;
-}
-
-/* HERO TEXT */
-.hero h1 {
-  color: #fff;
-}
-
-.hero p {
-  color: #aaa;
-}
-
-/* QUICK ACCESS */
-.quick-access {
-  width: 100%;
-}
-
-.quick-access-card {
-  text-align: left;
-  align-items: flex-start;
-}
-
-/* SHOWCASE */
-.home-visual-showcase {
-  width: 100%;
-}
-
-.showcase-card {
-  display: block;
-  width: 100%;
-  padding: 0;
-  text-align: left;
-}
-
-.showcase-card > span {
-  text-align: left;
-}
-
-/* MATCHES */
-.matches-grid {
-  width: 100%;
-}
-
-/* SPORTS */
-.sports-grid {
-  width: 100%;
-}
-
-/* FOOTER */
-.site-footer,
-.footer {
-  width: 100%;
-  overflow: hidden;
-}
-
-.footer-inner {
-  width: min(1450px, calc(100% - 24px));
-  margin: 0 auto;
-}
-
-/* =========================================================
-   MOBILE FINAL
-========================================================= */
-
-@media (max-width: 760px) {
-
-  .header {
-    position: relative;
-  }
-
-  .header-inner {
-    width: calc(100% - 20px);
-    min-height: 58px;
-    padding: 8px 0;
-    flex-wrap: nowrap;
-  }
-
-  .logo {
-    flex: 0 0 auto;
-    font-size: 18px;
-  }
-
-  .nav {
-    display: none;
-  }
-
-  .header-actions {
-    margin-left: auto;
-    flex: 0 0 auto;
-  }
-
-  .header-actions .btn {
-    min-height: 34px;
-    padding: 6px 9px;
-  }
-
-  .hero {
-    min-height: 470px;
-    display: flex;
-    align-items: center;
-  }
-
-  .hero-content {
-    width: calc(100% - 30px);
-    text-align: center;
-  }
-
-  .hero-badge {
-    font-size: 9px;
-    letter-spacing: 1.5px;
-  }
-
-  .hero h1 {
-    max-width: 100%;
-    margin: 16px auto;
-    font-size: clamp(34px, 10vw, 48px);
-    line-height: 1;
-    letter-spacing: -1.5px;
-  }
-
-  .hero p {
-    max-width: 100%;
-    margin: 0 auto;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-
-  .hero-buttons {
-    width: 100%;
-    margin-top: 22px;
-  }
-
-  .hero-buttons .btn {
-    width: 100%;
-  }
-
-  /* SHOWCASE */
-  .home-visual-showcase {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin: 20px 0 28px;
-  }
-
-  .showcase-card,
-  .showcase-main {
-    width: 100%;
-    min-height: 180px;
-  }
-
-  .showcase-card img,
-  .showcase-main img {
-    width: 100%;
-    height: 180px;
-    min-height: 180px;
-    object-fit: cover;
-  }
-
-  .showcase-card > span {
-    left: 16px;
-    right: 16px;
-    bottom: 15px;
-    font-size: 15px;
-  }
-
-  /* QUICK ACCESS */
-  .quick-access {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 9px;
-  }
-
-  .quick-access-card {
-    min-height: 105px;
-    padding: 14px;
-    text-align: left;
-    align-items: flex-start;
-  }
-
-  .quick-access-card .quick-icon {
-    font-size: 23px;
-    margin-bottom: 7px;
-  }
-
-  .quick-access-card strong {
-    font-size: 12px;
-  }
-
-  .quick-access-card span {
-    font-size: 9px;
-  }
-
-  /* SECTIONS */
-  .section,
-  .page-container {
-    width: calc(100% - 20px);
-    padding: 28px 0;
-  }
-
-  /* FOOTER */
-  .footer-inner {
-    width: calc(100% - 24px);
-    padding: 30px 0 90px;
-    flex-direction: column;
-  }
-
-  .footer-links {
-    flex-direction: column;
-    gap: 9px;
-  }
-
-  /* BOTTOM NAV */
-  .mobile-bottom-nav {
-    width: calc(100% - 10px);
-    grid-template-columns: repeat(5, 1fr);
-    bottom: 5px;
-    min-height: 63px;
-  }
-
-  .mobile-bottom-nav a,
-  .mobile-bottom-nav button {
-    min-height: 49px;
-    font-size: 8px;
-    padding: 4px 2px;
-  }
-}
-
-/* =========================================================
-   VERY SMALL PHONE
-========================================================= */
-
-@media (max-width: 380px) {
-
-  .header-inner {
-    width: calc(100% - 14px);
-  }
-
-  .logo {
-    font-size: 16px;
-  }
-
-  .header-actions .btn {
-    padding: 5px 7px;
-    font-size: 9px;
-  }
-
-  .hero h1 {
-    font-size: 32px;
-  }
-
-  .quick-access {
-    grid-template-columns: 1fr;
-  }
-
-  .quick-access-card {
-    min-height: 85px;
-  }
-
-  .showcase-card,
-  .showcase-main {
-    min-height: 160px;
-  }
-
-  .showcase-card img,
-  .showcase-main img {
-    height: 160px;
-    min-height: 160px;
-  }
-
-  .mobile-bottom-nav a,
-  .mobile-bottom-nav button {
-    font-size: 7px;
   }
 }
