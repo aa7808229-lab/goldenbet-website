@@ -3775,3 +3775,345 @@ img {
     animation-iteration-count: 1 !important;
   }
 }
+/* =========================================================
+   GOLDENBET MOBILE FINAL FIX
+========================================================= */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 320px;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  background: #050505;
+  color: #fff;
+}
+
+/* MAIN APP */
+.app {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* HEADER */
+.header {
+  width: 100%;
+}
+
+.header-inner {
+  width: min(1450px, calc(100% - 24px));
+  margin: 0 auto;
+}
+
+/* PAGE */
+.page {
+  width: 100%;
+  overflow: hidden;
+}
+
+.section,
+.page-container {
+  width: min(1450px, calc(100% - 24px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* HERO */
+.hero {
+  width: 100%;
+  min-height: 560px;
+  background:
+    radial-gradient(
+      circle at 80% 35%,
+      rgba(245, 197, 66, 0.12),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #090909 0%,
+      #050505 100%
+    );
+}
+
+.hero-content {
+  width: min(1450px, calc(100% - 24px));
+  margin: 0 auto;
+}
+
+/* HERO TEXT */
+.hero h1 {
+  color: #fff;
+}
+
+.hero p {
+  color: #aaa;
+}
+
+/* QUICK ACCESS */
+.quick-access {
+  width: 100%;
+}
+
+.quick-access-card {
+  text-align: left;
+  align-items: flex-start;
+}
+
+/* SHOWCASE */
+.home-visual-showcase {
+  width: 100%;
+}
+
+.showcase-card {
+  display: block;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+}
+
+.showcase-card > span {
+  text-align: left;
+}
+
+/* MATCHES */
+.matches-grid {
+  width: 100%;
+}
+
+/* SPORTS */
+.sports-grid {
+  width: 100%;
+}
+
+/* FOOTER */
+.site-footer,
+.footer {
+  width: 100%;
+  overflow: hidden;
+}
+
+.footer-inner {
+  width: min(1450px, calc(100% - 24px));
+  margin: 0 auto;
+}
+
+/* =========================================================
+   MOBILE FINAL
+========================================================= */
+
+@media (max-width: 760px) {
+
+  .header {
+    position: relative;
+  }
+
+  .header-inner {
+    width: calc(100% - 20px);
+    min-height: 58px;
+    padding: 8px 0;
+    flex-wrap: nowrap;
+  }
+
+  .logo {
+    flex: 0 0 auto;
+    font-size: 18px;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .header-actions {
+    margin-left: auto;
+    flex: 0 0 auto;
+  }
+
+  .header-actions .btn {
+    min-height: 34px;
+    padding: 6px 9px;
+  }
+
+  .hero {
+    min-height: 470px;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-content {
+    width: calc(100% - 30px);
+    text-align: center;
+  }
+
+  .hero-badge {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+  }
+
+  .hero h1 {
+    max-width: 100%;
+    margin: 16px auto;
+    font-size: clamp(34px, 10vw, 48px);
+    line-height: 1;
+    letter-spacing: -1.5px;
+  }
+
+  .hero p {
+    max-width: 100%;
+    margin: 0 auto;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .hero-buttons {
+    width: 100%;
+    margin-top: 22px;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+  }
+
+  /* SHOWCASE */
+  .home-visual-showcase {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin: 20px 0 28px;
+  }
+
+  .showcase-card,
+  .showcase-main {
+    width: 100%;
+    min-height: 180px;
+  }
+
+  .showcase-card img,
+  .showcase-main img {
+    width: 100%;
+    height: 180px;
+    min-height: 180px;
+    object-fit: cover;
+  }
+
+  .showcase-card > span {
+    left: 16px;
+    right: 16px;
+    bottom: 15px;
+    font-size: 15px;
+  }
+
+  /* QUICK ACCESS */
+  .quick-access {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+
+  .quick-access-card {
+    min-height: 105px;
+    padding: 14px;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .quick-access-card .quick-icon {
+    font-size: 23px;
+    margin-bottom: 7px;
+  }
+
+  .quick-access-card strong {
+    font-size: 12px;
+  }
+
+  .quick-access-card span {
+    font-size: 9px;
+  }
+
+  /* SECTIONS */
+  .section,
+  .page-container {
+    width: calc(100% - 20px);
+    padding: 28px 0;
+  }
+
+  /* FOOTER */
+  .footer-inner {
+    width: calc(100% - 24px);
+    padding: 30px 0 90px;
+    flex-direction: column;
+  }
+
+  .footer-links {
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  /* BOTTOM NAV */
+  .mobile-bottom-nav {
+    width: calc(100% - 10px);
+    grid-template-columns: repeat(5, 1fr);
+    bottom: 5px;
+    min-height: 63px;
+  }
+
+  .mobile-bottom-nav a,
+  .mobile-bottom-nav button {
+    min-height: 49px;
+    font-size: 8px;
+    padding: 4px 2px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL PHONE
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .header-inner {
+    width: calc(100% - 14px);
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .header-actions .btn {
+    padding: 5px 7px;
+    font-size: 9px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .quick-access {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-access-card {
+    min-height: 85px;
+  }
+
+  .showcase-card,
+  .showcase-main {
+    min-height: 160px;
+  }
+
+  .showcase-card img,
+  .showcase-main img {
+    height: 160px;
+    min-height: 160px;
+  }
+
+  .mobile-bottom-nav a,
+  .mobile-bottom-nav button {
+    font-size: 7px;
+  }
+}
