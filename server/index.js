@@ -1,14 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// .env is located at: server/server/.env
+// .env:
+// server/server/.env
 dotenv.config({
   path: path.join(__dirname, "server", ".env"),
 });
@@ -21,78 +21,116 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 // ======================================================
-// API CONFIG
+// API SPORTS CONFIG
 // ======================================================
 
-const FOOTBALL_API_URL = "https://v3.football.api-sports.io";
+const API_KEY =
+  process.env.SPORTS_API_KEY ||
+  process.env.FOOTBALL_API_KEY ||
+  "";
 
-// API-Sports uses different base URLs for different sports.
-// The same API key can only be used for APIs your account
-// actually has access to.
 const SPORTS_APIS = {
-  football: "https://v3.football.api-sports.io",
-  basketball: "https://v1.basketball.api-sports.io",
-  tennis: "https://v1.tennis.api-sports.io",
-  volleyball: "https://v1.volleyball.api-sports.io",
-  hockey: "https://v1.hockey.api-sports.io",
-  baseball: "https://v1.baseball.api-sports.io",
-  handball: "https://v1.handball.api-sports.io",
-  rugby: "https://v1.rugby.api-sports.io",
-  formula1: "https://v1.formula-1.api-sports.io",
-  mma: "https://v1.mma.api-sports.io",
-  golf: "https://v1.golf.api-sports.io",
+  football: {
+    name: "Football",
+    url: "https://v3.football.api-sports.io",
+  },
+
+  basketball: {
+    name: "Basketball",
+    url: "https://v1.basketball.api-sports.io",
+  },
+
+  nba: {
+    name: "NBA",
+    url: "https://v2.nba.api-sports.io",
+  },
+
+  nfl: {
+    name: "NFL",
+    url: "https://v1.american-football.api-sports.io",
+  },
+
+  baseball: {
+    name: "Baseball",
+    url: "https://v1.baseball.api-sports.io",
+  },
+
+  hockey: {
+    name: "Hockey",
+    url: "https://v1.hockey.api-sports.io",
+  },
+
+  volleyball: {
+    name: "Volleyball",
+    url: "https://v1.volleyball.api-sports.io",
+  },
+
+  handball: {
+    name: "Handball",
+    url: "https://v1.handball.api-sports.io",
+  },
+
+  rugby: {
+    name: "Rugby",
+    url: "https://v1.rugby.api-sports.io",
+  },
+
+  mma: {
+    name: "MMA",
+    url: "https://v1.mma.api-sports.io",
+  },
+
+  formula1: {
+    name: "Formula 1",
+    url: "https://v1.formula-1.api-sports.io",
+  },
+
+  afl: {
+    name: "AFL",
+    url: "https://v1.afl.api-sports.io",
+  },
 };
 
 // ======================================================
-// HELPERS
+// API REQUEST
 // ======================================================
 
-function apiHeaders(apiKey) {
-  return {
-    "x-apisports-key": apiKey,
-  };
-}
-
-async function apiRequest(baseUrl, endpoint, apiKey) {
-  if (!apiKey) {
-    throw new Error("Sports API key is missing");
+async function apiRequest(baseUrl, endpoint) {
+  if (!API_KEY) {
+    throw new Error("SPORTS_API_KEY / FOOTBALL_API_KEY is missing");
   }
 
   const response = await fetch(`${baseUrl}${endpoint}`, {
     method: "GET",
-    headers: apiHeaders(apiKey),
+    headers: {
+      "x-apisports-key": API_KEY,
+    },
   });
+
+  const data = await response.json();
 
   if (!response.ok) {
     throw new Error(
-      `Sports API error: ${response.status} ${response.statusText}`
+      data?.message ||
+        `API error ${response.status}: ${response.statusText}`
     );
   }
 
-  return response.json();
+  return data;
 }
 
-async function footballRequest(endpoint) {
-  return apiRequest(
-    FOOTBALL_API_URL,
-    endpoint,
-    process.env.FOOTBALL_API_KEY || process.env.SPORTS_API_KEY
-  );
-}
+// ======================================================
+// ROOT
+// ======================================================
 
-async function sportsRequest(sport, endpoint) {
-  const baseUrl = SPORTS_APIS[sport];
-
-  if (!baseUrl) {
-    throw new Error(`Sport "${sport}" is not configured`);
-  }
-
-  return apiRequest(
-    baseUrl,
-    endpoint,
-    process.env.SPORTS_API_KEY
-  );
-}
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    name: "GoldenBet API",
+    version: "4.0.0",
+    status: "online",
+  });
+});
 
 // ======================================================
 // HEALTH
@@ -103,40 +141,111 @@ app.get("/api/health", (req, res) => {
     success: true,
     service: "GoldenBet API",
     status: "online",
+    apiKeyConfigured: Boolean(API_KEY),
     time: new Date().toISOString(),
     sports: Object.keys(SPORTS_APIS),
   });
 });
 
-app.get("/api", (req, res) => {
+// ======================================================
+// SPORTS LIST
+// ======================================================
+
+app.get("/api/sports", (req, res) => {
   res.json({
-    name: "GoldenBet API",
-    version: "3.0.0",
-    status: "online",
-    football: Boolean(
-      process.env.FOOTBALL_API_KEY || process.env.SPORTS_API_KEY
+    success: true,
+    sports: Object.entries(SPORTS_APIS).map(
+      ([id, sport]) => ({
+        id,
+        name: sport.name,
+        url: sport.url,
+      })
     ),
-    sports: Boolean(process.env.SPORTS_API_KEY),
-    availableSports: Object.keys(SPORTS_APIS),
   });
+});
+
+// ======================================================
+// GENERIC SPORT ENDPOINT
+//
+// Example:
+// /api/sports/football?path=/fixtures?live=all
+// ======================================================
+
+app.get("/api/sports/:sport", async (req, res) => {
+  try {
+    const { sport } = req.params;
+    const { path: apiPath } = req.query;
+
+    const config = SPORTS_APIS[sport];
+
+    if (!config) {
+      return res.status(404).json({
+        success: false,
+        error: `Sport "${sport}" is not configured.`,
+        availableSports: Object.keys(SPORTS_APIS),
+      });
+    }
+
+    if (!apiPath) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing path query.",
+        example:
+          "/api/sports/football?path=/fixtures?live=all",
+      });
+    }
+
+    if (!String(apiPath).startsWith("/")) {
+      return res.status(400).json({
+        success: false,
+        error: "API path must start with /",
+      });
+    }
+
+    const data = await apiRequest(
+      config.url,
+      apiPath
+    );
+
+    res.json({
+      success: true,
+      sport,
+      sportName: config.name,
+      data,
+    });
+  } catch (error) {
+    console.error(
+      `Sport API error [${req.params.sport}]:`,
+      error
+    );
+
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
 });
 
 // ======================================================
 // FOOTBALL
 // ======================================================
 
-// LIVE FOOTBALL
+// Live football
 app.get("/api/football/live", async (req, res) => {
   try {
-    const data = await footballRequest("/fixtures?live=all");
+    const data = await apiRequest(
+      SPORTS_APIS.football.url,
+      "/fixtures?live=all"
+    );
 
     res.json({
       success: true,
+      sport: "football",
       count: data.response?.length || 0,
       matches: data.response || [],
     });
   } catch (error) {
-    console.error("Live football error:", error);
+    console.error("Football live error:", error);
 
     res.status(500).json({
       success: false,
@@ -145,23 +254,27 @@ app.get("/api/football/live", async (req, res) => {
   }
 });
 
-// TODAY FOOTBALL
+// Today's football
 app.get("/api/football/today", async (req, res) => {
   try {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Date()
+      .toISOString()
+      .slice(0, 10);
 
-    const data = await footballRequest(
+    const data = await apiRequest(
+      SPORTS_APIS.football.url,
       `/fixtures?date=${today}`
     );
 
     res.json({
       success: true,
+      sport: "football",
       date: today,
       count: data.response?.length || 0,
       matches: data.response || [],
     });
   } catch (error) {
-    console.error("Today's football error:", error);
+    console.error("Football today error:", error);
 
     res.status(500).json({
       success: false,
@@ -170,37 +283,40 @@ app.get("/api/football/today", async (req, res) => {
   }
 });
 
-// FOOTBALL MATCH
-app.get("/api/football/match/:fixtureId", async (req, res) => {
-  try {
-    const { fixtureId } = req.params;
+// Football fixture
+app.get(
+  "/api/football/match/:fixtureId",
+  async (req, res) => {
+    try {
+      const { fixtureId } = req.params;
 
-    const data = await footballRequest(
-      `/fixtures?id=${fixtureId}`
-    );
+      const data = await apiRequest(
+        SPORTS_APIS.football.url,
+        `/fixtures?id=${fixtureId}`
+      );
 
-    res.json({
-      success: true,
-      match: data.response?.[0] || null,
-    });
-  } catch (error) {
-    console.error("Match details error:", error);
-
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+      res.json({
+        success: true,
+        match: data.response?.[0] || null,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error.message,
+      });
+    }
   }
-});
+);
 
-// FOOTBALL STATISTICS
+// Football statistics
 app.get(
   "/api/football/match/:fixtureId/statistics",
   async (req, res) => {
     try {
       const { fixtureId } = req.params;
 
-      const data = await footballRequest(
+      const data = await apiRequest(
+        SPORTS_APIS.football.url,
         `/fixtures/statistics?fixture=${fixtureId}`
       );
 
@@ -209,8 +325,6 @@ app.get(
         statistics: data.response || [],
       });
     } catch (error) {
-      console.error("Statistics error:", error);
-
       res.status(500).json({
         success: false,
         error: error.message,
@@ -219,14 +333,15 @@ app.get(
   }
 );
 
-// FOOTBALL EVENTS
+// Football events
 app.get(
   "/api/football/match/:fixtureId/events",
   async (req, res) => {
     try {
       const { fixtureId } = req.params;
 
-      const data = await footballRequest(
+      const data = await apiRequest(
+        SPORTS_APIS.football.url,
         `/fixtures/events?fixture=${fixtureId}`
       );
 
@@ -235,8 +350,6 @@ app.get(
         events: data.response || [],
       });
     } catch (error) {
-      console.error("Events error:", error);
-
       res.status(500).json({
         success: false,
         error: error.message,
@@ -245,14 +358,65 @@ app.get(
   }
 );
 
-// FOOTBALL PRE-MATCH ODDS
+// Football lineups
+app.get(
+  "/api/football/match/:fixtureId/lineups",
+  async (req, res) => {
+    try {
+      const { fixtureId } = req.params;
+
+      const data = await apiRequest(
+        SPORTS_APIS.football.url,
+        `/fixtures/lineups?fixture=${fixtureId}`
+      );
+
+      res.json({
+        success: true,
+        lineups: data.response || [],
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error.message,
+      });
+    }
+  }
+);
+
+// Football players
+app.get(
+  "/api/football/match/:fixtureId/players",
+  async (req, res) => {
+    try {
+      const { fixtureId } = req.params;
+
+      const data = await apiRequest(
+        SPORTS_APIS.football.url,
+        `/fixtures/players?fixture=${fixtureId}`
+      );
+
+      res.json({
+        success: true,
+        players: data.response || [],
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error.message,
+      });
+    }
+  }
+);
+
+// Football pre-match odds
 app.get(
   "/api/football/match/:fixtureId/odds",
   async (req, res) => {
     try {
       const { fixtureId } = req.params;
 
-      const data = await footballRequest(
+      const data = await apiRequest(
+        SPORTS_APIS.football.url,
         `/odds?fixture=${fixtureId}`
       );
 
@@ -261,8 +425,6 @@ app.get(
         odds: data.response || [],
       });
     } catch (error) {
-      console.error("Odds error:", error);
-
       res.status(500).json({
         success: false,
         error: error.message,
@@ -271,14 +433,15 @@ app.get(
   }
 );
 
-// FOOTBALL LIVE ODDS
+// Football live odds
 app.get(
   "/api/football/match/:fixtureId/live-odds",
   async (req, res) => {
     try {
       const { fixtureId } = req.params;
 
-      const data = await footballRequest(
+      const data = await apiRequest(
+        SPORTS_APIS.football.url,
         `/odds/live?fixture=${fixtureId}`
       );
 
@@ -287,8 +450,6 @@ app.get(
         odds: data.response || [],
       });
     } catch (error) {
-      console.error("Live odds error:", error);
-
       res.status(500).json({
         success: false,
         error: error.message,
@@ -297,18 +458,19 @@ app.get(
   }
 );
 
-// FOOTBALL LEAGUES
+// Football leagues
 app.get("/api/football/leagues", async (req, res) => {
   try {
-    const data = await footballRequest("/leagues");
+    const data = await apiRequest(
+      SPORTS_APIS.football.url,
+      "/leagues"
+    );
 
     res.json({
       success: true,
       leagues: data.response || [],
     });
   } catch (error) {
-    console.error("Leagues error:", error);
-
     res.status(500).json({
       success: false,
       error: error.message,
@@ -317,89 +479,65 @@ app.get("/api/football/leagues", async (req, res) => {
 });
 
 // ======================================================
-// OTHER SPORTS
+// LIVE ALL SPORTS
 // ======================================================
-//
-// Generic proxy.
-//
-// Example:
-// /api/sports/basketball?path=/games?date=2026-10-01
-//
-// The frontend can use this while we build each sport's
-// dedicated UI and market mapping.
-//
 
-app.get("/api/sports/:sport", async (req, res) => {
+app.get("/api/live/:sport", async (req, res) => {
   try {
     const { sport } = req.params;
 
-    if (sport === "football") {
-      return res.status(400).json({
-        success: false,
-        error: "Use the football endpoints for football.",
-      });
-    }
+    const config = SPORTS_APIS[sport];
 
-    if (!SPORTS_APIS[sport]) {
+    if (!config) {
       return res.status(404).json({
         success: false,
-        error: `Sport "${sport}" is not supported yet.`,
-        availableSports: Object.keys(SPORTS_APIS),
+        error: `Sport "${sport}" is not configured.`,
       });
     }
 
-    const requestedPath = req.query.path;
+    let endpoint;
 
-    if (!requestedPath) {
-      return res.status(400).json({
-        success: false,
-        error: "Missing path query.",
-        example:
-          `/api/sports/${sport}?path=/games`,
-      });
+    switch (sport) {
+      case "football":
+        endpoint = "/fixtures?live=all";
+        break;
+
+      default:
+        endpoint = req.query.path;
+
+        if (!endpoint) {
+          return res.status(400).json({
+            success: false,
+            error:
+              "This sport requires an API path.",
+            example:
+              `/api/live/${sport}?path=/games`,
+          });
+        }
     }
 
-    if (!requestedPath.startsWith("/")) {
-      return res.status(400).json({
-        success: false,
-        error: "The API path must start with /",
-      });
-    }
-
-    const data = await sportsRequest(
-      sport,
-      requestedPath
+    const data = await apiRequest(
+      config.url,
+      endpoint
     );
 
     res.json({
       success: true,
       sport,
+      sportName: config.name,
       data,
     });
   } catch (error) {
-    console.error("Sports API error:", error);
+    console.error(
+      `Live ${req.params.sport} error:`,
+      error
+    );
 
     res.status(500).json({
       success: false,
       error: error.message,
     });
   }
-});
-
-// ======================================================
-// AVAILABLE SPORTS
-// ======================================================
-
-app.get("/api/sports", (req, res) => {
-  res.json({
-    success: true,
-    sports: Object.keys(SPORTS_APIS).map((sport) => ({
-      id: sport,
-      name:
-        sport.charAt(0).toUpperCase() +
-        sport.slice(1),
-    })),
-  });
 });
 
 // ======================================================
@@ -412,7 +550,12 @@ app.listen(PORT, () => {
   );
 
   console.log(
-    "Available sports:",
+    "Configured sports:",
     Object.keys(SPORTS_APIS).join(", ")
+  );
+
+  console.log(
+    "API key:",
+    API_KEY ? "CONFIGURED" : "MISSING"
   );
 });
