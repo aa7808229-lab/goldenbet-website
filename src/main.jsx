@@ -5,11 +5,11 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./styles.css";
 
-export const LanguageContext = React.createContext();
+export const LanguageContext = React.createContext(null);
 
 function Root() {
   const [language, setLanguage] = useState(
-    localStorage.getItem("goldenbet-language") || "en"
+    () => localStorage.getItem("goldenbet-language") || "en"
   );
 
   useEffect(() => {
@@ -17,17 +17,13 @@ function Root() {
 
     document.documentElement.lang = language;
 
-    document.documentElement.dir =
-      ["ku", "ar", "fa"].includes(language) ? "rtl" : "ltr";
+    document.documentElement.dir = ["ku", "ar", "fa"].includes(language)
+      ? "rtl"
+      : "ltr";
   }, [language]);
 
   return (
-    <LanguageContext.Provider
-      value={{
-        language,
-        setLanguage,
-      }}
-    >
+    <LanguageContext.Provider value={{ language, setLanguage }}>
       <BrowserRouter>
         <App />
       </BrowserRouter>
@@ -35,4 +31,8 @@ function Root() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<Root />);
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <Root />
+  </React.StrictMode>
+);
