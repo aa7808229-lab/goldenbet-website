@@ -1,13 +1,10 @@
 import { Link } from "react-router-dom";
 
-export default function GoldenBetHeader({
-  bets = [],
-}) {
+export default function GoldenBetHeader({ bets = [] }) {
   return (
     <>
       <header className="golden-top-header">
         <div className="golden-top-visual">
-
           <div className="golden-side-image golden-side-left">
             <img
               src="/golden-roulette.svg"
@@ -29,7 +26,6 @@ export default function GoldenBetHeader({
               alt="Golden Football"
             />
           </div>
-
         </div>
       </header>
 
@@ -37,31 +33,20 @@ export default function GoldenBetHeader({
         className="golden-bottom-nav"
         aria-label="Main navigation"
       >
-
         <Link
           to="/sports"
           className="golden-bottom-item"
         >
-          <span className="golden-bottom-icon">
-            ⚽
-          </span>
-
-          <span>
-            Sports
-          </span>
+          <span className="golden-bottom-icon">⚽</span>
+          <span>Sports</span>
         </Link>
 
         <Link
           to="/bet-slip"
           className="golden-bottom-item"
         >
-          <span className="golden-bottom-icon">
-            🎟️
-          </span>
-
-          <span>
-            Bet Slip
-          </span>
+          <span className="golden-bottom-icon">🎟️</span>
+          <span>Bet Slip</span>
 
           {bets.length > 0 && (
             <b className="golden-bet-count">
@@ -74,28 +59,17 @@ export default function GoldenBetHeader({
           to="/deposit"
           className="golden-bottom-item"
         >
-          <span className="golden-bottom-icon">
-            💰
-          </span>
-
-          <span>
-            Deposit
-          </span>
+          <span className="golden-bottom-icon">💰</span>
+          <span>Deposit</span>
         </Link>
 
         <Link
           to="/casino"
           className="golden-bottom-item"
         >
-          <span className="golden-bottom-icon">
-            🎰
-          </span>
-
-          <span>
-            Casino
-          </span>
+          <span className="golden-bottom-icon">🎰</span>
+          <span>Casino</span>
         </Link>
-
       </nav>
     </>
   );
