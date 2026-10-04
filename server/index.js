@@ -1,561 +1,645 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
+import { createClient } from "@supabase/supabase-js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// .env:
-// server/server/.env
-dotenv.config({
-  path: path.join(__dirname, "server", ".env"),
-});
+dotenv.config();
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+const PORT = Number(process.env.PORT || 5000);
 
-const PORT = process.env.PORT || 5000;
+const FRONTEND_URL =
+  process.env.FRONTEND_URL || "http://localhost:5173";
 
-// ======================================================
-// API SPORTS CONFIG
-// ======================================================
+const SPORTS_API_URL =
+  process.env.SPORTS_API_URL || "https://v3.football.api-sports.io";
 
-const API_KEY =
-  process.env.SPORTS_API_KEY ||
-  process.env.FOOTBALL_API_KEY ||
-  "";
+const SPORTS_API_KEY = process.env.SPORTS_API_KEY || "";
 
-const SPORTS_APIS = {
-  football: {
-    name: "Football",
-    url: "https://v3.football.api-sports.io",
-  },
+const SUPABASE_URL =
+  process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "";
 
-  basketball: {
-    name: "Basketball",
-    url: "https://v1.basketball.api-sports.io",
-  },
+const SUPABASE_SERVICE_ROLE_KEY =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
-  nba: {
-    name: "NBA",
-    url: "https://v2.nba.api-sports.io",
-  },
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 
-  nfl: {
-    name: "NFL",
-    url: "https://v1.american-football.api-sports.io",
-  },
+app.use(express.json({ limit: "1mb" }));
 
-  baseball: {
-    name: "Baseball",
-    url: "https://v1.baseball.api-sports.io",
-  },
-
-  hockey: {
-    name: "Hockey",
-    url: "https://v1.hockey.api-sports.io",
-  },
-
-  volleyball: {
-    name: "Volleyball",
-    url: "https://v1.volleyball.api-sports.io",
-  },
-
-  handball: {
-    name: "Handball",
-    url: "https://v1.handball.api-sports.io",
-  },
-
-  rugby: {
-    name: "Rugby",
-    url: "https://v1.rugby.api-sports.io",
-  },
-
-  mma: {
-    name: "MMA",
-    url: "https://v1.mma.api-sports.io",
-  },
-
-  formula1: {
-    name: "Formula 1",
-    url: "https://v1.formula-1.api-sports.io",
-  },
-
-  afl: {
-    name: "AFL",
-    url: "https://v1.afl.api-sports.io",
-  },
-};
-
-// ======================================================
-// API REQUEST
-// ======================================================
-
-async function apiRequest(baseUrl, endpoint) {
-  if (!API_KEY) {
-    throw new Error("SPORTS_API_KEY / FOOTBALL_API_KEY is missing");
-  }
-
-  const response = await fetch(`${baseUrl}${endpoint}`, {
-    method: "GET",
-    headers: {
-      "x-apisports-key": API_KEY,
-    },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data?.message ||
-        `API error ${response.status}: ${response.statusText}`
-    );
-  }
-
-  return data;
-}
-
-// ======================================================
-// ROOT
-// ======================================================
+const supabase =
+  SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY
+    ? createClient(
+        SUPABASE_URL,
+        SUPABASE_SERVICE_ROLE_KEY,
+        {
+          auth: {
+            autoRefreshToken: false,
+            persistSession: false,
+          },
+        }
+      )
+    : null;
 
 app.get("/", (req, res) => {
   res.json({
     success: true,
     name: "GoldenBet API",
-    version: "4.0.0",
-    status: "online",
+    status: "running",
   });
 });
-
-// ======================================================
-// HEALTH
-// ======================================================
 
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
-    service: "GoldenBet API",
-    status: "online",
-    apiKeyConfigured: Boolean(API_KEY),
-    time: new Date().toISOString(),
-    sports: Object.keys(SPORTS_APIS),
+    server: "online",
+    sportsApi: Boolean(SPORTS_API_KEY),
+    supabase: Boolean(supabase),
   });
 });
 
-// ======================================================
-// SPORTS LIST
-// ======================================================
+app.get("/api/sports/fixtures", async (req, res) => {
+  if (!SPORTS_API_KEY) {
+    return res.status(500).json({
+      success: false,
+      error: "SPORTS_API_KEY is missing.",
+    });
+  }
 
-app.get("/api/sports", (req, res) => {
-  res.json({
-    success: true,
-    sports: Object.entries(SPORTS_APIS).map(
-      ([id, sport]) => ({
-        id,
-        name: sport.name,
-        url: sport.url,
-      })
-    ),
+  try {
+    const params = new URLSearchParams();
+
+    Object.entries(req.query).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== ""
+      ) {
+        params.append(key, String(value));
+      }
+    });
+
+    const url = `${SPORTS_API_URL}/fixtures${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-apisports-key": SPORTS_API_KEY,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error: "Sports API request failed.",
+        details: data,
+      });
+    }
+
+    return res.json(data);
+  } catch (error) {
+    console.error("Fixtures error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Unable to load football fixtures.",
+    });
+  }
+});
+
+app.get("/api/sports/live", async (req, res) => {
+  if (!SPORTS_API_KEY) {
+    return res.status(500).json({
+      success: false,
+      error: "SPORTS_API_KEY is missing.",
+    });
+  }
+
+  try {
+    const url = `${SPORTS_API_URL}/fixtures?live=all`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-apisports-key": SPORTS_API_KEY,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error: "Sports API request failed.",
+        details: data,
+      });
+    }
+
+    return res.json(data);
+  } catch (error) {
+    console.error("Live fixtures error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Unable to load live matches.",
+    });
+  }
+});
+
+app.get("/api/sports/leagues", async (req, res) => {
+  if (!SPORTS_API_KEY) {
+    return res.status(500).json({
+      success: false,
+      error: "SPORTS_API_KEY is missing.",
+    });
+  }
+
+  try {
+    const params = new URLSearchParams();
+
+    Object.entries(req.query).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== ""
+      ) {
+        params.append(key, String(value));
+      }
+    });
+
+    const url = `${SPORTS_API_URL}/leagues${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-apisports-key": SPORTS_API_KEY,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error: "Sports API request failed.",
+        details: data,
+      });
+    }
+
+    return res.json(data);
+  } catch (error) {
+    console.error("Leagues error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Unable to load leagues.",
+    });
+  }
+});
+
+app.get("/api/sports/teams", async (req, res) => {
+  if (!SPORTS_API_KEY) {
+    return res.status(500).json({
+      success: false,
+      error: "SPORTS_API_KEY is missing.",
+    });
+  }
+
+  try {
+    const params = new URLSearchParams();
+
+    Object.entries(req.query).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== ""
+      ) {
+        params.append(key, String(value));
+      }
+    });
+
+    const url = `${SPORTS_API_URL}/teams${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-apisports-key": SPORTS_API_KEY,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error: "Sports API request failed.",
+        details: data,
+      });
+    }
+
+    return res.json(data);
+  } catch (error) {
+    console.error("Teams error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Unable to load teams.",
+    });
+  }
+});
+
+app.get("/api/sports/standings", async (req, res) => {
+  if (!SPORTS_API_KEY) {
+    return res.status(500).json({
+      success: false,
+      error: "SPORTS_API_KEY is missing.",
+    });
+  }
+
+  try {
+    const params = new URLSearchParams();
+
+    Object.entries(req.query).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== ""
+      ) {
+        params.append(key, String(value));
+      }
+    });
+
+    const url = `${SPORTS_API_URL}/standings${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-apisports-key": SPORTS_API_KEY,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error: "Sports API request failed.",
+        details: data,
+      });
+    }
+
+    return res.json(data);
+  } catch (error) {
+    console.error("Standings error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Unable to load standings.",
+    });
+  }
+});
+
+app.get("/api/sports/odds", async (req, res) => {
+  if (!SPORTS_API_KEY) {
+    return res.status(500).json({
+      success: false,
+      error: "SPORTS_API_KEY is missing.",
+    });
+  }
+
+  try {
+    const params = new URLSearchParams();
+
+    Object.entries(req.query).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== ""
+      ) {
+        params.append(key, String(value));
+      }
+    });
+
+    const url = `${SPORTS_API_URL}/odds${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-apisports-key": SPORTS_API_KEY,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error: "Sports API request failed.",
+        details: data,
+      });
+    }
+
+    return res.json(data);
+  } catch (error) {
+    console.error("Odds error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Unable to load odds.",
+    });
+  }
+});
+
+app.get("/api/sports/events", async (req, res) => {
+  if (!SPORTS_API_KEY) {
+    return res.status(500).json({
+      success: false,
+      error: "SPORTS_API_KEY is missing.",
+    });
+  }
+
+  try {
+    const params = new URLSearchParams();
+
+    Object.entries(req.query).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== ""
+      ) {
+        params.append(key, String(value));
+      }
+    });
+
+    const url = `${SPORTS_API_URL}/fixtures/events${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-apisports-key": SPORTS_API_KEY,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error: "Sports API request failed.",
+        details: data,
+      });
+    }
+
+    return res.json(data);
+  } catch (error) {
+    console.error("Events error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Unable to load match events.",
+    });
+  }
+});
+
+app.get("/api/sports/statistics", async (req, res) => {
+  if (!SPORTS_API_KEY) {
+    return res.status(500).json({
+      success: false,
+      error: "SPORTS_API_KEY is missing.",
+    });
+  }
+
+  try {
+    const params = new URLSearchParams();
+
+    Object.entries(req.query).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== ""
+      ) {
+        params.append(key, String(value));
+      }
+    });
+
+    const url = `${SPORTS_API_URL}/fixtures/statistics${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-apisports-key": SPORTS_API_KEY,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error: "Sports API request failed.",
+        details: data,
+      });
+    }
+
+    return res.json(data);
+  } catch (error) {
+    console.error("Statistics error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Unable to load match statistics.",
+    });
+  }
+});
+
+app.get("/api/sports/head-to-head", async (req, res) => {
+  if (!SPORTS_API_KEY) {
+    return res.status(500).json({
+      success: false,
+      error: "SPORTS_API_KEY is missing.",
+    });
+  }
+
+  try {
+    const params = new URLSearchParams();
+
+    Object.entries(req.query).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== ""
+      ) {
+        params.append(key, String(value));
+      }
+    });
+
+    const url = `${SPORTS_API_URL}/fixtures/headtohead${
+      params.toString() ? `?${params.toString()}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-apisports-key": SPORTS_API_KEY,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+        error: "Sports API request failed.",
+        details: data,
+      });
+    }
+
+    return res.json(data);
+  } catch (error) {
+    console.error("Head-to-head error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Unable to load head-to-head data.",
+    });
+  }
+});
+
+app.get("/api/profile/:userId", async (req, res) => {
+  if (!supabase) {
+    return res.status(500).json({
+      success: false,
+      error: "Supabase server configuration is missing.",
+    });
+  }
+
+  const userId = String(req.params.userId || "").trim();
+
+  if (!userId) {
+    return res.status(400).json({
+      success: false,
+      error: "User ID is required.",
+    });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Profile error:", error);
+
+      return res.status(500).json({
+        success: false,
+        error: "Unable to load profile.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      profile: data,
+    });
+  } catch (error) {
+    console.error("Profile request error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Server error.",
+    });
+  }
+});
+
+app.get("/api/bets/:userId", async (req, res) => {
+  if (!supabase) {
+    return res.status(500).json({
+      success: false,
+      error: "Supabase server configuration is missing.",
+    });
+  }
+
+  const userId = String(req.params.userId || "").trim();
+
+  if (!userId) {
+    return res.status(400).json({
+      success: false,
+      error: "User ID is required.",
+    });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("bets")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Bets error:", error);
+
+      return res.status(500).json({
+        success: false,
+        error: "Unable to load bets.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      bets: data || [],
+    });
+  } catch (error) {
+    console.error("Bets request error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Server error.",
+    });
+  }
+});
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    error: "API route not found.",
+    path: req.path,
   });
 });
 
-// ======================================================
-// GENERIC SPORT ENDPOINT
-//
-// Example:
-// /api/sports/football?path=/fixtures?live=all
-// ======================================================
+app.use((error, req, res, next) => {
+  console.error("Server error:", error);
 
-app.get("/api/sports/:sport", async (req, res) => {
-  try {
-    const { sport } = req.params;
-    const { path: apiPath } = req.query;
-
-    const config = SPORTS_APIS[sport];
-
-    if (!config) {
-      return res.status(404).json({
-        success: false,
-        error: `Sport "${sport}" is not configured.`,
-        availableSports: Object.keys(SPORTS_APIS),
-      });
-    }
-
-    if (!apiPath) {
-      return res.status(400).json({
-        success: false,
-        error: "Missing path query.",
-        example:
-          "/api/sports/football?path=/fixtures?live=all",
-      });
-    }
-
-    if (!String(apiPath).startsWith("/")) {
-      return res.status(400).json({
-        success: false,
-        error: "API path must start with /",
-      });
-    }
-
-    const data = await apiRequest(
-      config.url,
-      apiPath
-    );
-
-    res.json({
-      success: true,
-      sport,
-      sportName: config.name,
-      data,
-    });
-  } catch (error) {
-    console.error(
-      `Sport API error [${req.params.sport}]:`,
-      error
-    );
-
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
+  res.status(500).json({
+    success: false,
+    error: "Internal server error.",
+  });
 });
-
-// ======================================================
-// FOOTBALL
-// ======================================================
-
-// Live football
-app.get("/api/football/live", async (req, res) => {
-  try {
-    const data = await apiRequest(
-      SPORTS_APIS.football.url,
-      "/fixtures?live=all"
-    );
-
-    res.json({
-      success: true,
-      sport: "football",
-      count: data.response?.length || 0,
-      matches: data.response || [],
-    });
-  } catch (error) {
-    console.error("Football live error:", error);
-
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Today's football
-app.get("/api/football/today", async (req, res) => {
-  try {
-    const today = new Date()
-      .toISOString()
-      .slice(0, 10);
-
-    const data = await apiRequest(
-      SPORTS_APIS.football.url,
-      `/fixtures?date=${today}`
-    );
-
-    res.json({
-      success: true,
-      sport: "football",
-      date: today,
-      count: data.response?.length || 0,
-      matches: data.response || [],
-    });
-  } catch (error) {
-    console.error("Football today error:", error);
-
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Football fixture
-app.get(
-  "/api/football/match/:fixtureId",
-  async (req, res) => {
-    try {
-      const { fixtureId } = req.params;
-
-      const data = await apiRequest(
-        SPORTS_APIS.football.url,
-        `/fixtures?id=${fixtureId}`
-      );
-
-      res.json({
-        success: true,
-        match: data.response?.[0] || null,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message,
-      });
-    }
-  }
-);
-
-// Football statistics
-app.get(
-  "/api/football/match/:fixtureId/statistics",
-  async (req, res) => {
-    try {
-      const { fixtureId } = req.params;
-
-      const data = await apiRequest(
-        SPORTS_APIS.football.url,
-        `/fixtures/statistics?fixture=${fixtureId}`
-      );
-
-      res.json({
-        success: true,
-        statistics: data.response || [],
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message,
-      });
-    }
-  }
-);
-
-// Football events
-app.get(
-  "/api/football/match/:fixtureId/events",
-  async (req, res) => {
-    try {
-      const { fixtureId } = req.params;
-
-      const data = await apiRequest(
-        SPORTS_APIS.football.url,
-        `/fixtures/events?fixture=${fixtureId}`
-      );
-
-      res.json({
-        success: true,
-        events: data.response || [],
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message,
-      });
-    }
-  }
-);
-
-// Football lineups
-app.get(
-  "/api/football/match/:fixtureId/lineups",
-  async (req, res) => {
-    try {
-      const { fixtureId } = req.params;
-
-      const data = await apiRequest(
-        SPORTS_APIS.football.url,
-        `/fixtures/lineups?fixture=${fixtureId}`
-      );
-
-      res.json({
-        success: true,
-        lineups: data.response || [],
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message,
-      });
-    }
-  }
-);
-
-// Football players
-app.get(
-  "/api/football/match/:fixtureId/players",
-  async (req, res) => {
-    try {
-      const { fixtureId } = req.params;
-
-      const data = await apiRequest(
-        SPORTS_APIS.football.url,
-        `/fixtures/players?fixture=${fixtureId}`
-      );
-
-      res.json({
-        success: true,
-        players: data.response || [],
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message,
-      });
-    }
-  }
-);
-
-// Football pre-match odds
-app.get(
-  "/api/football/match/:fixtureId/odds",
-  async (req, res) => {
-    try {
-      const { fixtureId } = req.params;
-
-      const data = await apiRequest(
-        SPORTS_APIS.football.url,
-        `/odds?fixture=${fixtureId}`
-      );
-
-      res.json({
-        success: true,
-        odds: data.response || [],
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message,
-      });
-    }
-  }
-);
-
-// Football live odds
-app.get(
-  "/api/football/match/:fixtureId/live-odds",
-  async (req, res) => {
-    try {
-      const { fixtureId } = req.params;
-
-      const data = await apiRequest(
-        SPORTS_APIS.football.url,
-        `/odds/live?fixture=${fixtureId}`
-      );
-
-      res.json({
-        success: true,
-        odds: data.response || [],
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message,
-      });
-    }
-  }
-);
-
-// Football leagues
-app.get("/api/football/leagues", async (req, res) => {
-  try {
-    const data = await apiRequest(
-      SPORTS_APIS.football.url,
-      "/leagues"
-    );
-
-    res.json({
-      success: true,
-      leagues: data.response || [],
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// ======================================================
-// LIVE ALL SPORTS
-// ======================================================
-
-app.get("/api/live/:sport", async (req, res) => {
-  try {
-    const { sport } = req.params;
-
-    const config = SPORTS_APIS[sport];
-
-    if (!config) {
-      return res.status(404).json({
-        success: false,
-        error: `Sport "${sport}" is not configured.`,
-      });
-    }
-
-    let endpoint;
-
-    switch (sport) {
-      case "football":
-        endpoint = "/fixtures?live=all";
-        break;
-
-      default:
-        endpoint = req.query.path;
-
-        if (!endpoint) {
-          return res.status(400).json({
-            success: false,
-            error:
-              "This sport requires an API path.",
-            example:
-              `/api/live/${sport}?path=/games`,
-          });
-        }
-    }
-
-    const data = await apiRequest(
-      config.url,
-      endpoint
-    );
-
-    res.json({
-      success: true,
-      sport,
-      sportName: config.name,
-      data,
-    });
-  } catch (error) {
-    console.error(
-      `Live ${req.params.sport} error:`,
-      error
-    );
-
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// ======================================================
-// START SERVER
-// ======================================================
 
 app.listen(PORT, () => {
-  console.log(
-    `GoldenBet API running on port ${PORT}`
-  );
-
-  console.log(
-    "Configured sports:",
-    Object.keys(SPORTS_APIS).join(", ")
-  );
-
-  console.log(
-    "API key:",
-    API_KEY ? "CONFIGURED" : "MISSING"
-  );
+  console.log(`GoldenBet API running on port ${PORT}`);
+  console.log(`Frontend URL: ${FRONTEND_URL}`);
+  console.log(`Sports API: ${SPORTS_API_KEY ? "configured" : "missing"}`);
+  console.log(`Supabase: ${supabase ? "configured" : "missing"}`);
 });
