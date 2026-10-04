@@ -1,21 +1,21 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 const initialUsers = [
   {
-    id: 1,
-    username: "golden_user_01",
-    phone: "+9647500000000",
+    id: "user-001",
+    username: "golden_user",
+    fullName: "Golden User",
     country: "Iraq",
-    region: "Kurdistan",
+    phone: "",
     balance: 250000,
     status: "Active",
   },
   {
-    id: 2,
-    username: "golden_user_02",
-    phone: "+9647700000000",
+    id: "user-002",
+    username: "kurdistan_user",
+    fullName: "Kurdistan User",
     country: "Iraq",
-    region: "Kurdistan",
+    phone: "",
     balance: 85000,
     status: "Active",
   },
@@ -23,69 +23,203 @@ const initialUsers = [
 
 const initialAdmins = [
   {
-    id: 1,
-    name: "Kurdistan Admin",
-    phone: "+9647500000000",
+    id: "admin-001",
+    username: "admin",
+    name: "GoldenBet Admin",
     country: "Iraq",
-    region: "Kurdistan",
     status: "Active",
   },
 ];
 
-const paymentMethods = [
-  "Korek",
-  "Zain",
+const initialPaymentMethods = [
   "Zain Cash",
   "Asiacell",
+  "Korek",
   "FIB",
   "FastPay",
   "Qi Card",
-  "Bank / Card",
+  "Visa",
+  "Mastercard",
 ];
 
-function money(value) {
-  return new Intl.NumberFormat("en-US").format(value);
-}
+const initialCountries = [
+  { name: "Iraq", currency: "IQD", enabled: true },
+  { name: "Turkey", currency: "TRY", enabled: true },
+  { name: "Iran", currency: "IRR", enabled: true },
+  { name: "Saudi Arabia", currency: "SAR", enabled: true },
+  { name: "United Arab Emirates", currency: "AED", enabled: true },
+  { name: "Qatar", currency: "QAR", enabled: true },
+  { name: "Kuwait", currency: "KWD", enabled: true },
+  { name: "Jordan", currency: "JOD", enabled: true },
+  { name: "Egypt", currency: "EGP", enabled: true },
+  { name: "Germany", currency: "EUR", enabled: true },
+  { name: "France", currency: "EUR", enabled: true },
+  { name: "Italy", currency: "EUR", enabled: true },
+  { name: "Spain", currency: "EUR", enabled: true },
+  { name: "United Kingdom", currency: "GBP", enabled: true },
+  { name: "USA", currency: "USD", enabled: true },
+  { name: "Canada", currency: "CAD", enabled: true },
+  { name: "Australia", currency: "AUD", enabled: true },
+  { name: "Brazil", currency: "BRL", enabled: true },
+  { name: "Japan", currency: "JPY", enabled: true },
+  { name: "South Korea", currency: "KRW", enabled: true },
+  { name: "China", currency: "CNY", enabled: true },
+  { name: "India", currency: "INR", enabled: true },
+];
+
+const initialTransactions = [
+  {
+    id: "dep-001",
+    type: "Deposit",
+    username: "golden_user",
+    country: "Iraq",
+    amount: 100000,
+    method: "Zain Cash",
+    status: "Pending",
+    date: "2026-10-04",
+  },
+  {
+    id: "dep-002",
+    type: "Deposit",
+    username: "kurdistan_user",
+    country: "Iraq",
+    amount: 50000,
+    method: "FastPay",
+    status: "Approved",
+    date: "2026-10-03",
+  },
+  {
+    id: "wd-001",
+    type: "Withdrawal",
+    username: "golden_user",
+    country: "Iraq",
+    amount: 25000,
+    method: "Zain Cash",
+    status: "Pending",
+    date: "2026-10-04",
+  },
+];
+
+const formatMoney = (amount, currency = "IQD") => {
+  return `${Number(amount || 0).toLocaleString()} ${currency}`;
+};
 
 export default function AdminDashboard() {
   const [activePage, setActivePage] = useState("overview");
   const [users, setUsers] = useState(initialUsers);
   const [admins, setAdmins] = useState(initialAdmins);
+  const [countries, setCountries] = useState(initialCountries);
+  const [transactions, setTransactions] =
+    useState(initialTransactions);
+
   const [selectedUser, setSelectedUser] = useState(null);
   const [balanceAmount, setBalanceAmount] = useState("");
   const [balanceAction, setBalanceAction] = useState("add");
-  const [countryEnabled, setCountryEnabled] = useState(true);
-  const [showAdminForm, setShowAdminForm] = useState(false);
+
+  const [showAdminForm, setShowAdminForm] =
+    useState(false);
 
   const [newAdmin, setNewAdmin] = useState({
+    username: "",
     name: "",
-    phone: "",
     country: "Iraq",
-    region: "Kurdistan",
   });
 
-  const totalBalance = useMemo(
-    () => users.reduce((sum, user) => sum + user.balance, 0),
-    [users]
-  );
+  const [searchUser, setSearchUser] = useState("");
+  const [transactionFilter, setTransactionFilter] =
+    useState("All");
+
+  const totalUsers = users.length;
+
+  const totalBalance = useMemo(() => {
+    return users.reduce(
+      (total, user) =>
+        total + Number(user.balance || 0),
+      0
+    );
+  }, [users]);
+
+  const pendingDeposits = useMemo(() => {
+    return transactions.filter(
+      (item) =>
+        item.type === "Deposit" &&
+        item.status === "Pending"
+    ).length;
+  }, [transactions]);
+
+  const pendingWithdrawals = useMemo(() => {
+    return transactions.filter(
+      (item) =>
+        item.type === "Withdrawal" &&
+        item.status === "Pending"
+    ).length;
+  }, [transactions]);
+
+  const filteredUsers = useMemo(() => {
+    const search = searchUser
+      .trim()
+      .toLowerCase();
+
+    if (!search) {
+      return users;
+    }
+
+    return users.filter((user) =>
+      [
+        user.username,
+        user.fullName,
+        user.country,
+        user.phone,
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(search)
+    );
+  }, [users, searchUser]);
+
+  const filteredTransactions = useMemo(() => {
+    if (transactionFilter === "All") {
+      return transactions;
+    }
+
+    return transactions.filter(
+      (item) => item.type === transactionFilter
+    );
+  }, [transactions, transactionFilter]);
 
   const addBalance = () => {
-    if (!selectedUser) return;
+    if (!selectedUser) {
+      return;
+    }
 
     const amount = Number(balanceAmount);
 
-    if (!amount || amount <= 0) return;
+    if (!amount || amount <= 0) {
+      alert("Enter a valid amount.");
+      return;
+    }
 
-    setUsers((current) =>
-      current.map((user) => {
-        if (user.id !== selectedUser.id) return user;
+    setUsers((currentUsers) =>
+      currentUsers.map((user) => {
+        if (user.id !== selectedUser.id) {
+          return user;
+        }
+
+        const currentBalance = Number(
+          user.balance || 0
+        );
+
+        const newBalance =
+          balanceAction === "add"
+            ? currentBalance + amount
+            : Math.max(
+                0,
+                currentBalance - amount
+              );
 
         return {
           ...user,
-          balance:
-            balanceAction === "add"
-              ? user.balance + amount
-              : Math.max(0, user.balance - amount),
+          balance: newBalance,
         };
       })
     );
@@ -94,627 +228,887 @@ export default function AdminDashboard() {
     setBalanceAmount("");
   };
 
-  const createAdmin = () => {
-    if (!newAdmin.name || !newAdmin.phone) return;
+  const toggleCountry = (countryName) => {
+    setCountries((currentCountries) =>
+      currentCountries.map((country) =>
+        country.name === countryName
+          ? {
+              ...country,
+              enabled: !country.enabled,
+            }
+          : country
+      )
+    );
+  };
 
-    setAdmins((current) => [
-      ...current,
-      {
-        id: Date.now(),
-        ...newAdmin,
-        status: "Active",
-      },
+  const createAdmin = () => {
+    if (
+      !newAdmin.username.trim() ||
+      !newAdmin.name.trim()
+    ) {
+      alert("Please enter admin username and name.");
+      return;
+    }
+
+    const admin = {
+      id: `admin-${Date.now()}`,
+      username: newAdmin.username.trim(),
+      name: newAdmin.name.trim(),
+      country: newAdmin.country,
+      status: "Active",
+    };
+
+    setAdmins((currentAdmins) => [
+      ...currentAdmins,
+      admin,
     ]);
 
     setNewAdmin({
+      username: "",
       name: "",
-      phone: "",
       country: "Iraq",
-      region: "Kurdistan",
     });
 
     setShowAdminForm(false);
   };
 
-  const disableAdmin = (id) => {
-    setAdmins((current) =>
-      current.map((admin) =>
-        admin.id === id
+  const toggleAdmin = (adminId) => {
+    setAdmins((currentAdmins) =>
+      currentAdmins.map((admin) =>
+        admin.id === adminId
           ? {
               ...admin,
-              status: admin.status === "Active" ? "Disabled" : "Active",
+              status:
+                admin.status === "Active"
+                  ? "Disabled"
+                  : "Active",
             }
           : admin
       )
     );
   };
 
-  const menu = [
-    ["overview", "📊", "Overview"],
-    ["countries", "🌍", "Countries"],
-    ["users", "👥", "All Users"],
-    ["admins", "🛡️", "Country Admins"],
-    ["balance", "💰", "Balance Management"],
-    ["deposits", "📥", "Deposits"],
-    ["withdrawals", "📤", "Withdrawals"],
-    ["revenue", "📈", "Revenue"],
-    ["settings", "⚙️", "Admin Settings"],
+  const updateTransactionStatus = (
+    transactionId,
+    status
+  ) => {
+    setTransactions((currentTransactions) =>
+      currentTransactions.map((transaction) =>
+        transaction.id === transactionId
+          ? {
+              ...transaction,
+              status,
+            }
+          : transaction
+      )
+    );
+  };
+
+  const navigation = [
+    {
+      id: "overview",
+      label: "Overview",
+      icon: "📊",
+    },
+    {
+      id: "countries",
+      label: "Countries",
+      icon: "🌍",
+    },
+    {
+      id: "users",
+      label: "Users",
+      icon: "👥",
+    },
+    {
+      id: "admins",
+      label: "Admins",
+      icon: "👑",
+    },
+    {
+      id: "balance",
+      label: "Balance",
+      icon: "💰",
+    },
+    {
+      id: "deposits",
+      label: "Deposits",
+      icon: "💳",
+    },
+    {
+      id: "withdrawals",
+      label: "Withdrawals",
+      icon: "💸",
+    },
+    {
+      id: "revenue",
+      label: "Revenue",
+      icon: "📈",
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: "⚙️",
+    },
   ];
 
-  return (
-    <div className="admin-page">
-      <header className="admin-header">
-        <div>
-          <div className="admin-logo">GOLDEN<span>BET</span></div>
-          <div className="admin-subtitle">SUPER ADMIN PANEL</div>
-        </div>
-
-        <div className="admin-header-right">
-          <span className="admin-country">🌍 Global</span>
-          <span className="admin-role">👑 Super Admin</span>
-        </div>
-      </header>
-
-      <div className="admin-layout">
-        <aside className="admin-sidebar">
-          {menu.map(([id, icon, label]) => (
-            <button
-              key={id}
-              className={activePage === id ? "admin-menu active" : "admin-menu"}
-              onClick={() => setActivePage(id)}
-            >
-              <span>{icon}</span>
-              {label}
-            </button>
-          ))}
-
-          <div className="admin-sidebar-bottom">
-            <div className="admin-security">
-              🔐
-              <div>
-                <strong>Secure Mode</strong>
-                <small>Super Admin</small>
-              </div>
+  const renderOverview = () => {
+    return (
+      <div className="admin-page-content">
+        <div className="admin-stat-grid">
+          <div className="admin-stat-card">
+            <span>👥</span>
+            <div>
+              <small>Total Users</small>
+              <strong>{totalUsers}</strong>
             </div>
           </div>
-        </aside>
 
-        <main className="admin-content">
-          {activePage === "overview" && (
-            <>
-              <div className="admin-title-row">
-                <div>
-                  <h1>Super Admin Dashboard</h1>
-                  <p>Manage GoldenBet globally.</p>
-                </div>
-                <span className="admin-live">● SYSTEM ONLINE</span>
-              </div>
+          <div className="admin-stat-card">
+            <span>💰</span>
+            <div>
+              <small>Total Balance</small>
+              <strong>
+                {formatMoney(totalBalance)}
+              </strong>
+            </div>
+          </div>
 
-              <div className="admin-cards">
-                <div className="admin-stat">
-                  <span>👥</span>
-                  <small>Total Users</small>
-                  <strong>{users.length}</strong>
-                </div>
+          <div className="admin-stat-card">
+            <span>💳</span>
+            <div>
+              <small>Pending Deposits</small>
+              <strong>{pendingDeposits}</strong>
+            </div>
+          </div>
 
-                <div className="admin-stat">
-                  <span>🌍</span>
-                  <small>Active Countries</small>
-                  <strong>1</strong>
-                </div>
+          <div className="admin-stat-card">
+            <span>💸</span>
+            <div>
+              <small>Pending Withdrawals</small>
+              <strong>{pendingWithdrawals}</strong>
+            </div>
+          </div>
+        </div>
 
-                <div className="admin-stat">
-                  <span>💰</span>
-                  <small>Total User Balance</small>
-                  <strong>{money(totalBalance)} IQD</strong>
-                </div>
+        <div className="admin-section-card">
+          <div className="admin-section-header">
+            <div>
+              <h2>GoldenBet Admin</h2>
+              <p>
+                Manage users, countries, payments and
+                platform settings.
+              </p>
+            </div>
 
-                <div className="admin-stat">
-                  <span>🛡️</span>
-                  <small>Country Admins</small>
-                  <strong>{admins.length}</strong>
-                </div>
-              </div>
+            <span className="admin-status-badge">
+              System Online
+            </span>
+          </div>
 
-              <div className="admin-grid-two">
-                <section className="admin-panel">
-                  <div className="admin-panel-head">
-                    <h2>Countries</h2>
-                    <button
-                      className="gold-button"
-                      onClick={() => setActivePage("countries")}
-                    >
-                      Manage
-                    </button>
-                  </div>
+          <div className="admin-overview-grid">
+            <div>
+              <strong>{admins.length}</strong>
+              <span>Admins</span>
+            </div>
 
-                  <div className="country-card">
-                    <div className="country-flag">🇮🇶</div>
-                    <div>
-                      <strong>Iraq</strong>
-                      <small>Kurdistan Region</small>
-                    </div>
+            <div>
+              <strong>
+                {
+                  countries.filter(
+                    (country) => country.enabled
+                  ).length
+                }
+              </strong>
+              <span>Active Countries</span>
+            </div>
 
-                    <div className="country-status">
-                      <span className={countryEnabled ? "status-on" : "status-off"}>
-                        {countryEnabled ? "Active" : "Disabled"}
-                      </span>
-                    </div>
-                  </div>
-                </section>
+            <div>
+              <strong>
+                {initialPaymentMethods.length}
+              </strong>
+              <span>Payment Methods</span>
+            </div>
+          </div>
+        </div>
 
-                <section className="admin-panel">
-                  <div className="admin-panel-head">
-                    <h2>Revenue Overview</h2>
-                    <button
-                      className="gold-button"
-                      onClick={() => setActivePage("revenue")}
-                    >
-                      View
-                    </button>
-                  </div>
+        <div className="admin-section-card">
+          <h2>Security</h2>
 
-                  <div className="period-grid">
-                    <div>
-                      <small>Today</small>
-                      <strong>0 IQD</strong>
-                    </div>
-                    <div>
-                      <small>This Week</small>
-                      <strong>0 IQD</strong>
-                    </div>
-                    <div>
-                      <small>This Month</small>
-                      <strong>0 IQD</strong>
-                    </div>
-                    <div>
-                      <small>Total</small>
-                      <strong>0 IQD</strong>
-                    </div>
-                  </div>
-                </section>
-              </div>
-
-              <section className="admin-panel">
-                <div className="admin-panel-head">
-                  <h2>Payment Methods — Iraq / Kurdistan</h2>
-                </div>
-
-                <div className="payment-method-grid">
-                  {paymentMethods.map((method) => (
-                    <div className="payment-method" key={method}>
-                      <span>💳</span>
-                      <strong>{method}</strong>
-                      <small>Available</small>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              <div className="admin-notice">
-                <strong>🔐 Security Notice</strong>
-                <p>
-                  Balance changes, deposits, withdrawals and real-money
-                  transactions must be processed through a secure backend
-                  ledger. This dashboard UI does not replace server-side
-                  authorization.
-                </p>
-              </div>
-            </>
-          )}
-
-          {activePage === "countries" && (
-            <>
-              <div className="admin-title-row">
-                <div>
-                  <h1>Countries</h1>
-                  <p>Manage countries and regional access.</p>
-                </div>
-                <button
-                  className="gold-button"
-                  onClick={() => setCountryEnabled(!countryEnabled)}
-                >
-                  {countryEnabled ? "Disable Iraq" : "Enable Iraq"}
-                </button>
-              </div>
-
-              <section className="admin-panel">
-                <div className="admin-table">
-                  <div className="admin-table-head">
-                    <span>Country</span>
-                    <span>Region</span>
-                    <span>Currency</span>
-                    <span>Status</span>
-                  </div>
-
-                  <div className="admin-table-row">
-                    <span>🇮🇶 Iraq</span>
-                    <span>Kurdistan</span>
-                    <span>IQD</span>
-                    <span>
-                      <b className={countryEnabled ? "status-on" : "status-off"}>
-                        {countryEnabled ? "Active" : "Disabled"}
-                      </b>
-                    </span>
-                  </div>
-                </div>
-              </section>
-            </>
-          )}
-
-          {activePage === "users" && (
-            <>
-              <div className="admin-title-row">
-                <div>
-                  <h1>All Users</h1>
-                  <p>Users are separated by country.</p>
-                </div>
-              </div>
-
-              <section className="admin-panel">
-                <div className="admin-table">
-                  <div className="admin-table-head">
-                    <span>User</span>
-                    <span>Phone</span>
-                    <span>Country</span>
-                    <span>Balance</span>
-                    <span>Status</span>
-                  </div>
-
-                  {users.map((user) => (
-                    <div className="admin-table-row" key={user.id}>
-                      <span>{user.username}</span>
-                      <span>{user.phone}</span>
-                      <span>🇮🇶 {user.country}</span>
-                      <span>{money(user.balance)} IQD</span>
-                      <span>
-                        <b className="status-on">{user.status}</b>
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </>
-          )}
-
-          {activePage === "admins" && (
-            <>
-              <div className="admin-title-row">
-                <div>
-                  <h1>Country Admins</h1>
-                  <p>Only the Super Admin can create or disable country admins.</p>
-                </div>
-
-                <button
-                  className="gold-button"
-                  onClick={() => setShowAdminForm(!showAdminForm)}
-                >
-                  + Add Country Admin
-                </button>
-              </div>
-
-              {showAdminForm && (
-                <section className="admin-panel">
-                  <h2>Create Country Admin</h2>
-
-                  <div className="admin-form">
-                    <input
-                      placeholder="Admin name"
-                      value={newAdmin.name}
-                      onChange={(e) =>
-                        setNewAdmin({
-                          ...newAdmin,
-                          name: e.target.value,
-                        })
-                      }
-                    />
-
-                    <input
-                      placeholder="Phone number"
-                      value={newAdmin.phone}
-                      onChange={(e) =>
-                        setNewAdmin({
-                          ...newAdmin,
-                          phone: e.target.value,
-                        })
-                      }
-                    />
-
-                    <select
-                      value={newAdmin.country}
-                      onChange={(e) =>
-                        setNewAdmin({
-                          ...newAdmin,
-                          country: e.target.value,
-                        })
-                      }
-                    >
-                      <option>Iraq</option>
-                    </select>
-
-                    <select
-                      value={newAdmin.region}
-                      onChange={(e) =>
-                        setNewAdmin({
-                          ...newAdmin,
-                          region: e.target.value,
-                        })
-                      }
-                    >
-                      <option>Kurdistan</option>
-                    </select>
-
-                    <button className="gold-button" onClick={createAdmin}>
-                      Create Admin
-                    </button>
-                  </div>
-                </section>
-              )}
-
-              <section className="admin-panel">
-                <div className="admin-table">
-                  <div className="admin-table-head">
-                    <span>Name</span>
-                    <span>Phone</span>
-                    <span>Country</span>
-                    <span>Status</span>
-                    <span>Action</span>
-                  </div>
-
-                  {admins.map((admin) => (
-                    <div className="admin-table-row" key={admin.id}>
-                      <span>{admin.name}</span>
-                      <span>{admin.phone}</span>
-                      <span>🇮🇶 {admin.country}</span>
-                      <span>
-                        <b
-                          className={
-                            admin.status === "Active"
-                              ? "status-on"
-                              : "status-off"
-                          }
-                        >
-                          {admin.status}
-                        </b>
-                      </span>
-                      <button
-                        className="danger-button"
-                        onClick={() => disableAdmin(admin.id)}
-                      >
-                        {admin.status === "Active" ? "Disable" : "Enable"}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </>
-          )}
-
-          {activePage === "balance" && (
-            <>
-              <div className="admin-title-row">
-                <div>
-                  <h1>Balance Management</h1>
-                  <p>Manage user balances by authorized admin action.</p>
-                </div>
-              </div>
-
-              <section className="admin-panel">
-                <h2>Select User</h2>
-
-                <div className="user-picker">
-                  {users.map((user) => (
-                    <button
-                      key={user.id}
-                      className={
-                        selectedUser?.id === user.id
-                          ? "user-option selected"
-                          : "user-option"
-                      }
-                      onClick={() => setSelectedUser(user)}
-                    >
-                      <strong>{user.username}</strong>
-                      <small>{money(user.balance)} IQD</small>
-                    </button>
-                  ))}
-                </div>
-
-                {selectedUser && (
-                  <div className="balance-editor">
-                    <h3>{selectedUser.username}</h3>
-
-                    <p>
-                      Current balance:{" "}
-                      <strong>{money(selectedUser.balance)} IQD</strong>
-                    </p>
-
-                    <div className="balance-actions">
-                      <button
-                        className={
-                          balanceAction === "add"
-                            ? "gold-button"
-                            : "secondary-button"
-                        }
-                        onClick={() => setBalanceAction("add")}
-                      >
-                        + Add
-                      </button>
-
-                      <button
-                        className={
-                          balanceAction === "remove"
-                            ? "gold-button"
-                            : "secondary-button"
-                        }
-                        onClick={() => setBalanceAction("remove")}
-                      >
-                        − Remove
-                      </button>
-                    </div>
-
-                    <input
-                      type="number"
-                      min="1"
-                      placeholder="Amount in IQD"
-                      value={balanceAmount}
-                      onChange={(e) => setBalanceAmount(e.target.value)}
-                    />
-
-                    <button className="gold-button" onClick={addBalance}>
-                      Confirm Balance Change
-                    </button>
-                  </div>
-                )}
-              </section>
-            </>
-          )}
-
-          {activePage === "deposits" && (
-            <>
-              <div className="admin-title-row">
-                <div>
-                  <h1>Deposits</h1>
-                  <p>Review deposit requests by country.</p>
-                </div>
-              </div>
-
-              <section className="admin-panel empty-panel">
-                <div>📥</div>
-                <h2>No deposits yet</h2>
-                <p>
-                  Real deposit requests will appear here after the secure
-                  payment backend is connected.
-                </p>
-              </section>
-            </>
-          )}
-
-          {activePage === "withdrawals" && (
-            <>
-              <div className="admin-title-row">
-                <div>
-                  <h1>Withdrawals</h1>
-                  <p>Review withdrawal requests by country.</p>
-                </div>
-              </div>
-
-              <section className="admin-panel empty-panel">
-                <div>📤</div>
-                <h2>No withdrawals yet</h2>
-                <p>
-                  Withdrawal requests will appear here after the secure
-                  backend is connected.
-                </p>
-              </section>
-            </>
-          )}
-
-          {activePage === "revenue" && (
-            <>
-              <div className="admin-title-row">
-                <div>
-                  <h1>Revenue</h1>
-                  <p>Global revenue reporting.</p>
-                </div>
-              </div>
-
-              <div className="revenue-grid">
-                <div className="revenue-card">
-                  <small>Daily</small>
-                  <strong>0 IQD</strong>
-                </div>
-
-                <div className="revenue-card">
-                  <small>Weekly</small>
-                  <strong>0 IQD</strong>
-                </div>
-
-                <div className="revenue-card">
-                  <small>Monthly</small>
-                  <strong>0 IQD</strong>
-                </div>
-
-                <div className="revenue-card">
-                  <small>Yearly</small>
-                  <strong>0 IQD</strong>
-                </div>
-
-                <div className="revenue-card total-revenue">
-                  <small>Total Revenue</small>
-                  <strong>0 IQD</strong>
-                </div>
-              </div>
-
-              <section className="admin-panel">
-                <h2>Country Revenue</h2>
-
-                <div className="admin-table">
-                  <div className="admin-table-head">
-                    <span>Country</span>
-                    <span>Daily</span>
-                    <span>Weekly</span>
-                    <span>Monthly</span>
-                    <span>Total</span>
-                  </div>
-
-                  <div className="admin-table-row">
-                    <span>🇮🇶 Iraq</span>
-                    <span>0 IQD</span>
-                    <span>0 IQD</span>
-                    <span>0 IQD</span>
-                    <span>0 IQD</span>
-                  </div>
-                </div>
-              </section>
-            </>
-          )}
-
-          {activePage === "settings" && (
-            <>
-              <div className="admin-title-row">
-                <div>
-                  <h1>Admin Settings</h1>
-                  <p>Global GoldenBet administration settings.</p>
-                </div>
-              </div>
-
-              <section className="admin-panel">
-                <h2>Super Admin</h2>
-
-                <div className="settings-row">
-                  <span>Role</span>
-                  <strong>Super Admin</strong>
-                </div>
-
-                <div className="settings-row">
-                  <span>Access</span>
-                  <strong>Global</strong>
-                </div>
-
-                <div className="settings-row">
-                  <span>Active Country</span>
-                  <strong>Iraq / Kurdistan</strong>
-                </div>
-
-                <div className="settings-row">
-                  <span>Currency</span>
-                  <strong>IQD</strong>
-                </div>
-              </section>
-
-              <div className="admin-notice">
-                <strong>⚠️ Production Security</strong>
-                <p>
-                  Before accepting real money, connect authentication,
-                  database Row Level Security, server-side balance ledger,
-                  payment verification, audit logs and required licensing /
-                  compliance controls.
-                </p>
-              </div>
-            </>
-          )}
-        </main>
+          <p className="admin-security-note">
+            This dashboard currently demonstrates the
+            admin interface. Real balance changes,
+            deposits, withdrawals and administrator
+            permissions must be protected by Supabase
+            Row Level Security and a secure backend.
+          </p>
+        </div>
       </div>
+    );
+  };
+
+  const renderCountries = () => {
+    return (
+      <div className="admin-page-content">
+        <div className="admin-section-card">
+          <div className="admin-section-header">
+            <div>
+              <h2>Countries</h2>
+              <p>
+                Enable or disable countries supported by
+                GoldenBet.
+              </p>
+            </div>
+          </div>
+
+          <div className="admin-country-list">
+            {countries.map((country) => (
+              <div
+                className="admin-country-row"
+                key={country.name}
+              >
+                <div>
+                  <strong>{country.name}</strong>
+                  <span>{country.currency}</span>
+                </div>
+
+                <button
+                  type="button"
+                  className={
+                    country.enabled
+                      ? "admin-toggle active"
+                      : "admin-toggle"
+                  }
+                  onClick={() =>
+                    toggleCountry(country.name)
+                  }
+                >
+                  {country.enabled
+                    ? "Enabled"
+                    : "Disabled"}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderUsers = () => {
+    return (
+      <div className="admin-page-content">
+        <div className="admin-section-card">
+          <div className="admin-section-header">
+            <div>
+              <h2>Users</h2>
+              <p>
+                Search and manage GoldenBet users.
+              </p>
+            </div>
+
+            <input
+              type="search"
+              className="admin-search"
+              placeholder="Search users..."
+              value={searchUser}
+              onChange={(event) =>
+                setSearchUser(event.target.value)
+              }
+            />
+          </div>
+
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th>Country</th>
+                  <th>Balance</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {filteredUsers.map((user) => (
+                  <tr key={user.id}>
+                    <td>{user.username}</td>
+                    <td>{user.fullName}</td>
+                    <td>{user.country}</td>
+                    <td>
+                      {formatMoney(user.balance)}
+                    </td>
+                    <td>
+                      <span className="admin-status-badge">
+                        {user.status}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="admin-action-button"
+                        onClick={() =>
+                          setSelectedUser(user)
+                        }
+                      >
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {selectedUser && (
+          <div className="admin-modal-overlay">
+            <div className="admin-modal">
+              <button
+                type="button"
+                className="admin-modal-close"
+                onClick={() =>
+                  setSelectedUser(null)
+                }
+              >
+                ×
+              </button>
+
+              <h2>
+                {selectedUser.username}
+              </h2>
+
+              <p>
+                Current balance:{" "}
+                <strong>
+                  {formatMoney(
+                    selectedUser.balance
+                  )}
+                </strong>
+              </p>
+
+              <label>
+                Action
+                <select
+                  value={balanceAction}
+                  onChange={(event) =>
+                    setBalanceAction(
+                      event.target.value
+                    )
+                  }
+                >
+                  <option value="add">
+                    Add Balance
+                  </option>
+                  <option value="remove">
+                    Remove Balance
+                  </option>
+                </select>
+              </label>
+
+              <label>
+                Amount
+                <input
+                  type="number"
+                  min="0"
+                  value={balanceAmount}
+                  onChange={(event) =>
+                    setBalanceAmount(
+                      event.target.value
+                    )
+                  }
+                  placeholder="Amount"
+                />
+              </label>
+
+              <button
+                type="button"
+                className="admin-primary-button"
+                onClick={addBalance}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderAdmins = () => {
+    return (
+      <div className="admin-page-content">
+        <div className="admin-section-card">
+          <div className="admin-section-header">
+            <div>
+              <h2>Administrators</h2>
+              <p>
+                Manage GoldenBet administrator accounts.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              className="admin-primary-button"
+              onClick={() =>
+                setShowAdminForm(
+                  !showAdminForm
+                )
+              }
+            >
+              {showAdminForm
+                ? "Close"
+                : "Add Admin"}
+            </button>
+          </div>
+
+          {showAdminForm && (
+            <div className="admin-form">
+              <input
+                type="text"
+                placeholder="Username"
+                value={newAdmin.username}
+                onChange={(event) =>
+                  setNewAdmin({
+                    ...newAdmin,
+                    username:
+                      event.target.value,
+                  })
+                }
+              />
+
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={newAdmin.name}
+                onChange={(event) =>
+                  setNewAdmin({
+                    ...newAdmin,
+                    name: event.target.value,
+                  })
+                }
+              />
+
+              <select
+                value={newAdmin.country}
+                onChange={(event) =>
+                  setNewAdmin({
+                    ...newAdmin,
+                    country:
+                      event.target.value,
+                  })
+                }
+              >
+                {countries.map((country) => (
+                  <option
+                    key={country.name}
+                    value={country.name}
+                  >
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                className="admin-primary-button"
+                onClick={createAdmin}
+              >
+                Create Admin
+              </button>
+            </div>
+          )}
+
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th>Country</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {admins.map((admin) => (
+                  <tr key={admin.id}>
+                    <td>{admin.username}</td>
+                    <td>{admin.name}</td>
+                    <td>{admin.country}</td>
+                    <td>{admin.status}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className="admin-action-button"
+                        onClick={() =>
+                          toggleAdmin(admin.id)
+                        }
+                      >
+                        {admin.status ===
+                        "Active"
+                          ? "Disable"
+                          : "Enable"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderBalance = () => {
+    return (
+      <div className="admin-page-content">
+        <div className="admin-section-card">
+          <h2>Balance Management</h2>
+
+          <p>
+            Select a user from the Users page to manage
+            the demo balance.
+          </p>
+
+          <button
+            type="button"
+            className="admin-primary-button"
+            onClick={() =>
+              setActivePage("users")
+            }
+          >
+            Open Users
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderTransactions = (type) => {
+    const list = filteredTransactions.filter(
+      (transaction) =>
+        transaction.type === type
+    );
+
+    return (
+      <div className="admin-page-content">
+        <div className="admin-section-card">
+          <div className="admin-section-header">
+            <div>
+              <h2>{type}s</h2>
+              <p>
+                Review and manage {type.toLowerCase()}
+                requests.
+              </p>
+            </div>
+
+            <select
+              value={transactionFilter}
+              onChange={(event) =>
+                setTransactionFilter(
+                  event.target.value
+                )
+              }
+            >
+              <option value="All">All</option>
+              <option value="Deposit">
+                Deposits
+              </option>
+              <option value="Withdrawal">
+                Withdrawals
+              </option>
+            </select>
+          </div>
+
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Country</th>
+                  <th>Amount</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {list.map((transaction) => (
+                  <tr key={transaction.id}>
+                    <td>
+                      {transaction.username}
+                    </td>
+
+                    <td>
+                      {transaction.country}
+                    </td>
+
+                    <td>
+                      {formatMoney(
+                        transaction.amount
+                      )}
+                    </td>
+
+                    <td>
+                      {transaction.method}
+                    </td>
+
+                    <td>
+                      {transaction.status}
+                    </td>
+
+                    <td>
+                      {transaction.status ===
+                        "Pending" && (
+                        <div className="admin-action-group">
+                          <button
+                            type="button"
+                            className="admin-action-button"
+                            onClick={() =>
+                              updateTransactionStatus(
+                                transaction.id,
+                                "Approved"
+                              )
+                            }
+                          >
+                            Approve
+                          </button>
+
+                          <button
+                            type="button"
+                            className="admin-action-button danger"
+                            onClick={() =>
+                              updateTransactionStatus(
+                                transaction.id,
+                                "Rejected"
+                              )
+                            }
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+
+                {list.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan="6"
+                      className="admin-empty"
+                    >
+                      No {type.toLowerCase()} requests
+                      found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderRevenue = () => {
+    return (
+      <div className="admin-page-content">
+        <div className="admin-stat-grid">
+          <div className="admin-stat-card">
+            <span>📈</span>
+            <div>
+              <small>Total Revenue</small>
+              <strong>0 IQD</strong>
+            </div>
+          </div>
+
+          <div className="admin-stat-card">
+            <span>🎯</span>
+            <div>
+              <small>Betting Revenue</small>
+              <strong>0 IQD</strong>
+            </div>
+          </div>
+
+          <div className="admin-stat-card">
+            <span>🎰</span>
+            <div>
+              <small>Casino Revenue</small>
+              <strong>0 IQD</strong>
+            </div>
+          </div>
+        </div>
+
+        <div className="admin-section-card">
+          <h2>Revenue</h2>
+          <p>
+            Revenue analytics will be connected to the
+            real database and transaction system later.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSettings = () => {
+    return (
+      <div className="admin-page-content">
+        <div className="admin-section-card">
+          <h2>Platform Settings</h2>
+
+          <div className="admin-settings-list">
+            <div>
+              <strong>Platform Name</strong>
+              <span>GoldenBet</span>
+            </div>
+
+            <div>
+              <strong>Default Currency</strong>
+              <span>IQD</span>
+            </div>
+
+            <div>
+              <strong>Payment Methods</strong>
+              <span>
+                {initialPaymentMethods.length}
+              </span>
+            </div>
+
+            <div>
+              <strong>Supported Countries</strong>
+              <span>
+                {
+                  countries.filter(
+                    (country) =>
+                      country.enabled
+                  ).length
+                }
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="admin-section-card">
+          <h2>Security</h2>
+
+          <p className="admin-security-note">
+            Never place Supabase service-role keys,
+            payment provider secret keys or other private
+            credentials in frontend code.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderPage = () => {
+    switch (activePage) {
+      case "overview":
+        return renderOverview();
+
+      case "countries":
+        return renderCountries();
+
+      case "users":
+        return renderUsers();
+
+      case "admins":
+        return renderAdmins();
+
+      case "balance":
+        return renderBalance();
+
+      case "deposits":
+        return renderTransactions(
+          "Deposit"
+        );
+
+      case "withdrawals":
+        return renderTransactions(
+          "Withdrawal"
+        );
+
+      case "revenue":
+        return renderRevenue();
+
+      case "settings":
+        return renderSettings();
+
+      default:
+        return renderOverview();
+    }
+  };
+
+  return (
+    <div className="admin-dashboard">
+      <aside className="admin-sidebar">
+        <div className="admin-brand">
+          <span>G</span>
+
+          <div>
+            <strong>GOLDENBET</strong>
+            <small>SUPER ADMIN</small>
+          </div>
+        </div>
+
+        <nav className="admin-navigation">
+          {navigation.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={
+                activePage === item.id
+                  ? "admin-nav-item active"
+                  : "admin-nav-item"
+              }
+              onClick={() =>
+                setActivePage(item.id)
+              }
+            >
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        <div className="admin-sidebar-footer">
+          <span>GoldenBet</span>
+          <small>Admin Panel</small>
+        </div>
+      </aside>
+
+      <main className="admin-main">
+        <header className="admin-topbar">
+          <div>
+            <h1>
+              {
+                navigation.find(
+                  (item) =>
+                    item.id === activePage
+                )?.label
+              }
+            </h1>
+
+            <p>
+              GoldenBet administration panel
+            </p>
+          </div>
+
+          <div className="admin-topbar-status">
+            <span className="admin-online-dot" />
+            Online
+          </div>
+        </header>
+
+        {renderPage()}
+      </main>
     </div>
   );
 }
