@@ -1876,3 +1876,245 @@ html[data-theme="light"] .account-bar,
 html[data-theme="light"] .site-footer {
   background: #fff;
 }
+/* GoldenBet final visual override */
+:root {
+  --gold: #d4af37;
+  --gold-light: #f4d66d;
+  --black: #080808;
+  --black-card: #151515;
+  --white: #ffffff;
+}
+
+html,
+body,
+#root {
+  background: var(--black);
+  color: var(--white);
+}
+
+.app,
+.home-page {
+  background: var(--black);
+  color: var(--white);
+}
+
+button,
+.golden-primary-button,
+.golden-secondary-button,
+.live-button,
+.match-more,
+.odds-grid button,
+.live-actions button,
+.market-selection,
+.account-bar button {
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.golden-primary-button {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  border: 1px solid var(--gold-light);
+  color: #080808;
+  font-weight: 800;
+}
+
+.golden-secondary-button {
+  background: #111;
+  border: 1px solid var(--gold);
+  color: var(--white);
+}
+
+.golden-primary-button:hover,
+.golden-secondary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+}
+
+.golden-bottom-nav {
+  background: #050505;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.45);
+}
+
+.golden-bottom-item {
+  color: var(--white);
+}
+
+.golden-bottom-item:hover,
+.golden-bottom-item.active {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold-light);
+}
+
+.golden-bet-count {
+  background: var(--gold);
+  color: #080808;
+}
+
+.account-bar {
+  background: #101010;
+  color: var(--white);
+}
+
+.match-card,
+.market-group,
+.match-detail-card,
+.live-match-card,
+.settings-card,
+.profile-card,
+.bet-slip-items,
+.bet-slip-summary,
+.auth-card,
+.my-bet-card,
+.home-feature-card,
+.league-card,
+.provider-card,
+.promotion-card,
+.showcase-card,
+.casino-card,
+.golden-game-card {
+  background: var(--black-card);
+  color: var(--white);
+  border-color: rgba(212, 175, 55, 0.28);
+}
+
+.match-country,
+.page-kicker,
+.section-heading span,
+.market-group h3,
+.casino-card-overlay span,
+.match-vs small,
+.odds-grid b,
+.market-selection b {
+  color: var(--gold-light);
+}
+
+.match-date,
+.match-more,
+.home-hero p,
+.market-selection small,
+.provider-card small,
+.home-feature-card small {
+  color: #cfcfcf;
+}
+
+.odds-grid button,
+.live-actions button,
+.market-selection {
+  background: #202020;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.odds-grid button:hover,
+.live-actions button:hover,
+.market-selection:hover {
+  background: rgba(212, 175, 55, 0.14);
+  border-color: var(--gold);
+}
+
+input,
+select,
+.sports-filter select,
+.country-selector select,
+.settings-card input,
+.settings-card select,
+.auth-card input,
+.auth-card select {
+  background: #202020;
+  color: var(--white);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+}
+
+input::placeholder {
+  color: #aaa;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--gold-light);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.golden-top-header {
+  background: #050505;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.45);
+}
+
+.golden-center-logo {
+  color: var(--gold-light);
+  text-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
+}
+
+.site-footer {
+  background: #050505;
+  color: var(--white);
+  border-top: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+@media (max-width: 700px) {
+  .golden-top-visual {
+    height: 65px;
+    padding: 0 10px;
+  }
+
+  .golden-side-image {
+    display: none;
+  }
+
+  .golden-center-logo {
+    margin: auto;
+    font-size: 23px;
+  }
+
+  .golden-bottom-nav {
+    gap: 3px;
+    padding: 5px;
+    overflow-x: auto;
+  }
+
+  .golden-bottom-item {
+    min-width: 90px;
+    height: 42px;
+    font-size: 11px;
+  }
+
+  .page-container,
+  .home-showcase,
+  .home-feature-grid {
+    width: calc(100% - 20px);
+  }
+
+  .home-showcase-grid,
+  .casino-grid,
+  .golden-games-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-feature-grid,
+  .provider-grid,
+  .league-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sports-filter {
+    grid-template-columns: 1fr;
+  }
+
+  .match-teams,
+  .live-match-main,
+  .match-detail-teams {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .match-team,
+  .match-team:last-child {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .odds-grid {
+    grid-template-columns: 1fr;
+  }
+}
