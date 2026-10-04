@@ -13,661 +13,2060 @@ import { marketGroups } from "./markets";
 import AdminDashboard from "./AdminDashboard";
 import PaymentCard from "./PaymentCard";
 
-/* =========================================================
-   GOLDENBET DATA
-========================================================= */
-
 const countries = [
-  { code: "IQ", name: "Iraq", flag: "🇮🇶" },
-  { code: "TR", name: "Turkey", flag: "🇹🇷" },
-  { code: "IR", name: "Iran", flag: "🇮🇷" },
-  { code: "SA", name: "Saudi Arabia", flag: "🇸🇦" },
-  { code: "AE", name: "UAE", flag: "🇦🇪" },
-  { code: "QA", name: "Qatar", flag: "🇶🇦" },
-  { code: "GB", name: "England", flag: "🇬🇧" },
-  { code: "ES", name: "Spain", flag: "🇪🇸" },
-  { code: "IT", name: "Italy", flag: "🇮🇹" },
-  { code: "DE", name: "Germany", flag: "🇩🇪" },
-  { code: "FR", name: "France", flag: "🇫🇷" },
-  { code: "NL", name: "Netherlands", flag: "🇳🇱" },
-  { code: "PT", name: "Portugal", flag: "🇵🇹" },
-  { code: "US", name: "USA", flag: "🇺🇸" },
+  {
+    id: "iraq",
+    name: "Iraq",
+    flag: "🇮🇶",
+    leagues: [
+      "Iraq Stars League",
+      "Iraq Premier League",
+      "Kurdistan Premier League",
+      "Kurdistan Regional League",
+    ],
+  },
+  {
+    id: "england",
+    name: "England",
+    flag: "🇬🇧",
+    leagues: ["Premier League", "Championship", "League One", "League Two"],
+  },
+  {
+    id: "spain",
+    name: "Spain",
+    flag: "🇪🇸",
+    leagues: ["La Liga", "Segunda Division"],
+  },
+  {
+    id: "italy",
+    name: "Italy",
+    flag: "🇮🇹",
+    leagues: ["Serie A", "Serie B"],
+  },
+  {
+    id: "germany",
+    name: "Germany",
+    flag: "🇩🇪",
+    leagues: ["Bundesliga", "2. Bundesliga"],
+  },
+  {
+    id: "france",
+    name: "France",
+    flag: "🇫🇷",
+    leagues: ["Ligue 1", "Ligue 2"],
+  },
+  {
+    id: "turkey",
+    name: "Turkey",
+    flag: "🇹🇷",
+    leagues: ["Super Lig", "1. Lig"],
+  },
+  {
+    id: "saudi-arabia",
+    name: "Saudi Arabia",
+    flag: "🇸🇦",
+    leagues: ["Saudi Pro League"],
+  },
+  {
+    id: "uae",
+    name: "UAE",
+    flag: "🇦🇪",
+    leagues: ["UAE Pro League"],
+  },
+  {
+    id: "qatar",
+    name: "Qatar",
+    flag: "🇶🇦",
+    leagues: ["Qatar Stars League"],
+  },
+  {
+    id: "netherlands",
+    name: "Netherlands",
+    flag: "🇳🇱",
+    leagues: ["Eredivisie"],
+  },
+  {
+    id: "portugal",
+    name: "Portugal",
+    flag: "🇵🇹",
+    leagues: ["Primeira Liga"],
+  },
+  {
+    id: "usa",
+    name: "USA",
+    flag: "🇺🇸",
+    leagues: ["MLS"],
+  },
 ];
 
 const sports = [
-  "Football",
-  "Tennis",
-  "Basketball",
-  "Volleyball",
-  "Boxing",
-  "MMA",
-  "Ice Hockey",
-  "Cricket",
-  "Handball",
-  "Rugby",
-  "Baseball",
-  "American Football",
-  "Darts",
-  "Golf",
-  "Table Tennis",
-  "Esports",
-  "Formula 1",
-  "Horse Racing",
+  { id: "football", name: "Football", icon: "⚽" },
+  { id: "tennis", name: "Tennis", icon: "🎾" },
+  { id: "basketball", name: "Basketball", icon: "🏀" },
+  { id: "volleyball", name: "Volleyball", icon: "🏐" },
+  { id: "boxing", name: "Boxing", icon: "🥊" },
+  { id: "mma", name: "MMA", icon: "🥋" },
+  { id: "ice-hockey", name: "Ice Hockey", icon: "🏒" },
+  { id: "cricket", name: "Cricket", icon: "🏏" },
+  { id: "handball", name: "Handball", icon: "🤾" },
+  { id: "rugby", name: "Rugby", icon: "🏉" },
+  { id: "baseball", name: "Baseball", icon: "⚾" },
+  { id: "american-football", name: "American Football", icon: "🏈" },
+  { id: "darts", name: "Darts", icon: "🎯" },
+  { id: "golf", name: "Golf", icon: "⛳" },
+  { id: "table-tennis", name: "Table Tennis", icon: "🏓" },
+  { id: "esports", name: "Esports", icon: "🎮" },
+  { id: "formula-1", name: "Formula 1", icon: "🏎️" },
+  { id: "horse-racing", name: "Horse Racing", icon: "🏇" },
 ];
 
 const matches = [
   {
-    id: "football-1",
-    sport: "Football",
-    country: "Spain",
-    league: "La Liga",
+    id: 1,
     home: "Real Madrid",
     away: "Barcelona",
-    time: "21:00",
+    country: "Spain",
+    league: "La Liga",
+    time: "20:00",
+    date: "Today",
+    status: "upcoming",
+    odds: {
+      home: 2.1,
+      draw: 3.4,
+      away: 3.1,
+    },
   },
   {
-    id: "football-2",
-    sport: "Football",
-    country: "England",
-    league: "Premier League",
+    id: 2,
     home: "Arsenal",
     away: "Chelsea",
-    time: "20:30",
+    country: "England",
+    league: "Premier League",
+    time: "21:00",
+    date: "Today",
+    status: "upcoming",
+    odds: {
+      home: 1.85,
+      draw: 3.6,
+      away: 4.2,
+    },
   },
   {
-    id: "football-3",
-    sport: "Football",
-    country: "Italy",
-    league: "Serie A",
-    home: "Inter Milan",
-    away: "AC Milan",
-    time: "21:45",
-  },
-  {
-    id: "football-4",
-    sport: "Football",
-    country: "Germany",
-    league: "Bundesliga",
-    home: "Bayern Munich",
-    away: "Dortmund",
-    time: "22:00",
-  },
-  {
-    id: "football-5",
-    sport: "Football",
-    country: "Iraq",
-    league: "Iraq Stars League",
-    home: "Al-Shorta",
-    away: "Al-Zawraa",
-    time: "19:30",
-  },
-  {
-    id: "football-6",
-    sport: "Football",
-    country: "Iraq",
-    league: "Kurdistan Premier League",
+    id: 3,
     home: "Duhok",
     away: "Erbil",
-    time: "20:00",
+    country: "Iraq",
+    league: "Iraq Stars League",
+    time: "19:30",
+    date: "Today",
+    status: "upcoming",
+    odds: {
+      home: 2.25,
+      draw: 3.1,
+      away: 2.95,
+    },
   },
   {
-    id: "football-7",
-    sport: "Football",
-    country: "England",
-    league: "Premier League",
+    id: 4,
+    home: "Al-Shorta",
+    away: "Al-Zawraa",
+    country: "Iraq",
+    league: "Iraq Stars League",
+    time: "20:30",
+    date: "Tomorrow",
+    status: "upcoming",
+    odds: {
+      home: 1.95,
+      draw: 3.2,
+      away: 3.7,
+    },
+  },
+  {
+    id: 5,
     home: "Liverpool",
     away: "Manchester City",
-    time: "20:00",
-  },
-  {
-    id: "football-8",
-    sport: "Football",
     country: "England",
     league: "Premier League",
-    home: "Manchester United",
-    away: "Tottenham",
-    time: "21:00",
-  },
-  {
-    id: "football-9",
-    sport: "Football",
-    country: "Italy",
-    league: "Serie A",
-    home: "Juventus",
-    away: "Napoli",
-    time: "21:45",
-  },
-  {
-    id: "football-10",
-    sport: "Football",
-    country: "France",
-    league: "Ligue 1",
-    home: "PSG",
-    away: "Marseille",
     time: "22:00",
+    date: "Tomorrow",
+    status: "upcoming",
+    odds: {
+      home: 2.3,
+      draw: 3.5,
+      away: 2.8,
+    },
   },
   {
-    id: "football-11",
-    sport: "Football",
-    country: "Turkey",
-    league: "Super Lig",
-    home: "Galatasaray",
-    away: "Fenerbahce",
-    time: "20:00",
-  },
-  {
-    id: "football-12",
-    sport: "Football",
-    country: "Saudi Arabia",
-    league: "Saudi Pro League",
-    home: "Al-Hilal",
-    away: "Al-Nassr",
-    time: "21:00",
-  },
-  {
-    id: "football-13",
-    sport: "Football",
-    country: "Netherlands",
-    league: "Eredivisie",
-    home: "Ajax",
-    away: "PSV",
-    time: "19:45",
-  },
-  {
-    id: "football-14",
-    sport: "Football",
-    country: "Portugal",
-    league: "Primeira Liga",
-    home: "Benfica",
-    away: "Porto",
-    time: "21:15",
-  },
-
-  {
-    id: "tennis-1",
-    sport: "Tennis",
-    country: "Spain",
-    league: "ATP",
-    home: "Carlos Alcaraz",
-    away: "Daniil Medvedev",
-    time: "18:00",
-  },
-  {
-    id: "tennis-2",
-    sport: "Tennis",
-    country: "USA",
-    league: "WTA",
-    home: "Player A",
-    away: "Player B",
-    time: "19:30",
-  },
-
-  {
-    id: "basketball-1",
-    sport: "Basketball",
-    country: "USA",
-    league: "NBA",
-    home: "Lakers",
-    away: "Warriors",
-    time: "03:00",
-  },
-  {
-    id: "basketball-2",
-    sport: "Basketball",
-    country: "Turkey",
-    league: "BSL",
-    home: "Fenerbahce",
-    away: "Efes",
-    time: "20:00",
-  },
-
-  {
-    id: "volleyball-1",
-    sport: "Volleyball",
-    country: "Italy",
-    league: "SuperLega",
-    home: "Perugia",
-    away: "Trento",
-    time: "19:00",
-  },
-  {
-    id: "volleyball-2",
-    sport: "Volleyball",
-    country: "Turkey",
-    league: "Efeler Ligi",
-    home: "Halkbank",
-    away: "Ziraat Bank",
-    time: "20:30",
-  },
-
-  {
-    id: "boxing-1",
-    sport: "Boxing",
-    country: "USA",
-    league: "World Boxing",
-    home: "Fighter A",
-    away: "Fighter B",
-    time: "22:00",
-  },
-
-  {
-    id: "mma-1",
-    sport: "MMA",
-    country: "USA",
-    league: "MMA Main Event",
-    home: "Fighter A",
-    away: "Fighter B",
-    time: "23:00",
+    id: 6,
+    home: "Bayern Munich",
+    away: "Dortmund",
+    country: "Germany",
+    league: "Bundesliga",
+    time: "21:30",
+    date: "Tomorrow",
+    status: "upcoming",
+    odds: {
+      home: 1.65,
+      draw: 4.1,
+      away: 4.8,
+    },
   },
 ];
 
 const liveMatches = [
   {
-    id: "live-football-1",
-    sport: "Football",
-    country: "England",
-    league: "Premier League",
-    home: "Liverpool",
-    away: "Manchester City",
-    homeScore: 1,
-    awayScore: 1,
-    minute: "67'",
-  },
-  {
-    id: "live-football-2",
-    sport: "Football",
+    id: 101,
+    home: "Duhok",
+    away: "Erbil",
     country: "Iraq",
     league: "Iraq Stars League",
-    home: "Al-Shorta",
-    away: "Al-Zawraa",
-    homeScore: 0,
-    awayScore: 1,
+    minute: "67'",
+    score: "1 - 0",
+    status: "live",
+  },
+  {
+    id: 102,
+    home: "Arsenal",
+    away: "Chelsea",
+    country: "England",
+    league: "Premier League",
     minute: "54'",
-  },
-  {
-    id: "live-basketball-1",
-    sport: "Basketball",
-    country: "USA",
-    league: "NBA",
-    home: "Lakers",
-    away: "Warriors",
-    homeScore: 78,
-    awayScore: 75,
-    minute: "Q3",
-  },
-  {
-    id: "live-tennis-1",
-    sport: "Tennis",
-    country: "Spain",
-    league: "ATP",
-    home: "Player A",
-    away: "Player B",
-    homeScore: 1,
-    awayScore: 0,
-    minute: "Set 2",
-  },
-  {
-    id: "live-volleyball-1",
-    sport: "Volleyball",
-    country: "Italy",
-    league: "SuperLega",
-    home: "Perugia",
-    away: "Trento",
-    homeScore: 2,
-    awayScore: 1,
-    minute: "Set 4",
-  },
-  {
-    id: "live-boxing-1",
-    sport: "Boxing",
-    country: "USA",
-    league: "Boxing",
-    home: "Fighter A",
-    away: "Fighter B",
-    homeScore: "-",
-    awayScore: "-",
-    minute: "Round 7",
-  },
-  {
-    id: "live-mma-1",
-    sport: "MMA",
-    country: "USA",
-    league: "MMA",
-    home: "Fighter A",
-    away: "Fighter B",
-    homeScore: "-",
-    awayScore: "-",
-    minute: "Round 2",
+    score: "1 - 1",
+    status: "live",
   },
 ];
 
 const casinoGames = [
   {
-    id: "casino-1",
+    id: 1,
     name: "Golden Roulette",
     category: "Roulette",
-    icon: "🎰",
+    image: "/roulette.jpg",
   },
   {
-    id: "casino-2",
-    name: "Blackjack VIP",
-    category: "Blackjack",
-    icon: "🃏",
+    id: 2,
+    name: "GoldenBet Casino",
+    category: "Casino",
+    image: "/goldenbet.jpg",
   },
   {
-    id: "casino-3",
-    name: "Golden Slots",
-    category: "Slots",
-    icon: "💰",
-  },
-  {
-    id: "casino-4",
-    name: "Royal Baccarat",
-    category: "Baccarat",
-    icon: "👑",
-  },
-  {
-    id: "casino-5",
-    name: "Lucky 777",
-    category: "Slots",
-    icon: "7️⃣",
-  },
-  {
-    id: "casino-6",
-    name: "Golden Crash",
-    category: "Crash Games",
-    icon: "🚀",
+    id: 3,
+    name: "Golden Football",
+    category: "Sports Game",
+    image: "/football.jpg",
   },
 ];
 
 const liveCasinoGames = [
-  {
-    id: "live-casino-1",
-    name: "Live Roulette",
-    category: "Live Roulette",
-    provider: "Evolution",
-    icon: "🎡",
-  },
-  {
-    id: "live-casino-2",
-    name: "Live Blackjack",
-    category: "Live Blackjack",
-    provider: "Evolution",
-    icon: "🃏",
-  },
-  {
-    id: "live-casino-3",
-    name: "Live Baccarat",
-    category: "Live Baccarat",
-    provider: "Ezugi",
-    icon: "♦️",
-  },
-  {
-    id: "live-casino-4",
-    name: "Dragon Tiger",
-    category: "Live Dragon Tiger",
-    provider: "Pragmatic Play Live",
-    icon: "🐉",
-  },
-  {
-    id: "live-casino-5",
-    name: "Live Game Show",
-    category: "Game Show",
-    provider: "Live Casino",
-    icon: "🎥",
-  },
-  {
-    id: "live-casino-6",
-    name: "Live Sic Bo",
-    category: "Live Sic Bo",
-    provider: "Live Casino",
-    icon: "🎲",
-  },
+  "Evolution",
+  "Ezugi",
+  "Pragmatic Play Live",
+  "TVBet",
 ];
 
-const vipGames = [
-  {
-    id: "vip-1",
-    name: "Golden Wheel",
-    description: "Exclusive GoldenBet VIP game",
-    icon: "👑",
-  },
-  {
-    id: "vip-2",
-    name: "Golden Fortune",
-    description: "Premium VIP rewards",
-    icon: "💎",
-  },
-  {
-    id: "vip-3",
-    name: "Royal Jackpot",
-    description: "Exclusive jackpot game",
-    icon: "🎰",
-  },
-  {
-    id: "vip-4",
-    name: "Golden Diamonds",
-    description: "VIP exclusive game",
-    icon: "💠",
-  },
+const goldenGames = [
+  "Golden Crash",
+  "Golden Dice",
+  "Golden Wheel",
+  "Golden Mines",
+  "Golden Cards",
+  "Golden Jackpot",
 ];
 
-/* =========================================================
-   HELPERS
-========================================================= */
+const oddsMap = {
+  home: 2.1,
+  draw: 3.4,
+  away: 3.1,
+  "1x": 1.4,
+  "12": 1.35,
+  x2: 1.5,
+  "over-0-5": 1.1,
+  "over-1-5": 1.35,
+  "over-2-5": 1.8,
+  "under-2-5": 1.9,
+  "under-3-5": 1.35,
+  "btts-yes": 1.7,
+  "btts-no": 2.05,
+  "home-over-0-5": 1.25,
+  "home-over-1-5": 1.75,
+  "away-over-0-5": 1.3,
+  "away-over-1-5": 1.9,
+  "ht-home": 2.3,
+  "ht-draw": 2.2,
+  "ht-away": 3.2,
+  "corners-over-7-5": 1.65,
+  "corners-over-8-5": 1.85,
+  "corners-over-9-5": 2.05,
+  "corners-under-10-5": 1.55,
+  "cards-over-2-5": 1.45,
+  "cards-over-3-5": 1.7,
+  "cards-over-4-5": 2.05,
+  "cards-under-5-5": 1.55,
+  "goals-0-1": 2.4,
+  "goals-2-3": 1.8,
+  "goals-4-5": 3.2,
+  "goals-6-plus": 8.5,
+  "score-1-0": 6.5,
+  "score-2-0": 8,
+  "score-2-1": 7,
+  "score-1-1": 5.5,
+  "score-2-2": 10,
+  "score-0-0": 8.5,
+};
 
-function safeOdds(value) {
+function getMarketOdds(id, index = 0) {
+  if (oddsMap[id]) {
+    return oddsMap[id];
+  }
+
+  return Number((1.5 + index * 0.4).toFixed(2));
+}
+
+const marketGroupsList = Object.entries(marketGroups || {}).flatMap(
+  ([groupKey, groups]) =>
+    Array.isArray(groups)
+      ? groups.map((group) => ({
+          id: `${groupKey}-${group.id}`,
+          title: group.name,
+          markets: Array.isArray(group.markets)
+            ? group.markets.map((market) => ({
+                id: market.id,
+                title: market.label,
+                selections: [
+                  {
+                    key: market.id,
+                    name: market.label,
+                    odds: getMarketOdds(market.id),
+                  },
+                ],
+              }))
+            : [],
+        }))
+      : []
+);
+
+function safeOdds(value, fallback = 1.01) {
   const number = Number(value);
 
-  if (!Number.isFinite(number) || number <= 0) {
-    return 1;
+  if (!Number.isFinite(number) || number <= 1) {
+    return fallback;
   }
 
   return number;
 }
 
-function getCountry(countryName) {
+function getCountry(id) {
   return countries.find(
-    (country) =>
-      country.name.toLowerCase() === String(countryName || "").toLowerCase()
+    (country) => String(country.id) === String(id)
   );
 }
 
-function getStatusIcon(status) {
-  if (status === "won") return "✓";
-  if (status === "lost") return "×";
-  if (status === "cancelled") return "!";
-  return "•";
+function getStatusLabel(status) {
+  if (status === "live") {
+    return "LIVE";
+  }
+
+  if (status === "finished") {
+    return "Finished";
+  }
+
+  return "Upcoming";
 }
-
-function getStatusColor(status) {
-  if (status === "won") return "status-won";
-  if (status === "lost") return "status-lost";
-  if (status === "cancelled") return "status-cancelled";
-
-  return "status-pending";
-}
-
-/* =========================================================
-   TEAM LOGO
-========================================================= */
 
 function TeamLogo({ name }) {
+  const initials = String(name || "")
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 3)
+    .toUpperCase();
+
   return (
-    <div className="team-logo">
-      {String(name || "?").charAt(0).toUpperCase()}
+    <div className="team-logo" title={name}>
+      {initials}
     </div>
   );
 }
 
-/* =========================================================
-   HEADER
-========================================================= */
-
-function GoldenBetHeader({ betsCount = 0 }) {
-  const location = useLocation();
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  if (location.pathname === "/") {
-    return null;
-  }
-
-  const closeMenu = () => setMenuOpen(false);
-
+function GoldenBetHeader({ bets = [] }) {
   return (
-    <header className="site-header">
-      <div className="header-inner">
-        <Link to="/" className="brand" onClick={closeMenu}>
-          <span className="brand-mark">G</span>
-          <span className="brand-text">GOLDENBET</span>
+    <>
+      <header className="golden-top-header">
+        <div className="golden-top-visual">
+          <div className="golden-side-image golden-side-left">
+            <img src="/golden-roulette.svg" alt="Roulette" />
+          </div>
+
+          <Link
+            to="/"
+            className="golden-center-logo"
+            aria-label="GoldenBet Home"
+          >
+            GOLDENBET
+          </Link>
+
+          <div className="golden-side-image golden-side-right">
+            <img src="/golden-football.svg" alt="Football" />
+          </div>
+        </div>
+      </header>
+
+      <nav className="golden-bottom-nav" aria-label="Main navigation">
+        <Link to="/sports" className="golden-bottom-item">
+          <span className="golden-bottom-icon">⚽</span>
+          <span>Sports</span>
         </Link>
 
-        <nav className="desktop-nav">
-          <Link
-            className={location.pathname === "/sports" ? "active" : ""}
-            to="/sports"
-          >
-            Sports
-          </Link>
+        <Link to="/bet-slip" className="golden-bottom-item">
+          <span className="golden-bottom-icon">🎟️</span>
+          <span>Bet Slip</span>
 
-          <Link
-            className={location.pathname === "/live" ? "active" : ""}
-            to="/live"
-          >
-            Live Sports
-          </Link>
+          {bets.length > 0 && (
+            <b className="golden-bet-count">{bets.length}</b>
+          )}
+        </Link>
 
-          <Link
-            className={location.pathname === "/my-country" ? "active" : ""}
-            to="/my-country"
-          >
-            My Country
-          </Link>
+        <Link to="/deposit" className="golden-bottom-item">
+          <span className="golden-bottom-icon">💰</span>
+          <span>Deposit</span>
+        </Link>
 
-          <Link
-            className={location.pathname.startsWith("/casino") ? "active" : ""}
-            to="/casino"
-          >
-            Casino
-          </Link>
-
-          <Link
-            className={
-              location.pathname === "/casino/live" ? "active" : ""
-            }
-            to="/casino/live"
-          >
-            Live Casino
-          </Link>
-
-          <Link
-            className={
-              location.pathname === "/casino/vip" ? "active" : ""
-            }
-            to="/casino/vip"
-          >
-            VIP Games
-          </Link>
-
-          <Link
-            className={location.pathname === "/promotions" ? "active" : ""}
-            to="/promotions"
-          >
-            Promotions
-          </Link>
-        </nav>
-
-        <div className="header-actions">
-          <Link className="header-bets" to="/bet-slip">
-            Bets
-            {betsCount > 0 && (
-              <span className="selected-count">{betsCount}</span>
-            )}
-          </Link>
-
-          <Link className="header-login" to="/login">
-            Login
-          </Link>
-
-          <Link className="header-profile" to="/profile">
-            Profile
-          </Link>
-        </div>
-
-        <button
-          type="button"
-          className="mobile-menu-button"
-          onClick={() => setMenuOpen((value) => !value)}
-        >
-          ☰
-        </button>
-      </div>
-
-      {menuOpen && (
-        <div className="mobile-menu">
-          <Link to="/sports" onClick={closeMenu}>
-            ⚽ Sports
-          </Link>
-
-          <Link to="/live" onClick={closeMenu}>
-            🔴 Live Sports
-          </Link>
-
-          <Link to="/my-country" onClick={closeMenu}>
-            🌍 My Country
-          </Link>
-
-          <Link to="/casino" onClick={closeMenu}>
-            🎰 Casino
-          </Link>
-
-          <Link to="/casino/live" onClick={closeMenu}>
-            🎥 Live Casino
-          </Link>
-
-          <Link to="/casino/vip" onClick={closeMenu}>
-            👑 VIP Games
-          </Link>
-
-          <Link to="/promotions" onClick={closeMenu}>
-            🎁 Promotions
-          </Link>
-
-          <Link to="/bet-slip" onClick={closeMenu}>
-            🎟️ Bet Slip
-          </Link>
-
-          <Link to="/profile" onClick={closeMenu}>
-            👤 Profile
-          </Link>
-        </div>
-      )}
-    </header>
+        <Link to="/casino" className="golden-bottom-item">
+          <span className="golden-bottom-icon">🎰</span>
+          <span>Casino</span>
+        </Link>
+      </nav>
+    </>
   );
 }
 
-/* =========================================================
-   APP
-========================================================= */
+function Home({ session }) {
+  return (
+    <main className="home-page">
+      <section className="home-hero">
+        <div className="home-hero-overlay">
+          <div className="home-hero-content">
+            <span className="golden-badge">GOLDENBET</span>
+
+            <h1>
+              The Ultimate
+              <br />
+              Sports & Casino
+              <br />
+              Experience
+            </h1>
+
+            <p>
+              Football, live matches, casino games and more in one place.
+            </p>
+
+            <div className="home-hero-actions">
+              <Link to="/sports" className="golden-primary-button">
+                View Sports
+              </Link>
+
+              {!session && (
+                <Link to="/register" className="golden-secondary-button">
+                  Create Account
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="home-showcase">
+        <div className="section-heading">
+          <span>GOLDENBET</span>
+          <h2>Choose Your Game</h2>
+        </div>
+
+        <div className="home-showcase-grid">
+          <Link to="/casino" className="showcase-card">
+            <img src="/roulette.jpg" alt="Roulette" />
+            <div>
+              <span>CASINO</span>
+              <strong>Roulette</strong>
+            </div>
+          </Link>
+
+          <Link to="/golden-games" className="showcase-card">
+            <img src="/goldenbet.jpg" alt="Golden Games" />
+            <div>
+              <span>GOLDEN GAMES</span>
+              <strong>Play Now</strong>
+            </div>
+          </Link>
+
+          <Link to="/sports" className="showcase-card">
+            <img src="/football.jpg" alt="Football" />
+            <div>
+              <span>SPORTS</span>
+              <strong>Football</strong>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      <section className="home-feature-grid">
+        <Link to="/live" className="home-feature-card">
+          <span>🔴</span>
+          <strong>Live Betting</strong>
+          <small>Follow live matches</small>
+        </Link>
+
+        <Link to="/promotions" className="home-feature-card">
+          <span>🎁</span>
+          <strong>Promotions</strong>
+          <small>Special GoldenBet offers</small>
+        </Link>
+
+        <Link to="/casino/live" className="home-feature-card">
+          <span>🎰</span>
+          <strong>Live Casino</strong>
+          <small>Play with live dealers</small>
+        </Link>
+
+        <Link to="/my-country" className="home-feature-card">
+          <span>🌍</span>
+          <strong>My Country</strong>
+          <small>Local leagues and matches</small>
+        </Link>
+      </section>
+    </main>
+  );
+}
+
+function SportsPage({ addBet }) {
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedLeague, setSelectedLeague] = useState("");
+
+  const filteredMatches = useMemo(() => {
+    return matches.filter((match) => {
+      const countryMatch =
+        !selectedCountry ||
+        match.country.toLowerCase() ===
+          selectedCountry.toLowerCase();
+
+      const leagueMatch =
+        !selectedLeague ||
+        match.league.toLowerCase() === selectedLeague.toLowerCase();
+
+      return countryMatch && leagueMatch;
+    });
+  }, [selectedCountry, selectedLeague]);
+
+  const country = getCountry(selectedCountry);
+
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">GOLDENBET SPORTS</span>
+          <h1>Sports</h1>
+        </div>
+
+        <Link to="/live" className="live-button">
+          🔴 Live
+        </Link>
+      </div>
+
+      <div className="sports-filter">
+        <select
+          value={selectedCountry}
+          onChange={(event) => {
+            setSelectedCountry(event.target.value);
+            setSelectedLeague("");
+          }}
+        >
+          <option value="">All Countries</option>
+
+          {countries.map((item) => (
+            <option key={item.id} value={item.name}>
+              {item.flag} {item.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedLeague}
+          onChange={(event) =>
+            setSelectedLeague(event.target.value)
+          }
+          disabled={!country}
+        >
+          <option value="">All Leagues</option>
+
+          {country?.leagues.map((league) => (
+            <option key={league} value={league}>
+              {league}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="sports-list">
+        {filteredMatches.length === 0 ? (
+          <div className="empty-state">
+            <span>⚽</span>
+            <h3>No matches found</h3>
+            <p>Try another country or league.</p>
+          </div>
+        ) : (
+          filteredMatches.map((match) => (
+            <MatchCard
+              key={match.id}
+              match={match}
+              addBet={addBet}
+            />
+          ))
+        )}
+      </div>
+    </main>
+  );
+}
+
+function MatchCard({ match, addBet }) {
+  const odds = match.odds || {};
+
+  return (
+    <article className="match-card">
+      <div className="match-card-header">
+        <div>
+          <span className="match-country">
+            {match.country} • {match.league}
+          </span>
+
+          <span className="match-date">
+            {match.date} • {match.time}
+          </span>
+        </div>
+
+        <Link to={`/match/${match.id}`} className="match-more">
+          More
+        </Link>
+      </div>
+
+      <div className="match-teams">
+        <div className="match-team">
+          <TeamLogo name={match.home} />
+          <strong>{match.home}</strong>
+        </div>
+
+        <div className="match-vs">
+          <span>VS</span>
+          <small>{match.time}</small>
+        </div>
+
+        <div className="match-team">
+          <TeamLogo name={match.away} />
+          <strong>{match.away}</strong>
+        </div>
+      </div>
+
+      <div className="odds-grid">
+        <button
+          onClick={() =>
+            addBet({
+              matchId: match.id,
+              matchName: `${match.home} vs ${match.away}`,
+              market: "Match Winner",
+              selection: match.home,
+              odds: safeOdds(odds.home),
+            })
+          }
+        >
+          <span>1</span>
+          <b>{safeOdds(odds.home).toFixed(2)}</b>
+        </button>
+
+        <button
+          onClick={() =>
+            addBet({
+              matchId: match.id,
+              matchName: `${match.home} vs ${match.away}`,
+              market: "Match Winner",
+              selection: "Draw",
+              odds: safeOdds(odds.draw),
+            })
+          }
+        >
+          <span>X</span>
+          <b>{safeOdds(odds.draw).toFixed(2)}</b>
+        </button>
+
+        <button
+          onClick={() =>
+            addBet({
+              matchId: match.id,
+              matchName: `${match.home} vs ${match.away}`,
+              market: "Match Winner",
+              selection: match.away,
+              odds: safeOdds(odds.away),
+            })
+          }
+        >
+          <span>2</span>
+          <b>{safeOdds(odds.away).toFixed(2)}</b>
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function MatchPage({ addBet }) {
+  const { id } = useParams();
+
+  const match = matches.find(
+    (item) => String(item.id) === String(id)
+  );
+
+  if (!match) {
+    return <NotFound />;
+  }
+
+  return (
+    <main className="page-container">
+      <Link to="/sports" className="back-link">
+        ← Back to Sports
+      </Link>
+
+      <section className="match-detail-card">
+        <div className="match-detail-top">
+          <span>
+            {match.country} • {match.league}
+          </span>
+
+          <span>
+            {match.date} • {match.time}
+          </span>
+        </div>
+
+        <div className="match-detail-teams">
+          <div>
+            <TeamLogo name={match.home} />
+            <h2>{match.home}</h2>
+          </div>
+
+          <strong>VS</strong>
+
+          <div>
+            <TeamLogo name={match.away} />
+            <h2>{match.away}</h2>
+          </div>
+        </div>
+      </section>
+
+      <section className="markets-section">
+        <div className="section-heading">
+          <span>BETTING MARKETS</span>
+          <h2>Available Markets</h2>
+        </div>
+
+        {marketGroupsList.map((group) => (
+          <div key={group.id} className="market-group">
+            <h3>{group.title}</h3>
+
+            <div className="market-grid">
+              {group.markets.map((market) =>
+                market.selections.map((selection) => (
+                  <button
+                    key={`${market.id}-${selection.key}`}
+                    className="market-selection"
+                    onClick={() =>
+                      addBet({
+                        matchId: match.id,
+                        matchName: `${match.home} vs ${match.away}`,
+                        market: market.title,
+                        selection: selection.name,
+                        odds: safeOdds(selection.odds),
+                      })
+                    }
+                  >
+                    <span>
+                      {market.title}
+                      <small>{selection.name}</small>
+                    </span>
+
+                    <b>{safeOdds(selection.odds).toFixed(2)}</b>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        ))}
+      </section>
+    </main>
+  );
+}
+
+function LivePage({ addBet }) {
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">LIVE SPORTS</span>
+          <h1>Live Matches</h1>
+        </div>
+
+        <span className="live-status-badge">● LIVE</span>
+      </div>
+
+      <div className="live-list">
+        {liveMatches.map((match) => (
+          <article key={match.id} className="live-match-card">
+            <div className="live-match-header">
+              <span>
+                {match.country} • {match.league}
+              </span>
+
+              <strong>{match.minute}</strong>
+            </div>
+
+            <div className="live-match-main">
+              <div>
+                <TeamLogo name={match.home} />
+                <strong>{match.home}</strong>
+              </div>
+
+              <div className="live-score">
+                <b>{match.score}</b>
+                <span>LIVE</span>
+              </div>
+
+              <div>
+                <TeamLogo name={match.away} />
+                <strong>{match.away}</strong>
+              </div>
+            </div>
+
+            <div className="live-actions">
+              <button
+                onClick={() =>
+                  addBet({
+                    matchId: match.id,
+                    matchName: `${match.home} vs ${match.away}`,
+                    market: "Live",
+                    selection: match.home,
+                    odds: 2.1,
+                  })
+                }
+              >
+                {match.home} 2.10
+              </button>
+
+              <button
+                onClick={() =>
+                  addBet({
+                    matchId: match.id,
+                    matchName: `${match.home} vs ${match.away}`,
+                    market: "Live",
+                    selection: "Draw",
+                    odds: 3.2,
+                  })
+                }
+              >
+                Draw 3.20
+              </button>
+
+              <button
+                onClick={() =>
+                  addBet({
+                    matchId: match.id,
+                    matchName: `${match.home} vs ${match.away}`,
+                    market: "Live",
+                    selection: match.away,
+                    odds: 3.4,
+                  })
+                }
+              >
+                {match.away} 3.40
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
+    </main>
+  );
+}
+
+function MyCountryPage({ addBet }) {
+  const [countryId, setCountryId] = useState(
+    () => localStorage.getItem("goldenbet-country") || "iraq"
+  );
+
+  const country = getCountry(countryId);
+
+  const countryMatches = matches.filter(
+    (match) =>
+      match.country.toLowerCase() ===
+      String(country?.name || "").toLowerCase()
+  );
+
+  function changeCountry(event) {
+    const value = event.target.value;
+    setCountryId(value);
+    localStorage.setItem("goldenbet-country", value);
+  }
+
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">LOCAL SPORTS</span>
+          <h1>My Country</h1>
+        </div>
+      </div>
+
+      <div className="country-selector">
+        <label>Select Country</label>
+
+        <select value={countryId} onChange={changeCountry}>
+          {countries.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.flag} {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <section className="country-leagues">
+        <div className="section-heading">
+          <span>{country?.flag}</span>
+          <h2>{country?.name} Leagues</h2>
+        </div>
+
+        <div className="league-list">
+          {country?.leagues.map((league) => (
+            <div key={league} className="league-card">
+              <span>🏆</span>
+              <strong>{league}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="sports-list">
+        {countryMatches.length > 0 ? (
+          countryMatches.map((match) => (
+            <MatchCard
+              key={match.id}
+              match={match}
+              addBet={addBet}
+            />
+          ))
+        ) : (
+          <div className="empty-state">
+            <span>⚽</span>
+            <h3>No local matches</h3>
+            <p>More matches will appear here when available.</p>
+          </div>
+        )}
+      </section>
+    </main>
+  );
+}
+
+function CasinoPage() {
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">GOLDENBET</span>
+          <h1>Casino</h1>
+        </div>
+      </div>
+
+      <div className="casino-grid">
+        {casinoGames.map((game) => (
+          <Link
+            key={game.id}
+            to="/casino/vip"
+            className="casino-card"
+          >
+            <img src={game.image} alt={game.name} />
+
+            <div className="casino-card-overlay">
+              <span>{game.category}</span>
+              <strong>{game.name}</strong>
+              <b>Play Now</b>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </main>
+  );
+}
+
+function LiveCasinoPage() {
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">LIVE DEALERS</span>
+          <h1>Live Casino</h1>
+        </div>
+      </div>
+
+      <div className="provider-grid">
+        {liveCasinoGames.map((provider) => (
+          <Link
+            key={provider}
+            to="/casino/vip"
+            className="provider-card"
+          >
+            <span>🎰</span>
+            <strong>{provider}</strong>
+            <small>Explore Games</small>
+          </Link>
+        ))}
+      </div>
+    </main>
+  );
+}
+
+function GoldenGamesPage() {
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">GOLDENBET ORIGINALS</span>
+          <h1>Golden Games</h1>
+        </div>
+      </div>
+
+      <div className="golden-games-grid">
+        {goldenGames.map((game) => (
+          <div key={game} className="golden-game-card">
+            <div className="golden-game-icon">✨</div>
+            <strong>{game}</strong>
+            <span>Play Demo</span>
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+}
+
+function CasinoVipPage() {
+  return (
+    <main className="page-container">
+      <div className="casino-vip-banner">
+        <span>GOLDENBET VIP</span>
+        <h1>Premium Casino</h1>
+        <p>
+          Premium casino content and live gaming experience.
+        </p>
+      </div>
+
+      <div className="empty-state">
+        <span>🎰</span>
+        <h3>Casino Integration Ready</h3>
+        <p>
+          Connect your licensed casino provider here.
+        </p>
+      </div>
+    </main>
+  );
+}
+
+function BetSlip({ bets, removeBet, clearBets, session }) {
+  const navigate = useNavigate();
+
+  const totalOdds = bets.reduce(
+    (total, bet) => total * safeOdds(bet.odds),
+    1
+  );
+
+  const [stake, setStake] = useState("");
+
+  const potentialWin =
+    Number(stake || 0) * totalOdds;
+
+  async function placeBet() {
+    if (!session?.user?.id) {
+      alert("Please login first.");
+      navigate("/login");
+      return;
+    }
+
+    if (!bets.length) {
+      alert("Your bet slip is empty.");
+      return;
+    }
+
+    if (!Number(stake) || Number(stake) <= 0) {
+      alert("Enter a valid stake.");
+      return;
+    }
+
+    try {
+      const matchNames = bets
+        .map((bet) => bet.matchName)
+        .join(" | ");
+
+      const { error } = await supabase.from("bets").insert({
+        user_id: session.user.id,
+        match_name: matchNames,
+        selection: bets,
+        stake: Number(stake),
+        potential_win: Number(potentialWin.toFixed(2)),
+        total_odds: Number(totalOdds.toFixed(2)),
+        status: "pending",
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      alert("Bet placed successfully.");
+      clearBets();
+      setStake("");
+    } catch (error) {
+      console.error(error);
+      alert(
+        error?.message ||
+          "Could not place the bet."
+      );
+    }
+  }
+
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">GOLDENBET</span>
+          <h1>Bet Slip</h1>
+        </div>
+
+        {bets.length > 0 && (
+          <button
+            className="danger-button"
+            onClick={clearBets}
+          >
+            Clear
+          </button>
+        )}
+      </div>
+
+      {bets.length === 0 ? (
+        <div className="empty-state">
+          <span>🎟️</span>
+          <h3>Your Bet Slip is Empty</h3>
+          <p>Select odds from the sports page to add bets.</p>
+          <Link to="/sports" className="golden-primary-button">
+            Browse Sports
+          </Link>
+        </div>
+      ) : (
+        <section className="bet-slip-card">
+          <div className="bet-slip-items">
+            {bets.map((bet, index) => (
+              <div
+                key={`${bet.matchId}-${bet.selection}-${index}`}
+                className="bet-slip-item"
+              >
+                <div>
+                  <strong>{bet.matchName}</strong>
+                  <span>{bet.market}</span>
+                  <small>{bet.selection}</small>
+                </div>
+
+                <div className="bet-slip-odd">
+                  <b>{safeOdds(bet.odds).toFixed(2)}</b>
+
+                  <button
+                    onClick={() => removeBet(index)}
+                    aria-label="Remove bet"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="bet-slip-summary">
+            <div>
+              <span>Selections</span>
+              <strong>{bets.length}</strong>
+            </div>
+
+            <div>
+              <span>Total Odds</span>
+              <strong>{totalOdds.toFixed(2)}</strong>
+            </div>
+
+            <label>
+              <span>Stake</span>
+
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={stake}
+                onChange={(event) =>
+                  setStake(event.target.value)
+                }
+                placeholder="0"
+              />
+            </label>
+
+            <div>
+              <span>Potential Return</span>
+              <strong>{potentialWin.toFixed(2)}</strong>
+            </div>
+
+            <button
+              className="golden-primary-button full-width"
+              onClick={placeBet}
+            >
+              Place Bet
+            </button>
+          </div>
+        </section>
+      )}
+    </main>
+  );
+}
+
+function Promotions() {
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">GOLDENBET OFFERS</span>
+          <h1>Promotions</h1>
+        </div>
+      </div>
+
+      <div className="promotion-grid">
+        <div className="promotion-card">
+          <span>🎁</span>
+          <h2>Welcome Bonus</h2>
+          <p>
+            Special offers for new GoldenBet members.
+          </p>
+        </div>
+
+        <div className="promotion-card">
+          <span>⚽</span>
+          <h2>Football Promotion</h2>
+          <p>
+            Follow your favorite football leagues.
+          </p>
+        </div>
+
+        <div className="promotion-card">
+          <span>🎰</span>
+          <h2>Casino Offers</h2>
+          <p>
+            Premium casino promotions and events.
+          </p>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function Login({ onLogin }) {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function submit(event) {
+    event.preventDefault();
+
+    setLoading(true);
+
+    const { data, error } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+    setLoading(false);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    onLogin(data.session);
+    navigate("/");
+  }
+
+  return (
+    <main className="auth-page">
+      <form className="auth-card" onSubmit={submit}>
+        <div className="auth-logo">GOLDENBET</div>
+
+        <h1>Login</h1>
+
+        <p>Welcome back to GoldenBet.</p>
+
+        <input
+          type="email"
+          value={email}
+          onChange={(event) =>
+            setEmail(event.target.value)
+          }
+          placeholder="Email"
+          required
+        />
+
+        <input
+          type="password"
+          value={password}
+          onChange={(event) =>
+            setPassword(event.target.value)
+          }
+          placeholder="Password"
+          required
+        />
+
+        <button
+          type="submit"
+          className="golden-primary-button full-width"
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+
+        <p className="auth-footer">
+          Don't have an account?{" "}
+          <Link to="/register">Create Account</Link>
+        </p>
+      </form>
+    </main>
+  );
+}
+
+function Register({ onRegister }) {
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [country, setCountry] = useState("Iraq");
+  const [loading, setLoading] = useState(false);
+
+  async function submit(event) {
+    event.preventDefault();
+
+    setLoading(true);
+
+    const { data, error } =
+      await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+            full_name: fullName,
+            country,
+          },
+        },
+      });
+
+    if (error) {
+      setLoading(false);
+      alert(error.message);
+      return;
+    }
+
+    if (data.user) {
+      const { error: profileError } =
+        await supabase.from("profiles").upsert({
+          id: data.user.id,
+          username,
+          full_name: fullName,
+          country,
+          balance: 0,
+        });
+
+      if (profileError) {
+        console.error(profileError);
+      }
+    }
+
+    setLoading(false);
+
+    if (data.session) {
+      onRegister(data.session);
+      navigate("/");
+    } else {
+      alert(
+        "Account created. Please check your email if confirmation is required."
+      );
+      navigate("/login");
+    }
+  }
+
+  return (
+    <main className="auth-page">
+      <form className="auth-card" onSubmit={submit}>
+        <div className="auth-logo">GOLDENBET</div>
+
+        <h1>Create Account</h1>
+
+        <p>Join GoldenBet today.</p>
+
+        <input
+          value={username}
+          onChange={(event) =>
+            setUsername(event.target.value)
+          }
+          placeholder="Username"
+          required
+        />
+
+        <input
+          value={fullName}
+          onChange={(event) =>
+            setFullName(event.target.value)
+          }
+          placeholder="Full Name"
+        />
+
+        <input
+          type="email"
+          value={email}
+          onChange={(event) =>
+            setEmail(event.target.value)
+          }
+          placeholder="Email"
+          required
+        />
+
+        <input
+          type="password"
+          value={password}
+          onChange={(event) =>
+            setPassword(event.target.value)
+          }
+          placeholder="Password"
+          minLength={6}
+          required
+        />
+
+        <select
+          value={country}
+          onChange={(event) =>
+            setCountry(event.target.value)
+          }
+        >
+          {countries.map((item) => (
+            <option key={item.id} value={item.name}>
+              {item.flag} {item.name}
+            </option>
+          ))}
+        </select>
+
+        <button
+          type="submit"
+          className="golden-primary-button full-width"
+          disabled={loading}
+        >
+          {loading ? "Creating..." : "Create Account"}
+        </button>
+
+        <p className="auth-footer">
+          Already have an account?{" "}
+          <Link to="/login">Login</Link>
+        </p>
+      </form>
+    </main>
+  );
+}
+
+function Profile({ session }) {
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [country, setCountry] = useState("Iraq");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    async function loadProfile() {
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } =
+        await supabase
+          .from("profiles")
+          .select(
+            "id, username, full_name, avatar_text, balance, country"
+          )
+          .eq("id", session.user.id)
+          .maybeSingle();
+
+      if (!error && data) {
+        setProfile(data);
+        setCountry(data.country || "Iraq");
+      }
+
+      setLoading(false);
+    }
+
+    loadProfile();
+  }, [session]);
+
+  async function saveCountry() {
+    if (!session?.user?.id) return;
+
+    setSaving(true);
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        country,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", session.user.id);
+
+    setSaving(false);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    setProfile((current) => ({
+      ...(current || {}),
+      country,
+    }));
+
+    alert("Profile updated.");
+  }
+
+  if (!session) {
+    return (
+      <main className="page-container">
+        <div className="empty-state">
+          <span>👤</span>
+          <h3>Login Required</h3>
+          <Link to="/login" className="golden-primary-button">
+            Login
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  if (loading) {
+    return (
+      <main className="page-container">
+        <div className="loading-state">Loading profile...</div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">ACCOUNT</span>
+          <h1>Profile</h1>
+        </div>
+      </div>
+
+      <section className="profile-card">
+        <div className="profile-avatar">
+          {profile?.avatar_text ||
+            profile?.username?.slice(0, 1)?.toUpperCase() ||
+            "G"}
+        </div>
+
+        <div className="profile-info">
+          <h2>
+            {profile?.username || "GoldenBet User"}
+          </h2>
+
+          <p>{session.user.email}</p>
+
+          <span>
+            Balance:{" "}
+            {Number(profile?.balance || 0).toFixed(2)} IQD
+          </span>
+        </div>
+      </section>
+
+      <section className="settings-card">
+        <h2>Country</h2>
+
+        <select
+          value={country}
+          onChange={(event) =>
+            setCountry(event.target.value)
+          }
+        >
+          {countries.map((item) => (
+            <option key={item.id} value={item.name}>
+              {item.flag} {item.name}
+            </option>
+          ))}
+        </select>
+
+        <button
+          className="golden-primary-button"
+          onClick={saveCountry}
+          disabled={saving}
+        >
+          {saving ? "Saving..." : "Save Country"}
+        </button>
+      </section>
+    </main>
+  );
+}
+
+function Balance({ session }) {
+  const [balance, setBalance] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadBalance() {
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("balance")
+        .eq("id", session.user.id)
+        .maybeSingle();
+
+      setBalance(Number(data?.balance || 0));
+      setLoading(false);
+    }
+
+    loadBalance();
+  }, [session]);
+
+  if (!session) {
+    return (
+      <main className="page-container">
+        <div className="empty-state">
+          <span>💰</span>
+          <h3>Login Required</h3>
+          <Link to="/login" className="golden-primary-button">
+            Login
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">ACCOUNT</span>
+          <h1>Balance</h1>
+        </div>
+      </div>
+
+      <div className="balance-card">
+        <span>Available Balance</span>
+
+        <strong>
+          {loading ? "Loading..." : balance.toFixed(2)}
+        </strong>
+
+        <small>IQD</small>
+      </div>
+
+      <div className="account-actions">
+        <Link to="/deposit" className="golden-primary-button">
+          Deposit
+        </Link>
+
+        <Link to="/withdraw" className="golden-secondary-button">
+          Withdraw
+        </Link>
+      </div>
+    </main>
+  );
+}
+
+function Deposit() {
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">ACCOUNT</span>
+          <h1>Deposit</h1>
+        </div>
+      </div>
+
+      <PaymentCard />
+    </main>
+  );
+}
+
+function Withdraw({ session }) {
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">ACCOUNT</span>
+          <h1>Withdraw</h1>
+        </div>
+      </div>
+
+      {!session ? (
+        <div className="empty-state">
+          <span>💳</span>
+          <h3>Login Required</h3>
+          <Link to="/login" className="golden-primary-button">
+            Login
+          </Link>
+        </div>
+      ) : (
+        <div className="settings-card">
+          <h2>Withdraw Funds</h2>
+          <p>
+            Secure withdrawal processing will be connected
+            through the backend payment system.
+          </p>
+
+          <input
+            type="number"
+            placeholder="Amount IQD"
+            min="0"
+          />
+
+          <select defaultValue="">
+            <option value="" disabled>
+              Select method
+            </option>
+            <option>Zain Cash</option>
+            <option>Asiacell</option>
+            <option>Korek</option>
+            <option>FIB</option>
+            <option>FastPay</option>
+            <option>Qi Card</option>
+          </select>
+
+          <button
+            className="golden-primary-button"
+            onClick={() =>
+              alert(
+                "Withdrawal backend integration is required."
+              )
+            }
+          >
+            Request Withdrawal
+          </button>
+        </div>
+      )}
+    </main>
+  );
+}
+
+function MyBets({ session }) {
+  const [bets, setBets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadBets() {
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("bets")
+        .select("*")
+        .eq("user_id", session.user.id)
+        .order("created_at", {
+          ascending: false,
+        });
+
+      if (!error) {
+        setBets(data || []);
+      }
+
+      setLoading(false);
+    }
+
+    loadBets();
+  }, [session]);
+
+  if (!session) {
+    return (
+      <main className="page-container">
+        <div className="empty-state">
+          <span>🎟️</span>
+          <h3>Login Required</h3>
+          <Link to="/login" className="golden-primary-button">
+            Login
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">ACCOUNT</span>
+          <h1>My Bets</h1>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="loading-state">
+          Loading bets...
+        </div>
+      ) : bets.length === 0 ? (
+        <div className="empty-state">
+          <span>🎟️</span>
+          <h3>No Bets Yet</h3>
+          <p>Your placed bets will appear here.</p>
+        </div>
+      ) : (
+        <div className="my-bets-list">
+          {bets.map((bet) => (
+            <div key={bet.id} className="my-bet-card">
+              <div>
+                <strong>{bet.match_name}</strong>
+                <span>
+                  {new Date(
+                    bet.created_at
+                  ).toLocaleString()}
+                </span>
+              </div>
+
+              <div>
+                <small>Odds</small>
+                <b>
+                  {Number(bet.total_odds || 0).toFixed(2)}
+                </b>
+              </div>
+
+              <div>
+                <small>Stake</small>
+                <b>
+                  {Number(bet.stake || 0).toFixed(2)}
+                </b>
+              </div>
+
+              <div>
+                <small>Potential Win</small>
+                <b>
+                  {Number(
+                    bet.potential_win || 0
+                  ).toFixed(2)}
+                </b>
+              </div>
+
+              <span
+                className={`bet-status status-${String(
+                  bet.status || "pending"
+                ).toLowerCase()}`}
+              >
+                {bet.status || "pending"}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </main>
+  );
+}
+
+function Settings() {
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("goldenbet-dark") !== "false"
+  );
+
+  useEffect(() => {
+    localStorage.setItem(
+      "goldenbet-dark",
+      String(darkMode)
+    );
+
+    document.documentElement.dataset.theme = darkMode
+      ? "dark"
+      : "light";
+  }, [darkMode]);
+
+  return (
+    <main className="page-container">
+      <div className="page-title">
+        <div>
+          <span className="page-kicker">ACCOUNT</span>
+          <h1>Settings</h1>
+        </div>
+      </div>
+
+      <section className="settings-card">
+        <div className="setting-row">
+          <div>
+            <strong>Dark Mode</strong>
+            <span>Use the GoldenBet dark interface.</span>
+          </div>
+
+          <button
+            className={`toggle-button ${
+              darkMode ? "active" : ""
+            }`}
+            onClick={() =>
+              setDarkMode((value) => !value)
+            }
+          >
+            {darkMode ? "ON" : "OFF"}
+          </button>
+        </div>
+
+        <div className="setting-row">
+          <div>
+            <strong>Language</strong>
+            <span>
+              Language selection is available in the
+              application settings.
+            </span>
+          </div>
+
+          <span className="setting-value">English</span>
+        </div>
+
+        <div className="setting-row">
+          <div>
+            <strong>Currency</strong>
+            <span>Default account currency.</span>
+          </div>
+
+          <span className="setting-value">IQD</span>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function MobileBottomNav({ bets }) {
+  return (
+    <nav className="mobile-bottom-nav">
+      <Link to="/sports">
+        <span>⚽</span>
+        <small>Sports</small>
+      </Link>
+
+      <Link to="/bet-slip">
+        <span>
+          🎟️
+          {bets.length > 0 && (
+            <b>{bets.length}</b>
+          )}
+        </span>
+        <small>Coupons</small>
+      </Link>
+
+      <Link to="/golden-games">
+        <span>🎮</span>
+        <small>Golden Games</small>
+      </Link>
+
+      <Link to="/casino">
+        <span>🎰</span>
+        <small>Casino</small>
+      </Link>
+    </nav>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="footer-brand">GOLDENBET</div>
+
+      <div className="footer-links">
+        <Link to="/sports">Sports</Link>
+        <Link to="/casino">Casino</Link>
+        <Link to="/live">Live</Link>
+        <Link to="/promotions">Promotions</Link>
+        <Link to="/profile">Profile</Link>
+      </div>
+
+      <p>
+        GoldenBet demo platform. Real-money services require
+        secure backend integrations and applicable licensing.
+      </p>
+    </footer>
+  );
+}
+
+function NotFound() {
+  return (
+    <main className="page-container">
+      <div className="empty-state">
+        <span>404</span>
+        <h1>Page Not Found</h1>
+        <p>The page you requested does not exist.</p>
+
+        <Link to="/" className="golden-primary-button">
+          Go Home
+        </Link>
+      </div>
+    </main>
+  );
+}
 
 export default function App() {
-  const [bets, setBets] = useState([]);
+  const location = useLocation();
+
   const [session, setSession] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const [bets, setBets] = useState(() => {
+    try {
+      const saved =
+        localStorage.getItem("goldenbet-bets");
+
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "goldenbet-bets",
+      JSON.stringify(bets)
+    );
+  }, [bets]);
 
   useEffect(() => {
     let mounted = true;
 
-    supabase.auth.getSession().then(({ data }) => {
+    async function loadSession() {
+      const {
+        data: { session: currentSession },
+      } = await supabase.auth.getSession();
+
       if (mounted) {
-        setSession(data.session);
+        setSession(currentSession);
+        setAuthLoading(false);
       }
-    });
+    }
+
+    loadSession();
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, currentSession) => {
-      setSession(currentSession);
-    });
+    } = supabase.auth.onAuthStateChange(
+      (_event, currentSession) => {
+        setSession(currentSession);
+        setAuthLoading(false);
+      }
+    );
 
     return () => {
       mounted = false;
@@ -675,54 +2074,92 @@ export default function App() {
     };
   }, []);
 
-  const addBet = (bet) => {
+  function addBet(bet) {
     setBets((current) => {
-      const exists = current.some(
+      const alreadyExists = current.some(
         (item) =>
           String(item.matchId) === String(bet.matchId) &&
-          String(item.marketId) === String(bet.marketId) &&
-          String(item.selectionKey) === String(bet.selectionKey)
+          item.selection === bet.selection &&
+          item.market === bet.market
       );
 
-      if (exists) {
-        return current.filter(
-          (item) =>
-            !(
-              String(item.matchId) === String(bet.matchId) &&
-              String(item.marketId) === String(bet.marketId) &&
-              String(item.selectionKey) === String(bet.selectionKey)
-            )
-        );
-      }
-
-      const matchIds = new Set(
-        current.map((item) => String(item.matchId))
-      );
-
-      if (!matchIds.has(String(bet.matchId)) && matchIds.size >= 20) {
-        alert("Maximum 20 different matches can be added.");
+      if (alreadyExists) {
         return current;
       }
 
-      return [...current, bet];
+      if (current.length >= 20) {
+        alert("Maximum 20 selections allowed.");
+        return current;
+      }
+
+      return [
+        ...current,
+        {
+          ...bet,
+          odds: safeOdds(bet.odds),
+        },
+      ];
     });
-  };
+  }
+
+  function removeBet(index) {
+    setBets((current) =>
+      current.filter((_, itemIndex) => itemIndex !== index)
+    );
+  }
+
+  function clearBets() {
+    setBets([]);
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    setSession(null);
+  }
+
+  if (authLoading) {
+    return (
+      <div className="app-loading">
+        <div className="loading-logo">GOLDENBET</div>
+        <span>Loading...</span>
+      </div>
+    );
+  }
+
+  const isHome = location.pathname === "/";
 
   return (
     <div className="app">
-      <GoldenBetHeader betsCount={bets.length} />
+      {!isHome && (
+        <GoldenBetHeader bets={bets} />
+      )}
+
+      {!isHome && session && (
+        <div className="account-bar">
+          <Link to="/profile">
+            👤 {session.user.email}
+          </Link>
+
+          <button onClick={logout}>
+            Logout
+          </button>
+        </div>
+      )}
 
       <Routes>
-        <Route path="/" element={<Home session={session} />} />
+        <Route
+          path="/"
+          element={<Home session={session} />}
+        />
 
         <Route
           path="/sports"
-          element={<Sports addBet={addBet} />}
+          element={<SportsPage addBet={addBet} />}
         />
 
         <Route
           path="/sports/:sport"
-          element={<Sports addBet={addBet} />}
+          element={<SportsPage addBet={addBet} />}
         />
 
         <Route
@@ -732,60 +2169,77 @@ export default function App() {
 
         <Route
           path="/live"
-          element={<LiveSports />}
+          element={<LivePage addBet={addBet} />}
         />
 
         <Route
           path="/my-country"
-          element={
-            <MyCountry
-              session={session}
-              addBet={addBet}
-            />
-          }
+          element={<MyCountryPage addBet={addBet} />}
         />
 
         <Route
           path="/casino"
-          element={<CasinoHub tab="casino" />}
+          element={<CasinoPage />}
         />
 
         <Route
           path="/casino/live"
-          element={<CasinoHub tab="live" />}
+          element={<LiveCasinoPage />}
         />
 
         <Route
           path="/casino/vip"
-          element={<CasinoHub tab="vip" />}
+          element={<CasinoVipPage />}
         />
 
         <Route
           path="/live-casino"
-          element={<CasinoHub tab="live" />}
+          element={<LiveCasinoPage />}
         />
 
         <Route
           path="/golden-games"
-          element={<CasinoHub tab="vip" />}
+          element={<GoldenGamesPage />}
         />
 
         <Route
           path="/bet-slip"
           element={
-            <BetSlipPage
+            <BetSlip
               bets={bets}
-              setBets={setBets}
+              removeBet={removeBet}
+              clearBets={clearBets}
               session={session}
             />
           }
         />
 
-        <Route path="/promotions" element={<Promotions />} />
+        <Route
+          path="/promotions"
+          element={<Promotions />}
+        />
 
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={
+            <Login
+              onLogin={(newSession) =>
+                setSession(newSession)
+              }
+            />
+          }
+        />
 
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/register"
+          element={
+            <Register
+              onRegister={(newSession) =>
+                setSession(newSession)
+              }
+            />
+          }
+        />
 
         <Route
           path="/profile"
@@ -799,7 +2253,7 @@ export default function App() {
 
         <Route
           path="/deposit"
-          element={<Deposit session={session} />}
+          element={<Deposit />}
         />
 
         <Route
@@ -812,2112 +2266,25 @@ export default function App() {
           element={<MyBets session={session} />}
         />
 
-        <Route path="/settings" element={<Settings />} />
+        <Route
+          path="/settings"
+          element={<Settings />}
+        />
 
         <Route
           path="/super-admin"
           element={<AdminDashboard />}
         />
 
-        <Route path="*" element={<NotFound />} />
+        <Route
+          path="*"
+          element={<NotFound />}
+        />
       </Routes>
 
-      <MobileBottomNav betsCount={bets.length} />
-      <Footer />
+      {!isHome && <Footer />}
+
+      {!isHome && <MobileBottomNav bets={bets} />}
     </div>
-  );
-}
-
-/* =========================================================
-   HOME
-========================================================= */
-
-function Home({ session }) {
-  const navigate = useNavigate();
-
-  return (
-    <main className="home-page">
-      <section className="home-topbar">
-        <div className="home-brand">
-          <div className="home-logo">G</div>
-
-          <div>
-            <div className="home-brand-name">GOLDENBET</div>
-            <small>Sports & Casino</small>
-          </div>
-        </div>
-
-        <div className="header-auth">
-          {session ? (
-            <Link to="/profile" className="btn btn-secondary">
-              Profile
-            </Link>
-          ) : (
-            <>
-              <Link to="/login" className="btn btn-secondary">
-                Login
-              </Link>
-
-              <Link to="/register" className="btn btn-primary">
-                Register
-              </Link>
-            </>
-          )}
-        </div>
-      </section>
-
-      <section className="hero-section">
-        <div className="hero-overlay">
-          <div className="home-content">
-            <div className="hero-crown">👑</div>
-
-            <div className="section-kicker">
-              GOLDENBET PREMIUM
-            </div>
-
-            <h1>Welcome to GoldenBet</h1>
-
-            <p>
-              Sports Betting, Live Sports and Premium Casino
-            </p>
-
-            <div className="hero-button">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => navigate("/sports")}
-              >
-                Start Betting
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="home-card-grid">
-        <button
-          type="button"
-          className="home-feature-card"
-          onClick={() => navigate("/sports")}
-        >
-          <span className="feature-icon">⚽</span>
-          <span className="feature-content">
-            <strong>Sports</strong>
-            <small>Football & all sports</small>
-          </span>
-          <span className="feature-arrow">→</span>
-        </button>
-
-        <button
-          type="button"
-          className="home-feature-card"
-          onClick={() => navigate("/live")}
-        >
-          <span className="feature-icon">🔴</span>
-          <span className="feature-content">
-            <strong>Live Sports</strong>
-            <small>Live matches</small>
-          </span>
-          <span className="feature-arrow">→</span>
-        </button>
-
-        <button
-          type="button"
-          className="home-feature-card"
-          onClick={() => navigate("/my-country")}
-        >
-          <span className="feature-icon">🌍</span>
-          <span className="feature-content">
-            <strong>My Country</strong>
-            <small>Matches for your country</small>
-          </span>
-          <span className="feature-arrow">→</span>
-        </button>
-
-        <button
-          type="button"
-          className="home-feature-card"
-          onClick={() => navigate("/casino")}
-        >
-          <span className="feature-icon">🎰</span>
-          <span className="feature-content">
-            <strong>Casino</strong>
-            <small>Casino games</small>
-          </span>
-          <span className="feature-arrow">→</span>
-        </button>
-
-        <button
-          type="button"
-          className="home-feature-card"
-          onClick={() => navigate("/casino/live")}
-        >
-          <span className="feature-icon">🎥</span>
-          <span className="feature-content">
-            <strong>Live Casino</strong>
-            <small>Live casino tables</small>
-          </span>
-          <span className="feature-arrow">→</span>
-        </button>
-
-        <button
-          type="button"
-          className="home-feature-card"
-          onClick={() => navigate("/casino/vip")}
-        >
-          <span className="feature-icon">👑</span>
-          <span className="feature-content">
-            <strong>VIP Games</strong>
-            <small>GoldenBet exclusive games</small>
-          </span>
-          <span className="feature-arrow">→</span>
-        </button>
-      </section>
-
-      <section className="home-visual-showcase">
-        <button
-          type="button"
-          className="showcase-card"
-          onClick={() => navigate("/casino")}
-        >
-          <img src="/roulette.jpg" alt="Golden Roulette" />
-          <span>Golden Roulette</span>
-        </button>
-
-        <button
-          type="button"
-          className="showcase-card showcase-main"
-          onClick={() => navigate("/")}
-        >
-          <img src="/goldenbet.jpg" alt="GoldenBet" />
-          <span>GOLDENBET</span>
-        </button>
-
-        <button
-          type="button"
-          className="showcase-card"
-          onClick={() => navigate("/sports")}
-        >
-          <img src="/football.jpg" alt="Football Betting" />
-          <span>Football Betting</span>
-        </button>
-      </section>
-
-      <section className="quick-section">
-        <div className="page-heading">
-          <span className="section-kicker">QUICK ACCESS</span>
-          <h2>Choose Your Game</h2>
-        </div>
-
-        <div className="quick-access-grid">
-          <Link className="quick-access-card" to="/sports">
-            ⚽
-            <strong>Football</strong>
-          </Link>
-
-          <Link className="quick-access-card" to="/sports/Basketball">
-            🏀
-            <strong>Basketball</strong>
-          </Link>
-
-          <Link className="quick-access-card" to="/sports/Tennis">
-            🎾
-            <strong>Tennis</strong>
-          </Link>
-
-          <Link className="quick-access-card" to="/casino">
-            🎰
-            <strong>Casino</strong>
-          </Link>
-
-          <Link className="quick-access-card" to="/casino/live">
-            🎥
-            <strong>Live Casino</strong>
-          </Link>
-
-          <Link className="quick-access-card" to="/casino/vip">
-            👑
-            <strong>VIP Games</strong>
-          </Link>
-        </div>
-      </section>
-
-      <section className="vip-banner">
-        <div className="vip-content">
-          <div className="vip-crown">👑</div>
-
-          <div>
-            <span className="vip-small">GOLDENBET</span>
-            <h2>VIP EXPERIENCE</h2>
-            <p>Premium sports and casino experience.</p>
-          </div>
-
-          <Link to="/register" className="btn btn-primary">
-            Join VIP
-          </Link>
-        </div>
-      </section>
-    </main>
-  );
-}
-
-/* =========================================================
-   SPORTS
-========================================================= */
-
-function Sports({ addBet }) {
-  const { sport: routeSport } = useParams();
-
-  const [sport, setSport] = useState(routeSport || "Football");
-  const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    if (routeSport) {
-      const found = sports.find(
-        (item) =>
-          item.toLowerCase() === routeSport.toLowerCase()
-      );
-
-      if (found) {
-        setSport(found);
-      }
-    }
-  }, [routeSport]);
-
-  const filteredMatches = useMemo(() => {
-    return matches.filter((match) => {
-      const correctSport =
-        match.sport.toLowerCase() === sport.toLowerCase();
-
-      const query = search.trim().toLowerCase();
-
-      if (!query) {
-        return correctSport;
-      }
-
-      return (
-        correctSport &&
-        [
-          match.home,
-          match.away,
-          match.country,
-          match.league,
-        ]
-          .join(" ")
-          .toLowerCase()
-          .includes(query)
-      );
-    });
-  }, [sport, search]);
-
-  return (
-    <main className="page">
-      <div className="page-container">
-        <div className="page-heading">
-          <span className="section-kicker">GOLDENBET SPORTS</span>
-          <h1>Sports</h1>
-          <p>Select a sport and find available matches.</p>
-        </div>
-
-        <div className="sports-tabs">
-          {sports.map((item) => (
-            <button
-              type="button"
-              key={item}
-              className={sport === item ? "active" : ""}
-              onClick={() => setSport(item)}
-            >
-              {getSportIcon(item)} {item}
-            </button>
-          ))}
-        </div>
-
-        <input
-          className="input sports-search"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder={`Search ${sport}, team, country or league...`}
-        />
-
-        {filteredMatches.length > 0 ? (
-          <div className="matches-grid">
-            {filteredMatches.map((match) => (
-              <MatchCard
-                key={match.id}
-                match={match}
-                addBet={addBet}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="empty-state">
-            <div className="empty-icon">
-              {getSportIcon(sport)}
-            </div>
-
-            <h3>No matches available</h3>
-
-            <p>
-              There are currently no matches for {sport} in the
-              available data.
-            </p>
-          </div>
-        )}
-      </div>
-    </main>
-  );
-}
-
-function getSportIcon(sport) {
-  const icons = {
-    Football: "⚽",
-    Tennis: "🎾",
-    Basketball: "🏀",
-    Volleyball: "🏐",
-    Boxing: "🥊",
-    MMA: "🥋",
-    "Ice Hockey": "🏒",
-    Cricket: "🏏",
-    Handball: "🤾",
-    Rugby: "🏉",
-    Baseball: "⚾",
-    "American Football": "🏈",
-    Darts: "🎯",
-    Golf: "⛳",
-    "Table Tennis": "🏓",
-    Esports: "🎮",
-    "Formula 1": "🏎️",
-    "Horse Racing": "🏇",
-  };
-
-  return icons[sport] || "🏆";
-}
-
-/* =========================================================
-   MATCH CARD
-========================================================= */
-
-function MatchCard({ match, addBet }) {
-  const navigate = useNavigate();
-
-  const firstMarket = marketGroups?.[0]?.markets?.[0];
-
-  return (
-    <article className="match-card">
-      <div className="match-card-top">
-        <div>
-          <strong>{match.league}</strong>
-          <small>
-            {getCountry(match.country)?.flag || "🌍"}{" "}
-            {match.country}
-          </small>
-        </div>
-
-        <span>{match.time}</span>
-      </div>
-
-      <button
-        type="button"
-        className="match-teams"
-        onClick={() => navigate(`/match/${match.id}`)}
-      >
-        <div>
-          <TeamLogo name={match.home} />
-          <span>{match.home}</span>
-        </div>
-
-        <strong>VS</strong>
-
-        <div>
-          <TeamLogo name={match.away} />
-          <span>{match.away}</span>
-        </div>
-      </button>
-
-      {firstMarket && (
-        <div className="match-odds">
-          {firstMarket.selections.map((selection) => (
-            <button
-              type="button"
-              key={selection.key}
-              onClick={() =>
-                addBet({
-                  matchId: match.id,
-                  matchName: `${match.home} vs ${match.away}`,
-                  sport: match.sport,
-                  country: match.country,
-                  league: match.league,
-                  marketId: firstMarket.id,
-                  marketTitle: firstMarket.title,
-                  selectionKey: selection.key,
-                  selectionName: selection.name,
-                  odds: safeOdds(selection.odds),
-                })
-              }
-            >
-              <span>{selection.label}</span>
-              <strong>{safeOdds(selection.odds).toFixed(2)}</strong>
-            </button>
-          ))}
-        </div>
-      )}
-
-      <button
-        type="button"
-        className="view-markets-button"
-        onClick={() => navigate(`/match/${match.id}`)}
-      >
-        View all markets →
-      </button>
-    </article>
-  );
-}
-
-/* =========================================================
-   MATCH PAGE
-========================================================= */
-
-function MatchPage({ addBet }) {
-  const { id } = useParams();
-
-  const match = matches.find(
-    (item) => String(item.id) === String(id)
-  );
-
-  if (!match) {
-    return (
-      <main className="page">
-        <div className="page-container">
-          <div className="empty-state">
-            <h2>Match not found</h2>
-            <Link to="/sports" className="btn btn-primary">
-              Back to Sports
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main className="page">
-      <div className="page-container narrow-container">
-        <Link to="/sports" className="back-link">
-          ← Back to Sports
-        </Link>
-
-        <section className="match-detail">
-          <div className="section-kicker">
-            {match.country} · {match.league}
-          </div>
-
-          <h1>
-            {match.home} vs {match.away}
-          </h1>
-
-          <p>
-            {getSportIcon(match.sport)} {match.sport} ·{" "}
-            {match.time}
-          </p>
-        </section>
-
-        <div className="markets-page">
-          {marketGroups.map((group) => (
-            <MarketGroup
-              key={group.id}
-              group={group}
-              match={match}
-              addBet={addBet}
-            />
-          ))}
-        </div>
-      </div>
-    </main>
-  );
-}
-
-function MarketGroup({ group, match, addBet }) {
-  const [open, setOpen] = useState(true);
-
-  return (
-    <section className="card">
-      <button
-        type="button"
-        className="page-heading"
-        onClick={() => setOpen((value) => !value)}
-      >
-        <h2>{group.title}</h2>
-        <span>{open ? "−" : "+"}</span>
-      </button>
-
-      {open &&
-        group.markets?.map((market) => (
-          <div key={market.id} className="card">
-            <h3>{market.title}</h3>
-
-            <div className="match-odds">
-              {market.selections?.map((selection) => (
-                <button
-                  type="button"
-                  key={selection.key}
-                  onClick={() =>
-                    addBet({
-                      matchId: match.id,
-                      matchName: `${match.home} vs ${match.away}`,
-                      sport: match.sport,
-                      country: match.country,
-                      league: match.league,
-                      marketId: market.id,
-                      marketTitle: market.title,
-                      selectionKey: selection.key,
-                      selectionName: selection.name,
-                      odds: safeOdds(selection.odds),
-                    })
-                  }
-                >
-                  <span>{selection.label}</span>
-                  <strong>
-                    {safeOdds(selection.odds).toFixed(2)}
-                  </strong>
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-    </section>
-  );
-}
-
-/* =========================================================
-   LIVE SPORTS
-========================================================= */
-
-function LiveSports() {
-  const [sport, setSport] = useState("All");
-
-  const live = liveMatches.filter(
-    (match) => sport === "All" || match.sport === sport
-  );
-
-  return (
-    <main className="page">
-      <div className="page-container">
-        <div className="page-heading">
-          <span className="section-kicker">LIVE NOW</span>
-          <h1>Live Sports</h1>
-          <p>
-            This section contains live sporting events only.
-          </p>
-        </div>
-
-        <div className="sports-tabs">
-          <button
-            type="button"
-            className={sport === "All" ? "active" : ""}
-            onClick={() => setSport("All")}
-          >
-            🔴 All
-          </button>
-
-          {[
-            "Football",
-            "Basketball",
-            "Tennis",
-            "Volleyball",
-            "Boxing",
-            "MMA",
-          ].map((item) => (
-            <button
-              type="button"
-              key={item}
-              className={sport === item ? "active" : ""}
-              onClick={() => setSport(item)}
-            >
-              {getSportIcon(item)} {item}
-            </button>
-          ))}
-        </div>
-
-        <div className="live-list">
-          {live.map((match) => (
-            <LiveMatchCard key={match.id} match={match} />
-          ))}
-        </div>
-      </div>
-    </main>
-  );
-}
-
-function LiveMatchCard({ match }) {
-  return (
-    <article className="live-match-card">
-      <div className="live-indicator">● LIVE</div>
-
-      <div>
-        <small>
-          {getSportIcon(match.sport)} {match.sport} ·{" "}
-          {match.country} · {match.league}
-        </small>
-
-        <div className="live-teams">
-          <span>{match.home}</span>
-
-          <strong className="live-score">
-            {match.homeScore} : {match.awayScore}
-          </strong>
-
-          <span>{match.away}</span>
-        </div>
-      </div>
-
-      <strong>{match.minute}</strong>
-    </article>
-  );
-}
-
-/* =========================================================
-   MY COUNTRY
-========================================================= */
-
-function MyCountry({ session, addBet }) {
-  const [country, setCountry] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadCountry() {
-      if (!session?.user?.id) {
-        if (mounted) {
-          setCountry("");
-          setLoading(false);
-        }
-        return;
-      }
-
-      const { data } = await supabase
-        .from("profiles")
-        .select("country")
-        .eq("id", session.user.id)
-        .maybeSingle();
-
-      if (!mounted) return;
-
-      const profileCountry =
-        data?.country ||
-        session.user.user_metadata?.country ||
-        "";
-
-      setCountry(profileCountry);
-      setLoading(false);
-    }
-
-    loadCountry();
-
-    return () => {
-      mounted = false;
-    };
-  }, [session]);
-
-  if (!session) {
-    return (
-      <main className="page">
-        <div className="page-container">
-          <div className="empty-state">
-            <div className="empty-icon">🌍</div>
-            <h2>My Country</h2>
-            <p>
-              Login to see matches based on your country.
-            </p>
-
-            <Link to="/login" className="btn btn-primary">
-              Login
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  if (loading) {
-    return (
-      <main className="page">
-        <div className="page-container">
-          <div className="empty-state">
-            <h2>Loading your country...</h2>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  const countryInfo = getCountry(country);
-
-  const countryMatches = matches.filter(
-    (match) =>
-      String(match.country).toLowerCase() ===
-      String(country).toLowerCase()
-  );
-
-  return (
-    <main className="page">
-      <div className="page-container">
-        <div className="page-heading">
-          <span className="section-kicker">PERSONAL SPORTS</span>
-
-          <h1>
-            {countryInfo?.flag || "🌍"}{" "}
-            {countryInfo?.name || country || "My Country"}
-          </h1>
-
-          <p>
-            Matches and leagues available for your selected
-            country.
-          </p>
-        </div>
-
-        {!country ? (
-          <div className="empty-state">
-            <div className="empty-icon">🌍</div>
-
-            <h2>Country not selected</h2>
-
-            <p>
-              Open your profile and select your country first.
-            </p>
-
-            <Link to="/profile" className="btn btn-primary">
-              Open Profile
-            </Link>
-          </div>
-        ) : countryMatches.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">
-              {countryInfo?.flag || "🌍"}
-            </div>
-
-            <h2>No matches available</h2>
-
-            <p>
-              There are currently no matches in the available
-              data for {country}.
-            </p>
-          </div>
-        ) : (
-          <div className="matches-grid">
-            {countryMatches.map((match) => (
-              <MatchCard
-                key={match.id}
-                match={match}
-                addBet={addBet}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   CASINO HUB
-========================================================= */
-
-function CasinoHub({ tab = "casino" }) {
-  const navigate = useNavigate();
-
-  const tabs = [
-    {
-      key: "casino",
-      label: "🎰 Casino",
-      path: "/casino",
-    },
-    {
-      key: "live",
-      label: "🎥 Live Casino",
-      path: "/casino/live",
-    },
-    {
-      key: "vip",
-      label: "👑 VIP Games",
-      path: "/casino/vip",
-    },
-  ];
-
-  let title = "Casino";
-  let subtitle = "Premium casino games";
-  let games = casinoGames;
-
-  if (tab === "live") {
-    title = "Live Casino";
-    subtitle =
-      "Real-time casino tables and live casino games only.";
-    games = liveCasinoGames;
-  }
-
-  if (tab === "vip") {
-    title = "VIP Games";
-    subtitle =
-      "Exclusive GoldenBet premium games.";
-    games = vipGames;
-  }
-
-  return (
-    <main className="page">
-      <div className="page-container">
-        <div className="page-heading">
-          <span className="section-kicker">
-            GOLDENBET CASINO
-          </span>
-
-          <h1>{title}</h1>
-
-          <p>{subtitle}</p>
-        </div>
-
-        <div className="sports-tabs">
-          {tabs.map((item) => (
-            <button
-              type="button"
-              key={item.key}
-              className={tab === item.key ? "active" : ""}
-              onClick={() => navigate(item.path)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="game-grid">
-          {games.map((game) => (
-            <GameCard
-              key={game.id}
-              game={game}
-              tab={tab}
-            />
-          ))}
-        </div>
-      </div>
-    </main>
-  );
-}
-
-function GameCard({ game, tab }) {
-  return (
-    <article className="game-card">
-      <div className="game-icon">{game.icon}</div>
-
-      <div className="game-info">
-        <h3>{game.name}</h3>
-
-        <p>
-          {game.category ||
-            game.description ||
-            "GoldenBet game"}
-        </p>
-
-        {game.provider && (
-          <small>{game.provider}</small>
-        )}
-
-        {tab === "vip" && (
-          <span className="premium-badge">
-            VIP
-          </span>
-        )}
-
-        {tab === "live" && (
-          <span className="live-indicator">
-            ● LIVE
-          </span>
-        )}
-      </div>
-
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() =>
-          alert(
-            `${game.name} will open when the casino provider is connected.`
-          )
-        }
-      >
-        Play
-      </button>
-    </article>
-  );
-}
-
-/* =========================================================
-   BET SLIP
-========================================================= */
-
-function BetSlipPage({ bets, setBets, session }) {
-  const [stake, setStake] = useState("");
-  const [placing, setPlacing] = useState(false);
-
-  const totalOdds = bets.reduce(
-    (total, bet) => total * safeOdds(bet.odds),
-    1
-  );
-
-  const stakeNumber = Number(stake) || 0;
-  const potentialWin = stakeNumber * totalOdds;
-
-  const placeBet = async () => {
-    if (!session?.user?.id) {
-      alert("Please login first.");
-      return;
-    }
-
-    if (!bets.length) {
-      alert("Your bet slip is empty.");
-      return;
-    }
-
-    if (stakeNumber <= 0) {
-      alert("Enter a valid stake.");
-      return;
-    }
-
-    setPlacing(true);
-
-    try {
-      const matchNames = bets
-        .map((bet) => bet.matchName)
-        .join(" | ");
-
-      const { error } = await supabase.from("bets").insert({
-        user_id: session.user.id,
-        match_name: matchNames,
-        stake: stakeNumber,
-        total_odds: totalOdds,
-        potential_win: potentialWin,
-        status: "pending",
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      alert("Bet placed successfully.");
-
-      setBets([]);
-      setStake("");
-    } catch (error) {
-      alert(error.message || "Could not place bet.");
-    } finally {
-      setPlacing(false);
-    }
-  };
-
-  return (
-    <main className="page">
-      <div className="page-container">
-        <div className="page-heading">
-          <span className="section-kicker">BETTING</span>
-          <h1>Bet Slip</h1>
-        </div>
-
-        {bets.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">🎟️</div>
-            <h2>Your bet slip is empty</h2>
-            <p>
-              Select odds from Sports to add them here.
-            </p>
-
-            <Link to="/sports" className="btn btn-primary">
-              Browse Sports
-            </Link>
-          </div>
-        ) : (
-          <div className="betslip-layout">
-            <div className="card">
-              {bets.map((bet, index) => (
-                <div
-                  key={`${bet.matchId}-${bet.marketId}-${bet.selectionKey}-${index}`}
-                  className="betslip-item"
-                >
-                  <div>
-                    <strong>{bet.matchName}</strong>
-
-                    <small>
-                      {bet.marketTitle} ·{" "}
-                      {bet.selectionName}
-                    </small>
-                  </div>
-
-                  <strong>
-                    {safeOdds(bet.odds).toFixed(2)}
-                  </strong>
-
-                  <button
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={() =>
-                      setBets((current) =>
-                        current.filter((_, i) => i !== index)
-                      )
-                    }
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <aside className="betslip-right">
-              <div className="betslip-summary">
-                <div className="summary-row">
-                  <span>Selections</span>
-                  <strong>{bets.length}</strong>
-                </div>
-
-                <div className="summary-row">
-                  <span>Total Odds</span>
-                  <strong>{totalOdds.toFixed(2)}</strong>
-                </div>
-
-                <label className="form-label">
-                  Stake
-                </label>
-
-                <input
-                  className="input"
-                  type="number"
-                  min="0"
-                  value={stake}
-                  onChange={(event) =>
-                    setStake(event.target.value)
-                  }
-                  placeholder="Enter stake"
-                />
-
-                <div className="summary-row potential">
-                  <span>Potential Win</span>
-                  <strong>
-                    {potentialWin.toLocaleString()}
-                  </strong>
-                </div>
-
-                <button
-                  type="button"
-                  className="btn btn-primary btn-full"
-                  onClick={placeBet}
-                  disabled={placing}
-                >
-                  {placing ? "Placing..." : "Place Bet"}
-                </button>
-              </div>
-            </aside>
-          </div>
-        )}
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   AUTH - LOGIN
-========================================================= */
-
-function Login() {
-  const navigate = useNavigate();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const login = async (event) => {
-    event.preventDefault();
-
-    setLoading(true);
-    setError("");
-
-    const { error: loginError } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-    setLoading(false);
-
-    if (loginError) {
-      setError(loginError.message);
-      return;
-    }
-
-    navigate("/profile");
-  };
-
-  return (
-    <main className="auth-page">
-      <form className="auth-card" onSubmit={login}>
-        <div className="auth-logo">G</div>
-
-        <h1>Login</h1>
-
-        <p>Welcome back to GoldenBet.</p>
-
-        {error && (
-          <div className="error-box">{error}</div>
-        )}
-
-        <label className="form-label">Email</label>
-
-        <input
-          className="input"
-          type="email"
-          value={email}
-          onChange={(event) =>
-            setEmail(event.target.value)
-          }
-          required
-        />
-
-        <label className="form-label">Password</label>
-
-        <input
-          className="input"
-          type="password"
-          value={password}
-          onChange={(event) =>
-            setPassword(event.target.value)
-          }
-          required
-        />
-
-        <button
-          type="submit"
-          className="btn btn-primary btn-full"
-          disabled={loading}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-
-        <div className="auth-switch">
-          Don't have an account?{" "}
-          <Link to="/register">Register</Link>
-        </div>
-      </form>
-    </main>
-  );
-}
-
-/* =========================================================
-   AUTH - REGISTER
-========================================================= */
-
-function Register() {
-  const navigate = useNavigate();
-
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [country, setCountry] = useState("Iraq");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const register = async (event) => {
-    event.preventDefault();
-
-    setError("");
-
-    if (password !== confirm) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const { data, error: signupError } =
-        await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              username,
-              country,
-            },
-          },
-        });
-
-      if (signupError) {
-        throw signupError;
-      }
-
-      if (data?.user?.id) {
-        const { error: profileError } =
-          await supabase.from("profiles").upsert(
-            {
-              id: data.user.id,
-              username,
-              country,
-            },
-            {
-              onConflict: "id",
-            }
-          );
-
-        if (profileError) {
-          console.warn(profileError);
-        }
-      }
-
-      alert(
-        "Registration completed. Please check your email if confirmation is required."
-      );
-
-      navigate("/login");
-    } catch (signupError) {
-      setError(
-        signupError.message ||
-          "Registration failed."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <main className="auth-page">
-      <form className="auth-card" onSubmit={register}>
-        <div className="auth-logo">G</div>
-
-        <h1>Create Account</h1>
-
-        <p>Join GoldenBet.</p>
-
-        {error && (
-          <div className="error-box">{error}</div>
-        )}
-
-        <label className="form-label">Username</label>
-
-        <input
-          className="input"
-          value={username}
-          onChange={(event) =>
-            setUsername(event.target.value)
-          }
-          required
-        />
-
-        <label className="form-label">Email</label>
-
-        <input
-          className="input"
-          type="email"
-          value={email}
-          onChange={(event) =>
-            setEmail(event.target.value)
-          }
-          required
-        />
-
-        <label className="form-label">
-          Country
-        </label>
-
-        <select
-          className="input"
-          value={country}
-          onChange={(event) =>
-            setCountry(event.target.value)
-          }
-          required
-        >
-          {countries.map((item) => (
-            <option key={item.code} value={item.name}>
-              {item.flag} {item.name}
-            </option>
-          ))}
-        </select>
-
-        <label className="form-label">Password</label>
-
-        <input
-          className="input"
-          type="password"
-          value={password}
-          onChange={(event) =>
-            setPassword(event.target.value)
-          }
-          minLength={6}
-          required
-        />
-
-        <label className="form-label">
-          Confirm Password
-        </label>
-
-        <input
-          className="input"
-          type="password"
-          value={confirm}
-          onChange={(event) =>
-            setConfirm(event.target.value)
-          }
-          minLength={6}
-          required
-        />
-
-        <button
-          type="submit"
-          className="btn btn-primary btn-full"
-          disabled={loading}
-        >
-          {loading ? "Creating..." : "Create Account"}
-        </button>
-
-        <div className="auth-switch">
-          Already have an account?{" "}
-          <Link to="/login">Login</Link>
-        </div>
-      </form>
-    </main>
-  );
-}
-
-/* =========================================================
-   PROFILE
-========================================================= */
-
-function Profile({ session }) {
-  const [profile, setProfile] = useState(null);
-  const [country, setCountry] = useState("Iraq");
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadProfile() {
-      if (!session?.user?.id) {
-        if (mounted) {
-          setLoading(false);
-        }
-
-        return;
-      }
-
-      const { data } = await supabase
-        .from("profiles")
-        .select(
-          "username, full_name, avatar_text, balance, country"
-        )
-        .eq("id", session.user.id)
-        .maybeSingle();
-
-      if (!mounted) return;
-
-      setProfile(data);
-
-      setCountry(
-        data?.country ||
-          session.user.user_metadata?.country ||
-          "Iraq"
-      );
-
-      setLoading(false);
-    }
-
-    loadProfile();
-
-    return () => {
-      mounted = false;
-    };
-  }, [session]);
-
-  const saveCountry = async () => {
-    if (!session?.user?.id) return;
-
-    setSaving(true);
-
-    const { error } = await supabase
-      .from("profiles")
-      .upsert(
-        {
-          id: session.user.id,
-          country,
-        },
-        {
-          onConflict: "id",
-        }
-      );
-
-    setSaving(false);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    alert("Country saved successfully.");
-  };
-
-  if (!session) {
-    return (
-      <main className="page">
-        <div className="page-container">
-          <div className="empty-state">
-            <h2>Please login first.</h2>
-
-            <Link to="/login" className="btn btn-primary">
-              Login
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  if (loading) {
-    return (
-      <main className="page">
-        <div className="page-container">
-          <div className="empty-state">
-            Loading profile...
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  const countryInfo = getCountry(country);
-
-  return (
-    <main className="page">
-      <div className="page-container">
-        <div className="profile-hero">
-          <div className="avatar">
-            {profile?.avatar_text ||
-              profile?.username?.charAt(0)?.toUpperCase() ||
-              "G"}
-          </div>
-
-          <div>
-            <span className="section-kicker">
-              GOLDENBET PROFILE
-            </span>
-
-            <h1>
-              {profile?.username ||
-                session.user.email}
-            </h1>
-
-            <p>{session.user.email}</p>
-          </div>
-        </div>
-
-        <div className="profile-grid">
-          <section className="card">
-            <h2>Account</h2>
-
-            <div className="summary-row">
-              <span>Username</span>
-              <strong>
-                {profile?.username || "-"}
-              </strong>
-            </div>
-
-            <div className="summary-row">
-              <span>Email</span>
-              <strong>{session.user.email}</strong>
-            </div>
-
-            <div className="summary-row">
-              <span>Balance</span>
-              <strong>
-                {Number(profile?.balance || 0).toLocaleString()}
-              </strong>
-            </div>
-          </section>
-
-          <section className="card">
-            <h2>Country</h2>
-
-            <p>
-              Your country controls the content shown in
-              <strong> My Country</strong>.
-            </p>
-
-            <label className="form-label">
-              Country
-            </label>
-
-            <select
-              className="input"
-              value={country}
-              onChange={(event) =>
-                setCountry(event.target.value)
-              }
-            >
-              {countries.map((item) => (
-                <option
-                  key={item.code}
-                  value={item.name}
-                >
-                  {item.flag} {item.name}
-                </option>
-              ))}
-            </select>
-
-            <div className="summary-row">
-              <span>Selected</span>
-              <strong>
-                {countryInfo?.flag || "🌍"} {country}
-              </strong>
-            </div>
-
-            <button
-              type="button"
-              className="btn btn-primary btn-full"
-              onClick={saveCountry}
-              disabled={saving}
-            >
-              {saving ? "Saving..." : "Save Country"}
-            </button>
-
-            <Link
-              to="/my-country"
-              className="btn btn-secondary btn-full"
-            >
-              Open My Country
-            </Link>
-          </section>
-        </div>
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   BALANCE
-========================================================= */
-
-function Balance({ session }) {
-  const [balance, setBalance] = useState(0);
-
-  useEffect(() => {
-    async function loadBalance() {
-      if (!session?.user?.id) return;
-
-      const { data } = await supabase
-        .from("profiles")
-        .select("balance")
-        .eq("id", session.user.id)
-        .maybeSingle();
-
-      setBalance(Number(data?.balance || 0));
-    }
-
-    loadBalance();
-  }, [session]);
-
-  if (!session) {
-    return (
-      <main className="page">
-        <div className="page-container">
-          <div className="empty-state">
-            <h2>Login required.</h2>
-            <Link to="/login" className="btn btn-primary">
-              Login
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main className="page">
-      <div className="page-container narrow-container">
-        <section className="balance-card">
-          <span>AVAILABLE BALANCE</span>
-          <h1>{balance.toLocaleString()}</h1>
-
-          <div>
-            <Link to="/deposit" className="btn btn-primary">
-              Deposit
-            </Link>
-
-            <Link to="/withdraw" className="btn btn-secondary">
-              Withdraw
-            </Link>
-          </div>
-        </section>
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   DEPOSIT
-========================================================= */
-
-function Deposit({ session }) {
-  if (!session) {
-    return (
-      <main className="page">
-        <div className="page-container">
-          <div className="empty-state">
-            <h2>Login required.</h2>
-            <Link to="/login" className="btn btn-primary">
-              Login
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main className="page">
-      <div className="page-container narrow-container">
-        <div className="page-heading">
-          <span className="section-kicker">
-            GOLDENBET WALLET
-          </span>
-          <h1>Deposit</h1>
-        </div>
-
-        <PaymentCard />
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   WITHDRAW
-========================================================= */
-
-function Withdraw({ session }) {
-  if (!session) {
-    return (
-      <main className="page">
-        <div className="page-container">
-          <div className="empty-state">
-            <h2>Login required.</h2>
-            <Link to="/login" className="btn btn-primary">
-              Login
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main className="page">
-      <div className="page-container narrow-container">
-        <section className="form-card">
-          <h1>Withdraw</h1>
-
-          <p>
-            Withdrawal functionality can be connected to
-            your payment provider.
-          </p>
-
-          <input
-            className="input"
-            type="number"
-            placeholder="Amount"
-          />
-
-          <button
-            type="button"
-            className="btn btn-primary btn-full"
-            onClick={() =>
-              alert(
-                "Withdrawal request system is ready for provider integration."
-              )
-            }
-          >
-            Request Withdrawal
-          </button>
-        </section>
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   MY BETS
-========================================================= */
-
-function MyBets({ session }) {
-  const [bets, setBets] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadBets() {
-      if (!session?.user?.id) {
-        setLoading(false);
-        return;
-      }
-
-      const { data } = await supabase
-        .from("bets")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .order("created_at", {
-          ascending: false,
-        });
-
-      setBets(data || []);
-      setLoading(false);
-    }
-
-    loadBets();
-  }, [session]);
-
-  if (!session) {
-    return (
-      <main className="page">
-        <div className="page-container">
-          <div className="empty-state">
-            <h2>Login required.</h2>
-
-            <Link to="/login" className="btn btn-primary">
-              Login
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main className="page">
-      <div className="page-container">
-        <div className="page-heading">
-          <span className="section-kicker">
-            ACCOUNT
-          </span>
-
-          <h1>My Bets</h1>
-        </div>
-
-        {loading ? (
-          <div className="empty-state">
-            Loading...
-          </div>
-        ) : bets.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">🎟️</div>
-            <h2>No bets yet</h2>
-
-            <Link to="/sports" className="btn btn-primary">
-              Browse Sports
-            </Link>
-          </div>
-        ) : (
-          <div className="my-bets-list">
-            {bets.map((bet) => (
-              <article
-                className="bet-history-card"
-                key={bet.id}
-              >
-                <div className="bet-history-details">
-                  <strong>{bet.match_name}</strong>
-
-                  <span>
-                    Stake:{" "}
-                    {Number(bet.stake || 0).toLocaleString()}
-                  </span>
-
-                  <span>
-                    Odds:{" "}
-                    {Number(bet.total_odds || 0).toFixed(2)}
-                  </span>
-
-                  <span>
-                    Potential Win:{" "}
-                    {Number(
-                      bet.potential_win || 0
-                    ).toLocaleString()}
-                  </span>
-                </div>
-
-                <div
-                  className={getStatusColor(
-                    bet.status
-                  )}
-                >
-                  {getStatusIcon(bet.status)}{" "}
-                  {bet.status || "pending"}
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   PROMOTIONS
-========================================================= */
-
-function Promotions() {
-  const promotions = [
-    {
-      title: "Welcome Bonus",
-      text: "Special offers for new GoldenBet members.",
-      icon: "🎁",
-    },
-    {
-      title: "VIP Experience",
-      text: "Access premium GoldenBet games and offers.",
-      icon: "👑",
-    },
-    {
-      title: "Live Casino",
-      text: "Explore live casino tables and games.",
-      icon: "🎥",
-    },
-  ];
-
-  return (
-    <main className="page">
-      <div className="page-container">
-        <div className="page-heading">
-          <span className="section-kicker">
-            GOLDENBET OFFERS
-          </span>
-
-          <h1>Promotions</h1>
-        </div>
-
-        <div className="promotion-grid">
-          {promotions.map((promotion) => (
-            <article
-              className="promotion-card"
-              key={promotion.title}
-            >
-              <div className="feature-icon">
-                {promotion.icon}
-              </div>
-
-              <h2>{promotion.title}</h2>
-
-              <p>{promotion.text}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   SETTINGS
-========================================================= */
-
-function Settings() {
-  const [notifications, setNotifications] =
-    useState(true);
-
-  const [darkMode, setDarkMode] = useState(true);
-
-  return (
-    <main className="page">
-      <div className="page-container narrow-container">
-        <div className="page-heading">
-          <span className="section-kicker">
-            ACCOUNT
-          </span>
-
-          <h1>Settings</h1>
-        </div>
-
-        <section className="settings-card">
-          <div className="settings-row">
-            <div>
-              <strong>Notifications</strong>
-              <p>Receive account notifications.</p>
-            </div>
-
-            <input
-              type="checkbox"
-              checked={notifications}
-              onChange={(event) =>
-                setNotifications(
-                  event.target.checked
-                )
-              }
-            />
-          </div>
-
-          <div className="settings-row">
-            <div>
-              <strong>Dark Mode</strong>
-              <p>Use GoldenBet dark interface.</p>
-            </div>
-
-            <input
-              type="checkbox"
-              checked={darkMode}
-              onChange={(event) =>
-                setDarkMode(event.target.checked)
-              }
-            />
-          </div>
-        </section>
-      </div>
-    </main>
-  );
-}
-
-/* =========================================================
-   MOBILE NAV
-========================================================= */
-
-function MobileBottomNav({ betsCount }) {
-  const location = useLocation();
-
-  return (
-    <nav className="mobile-bottom-nav">
-      <Link
-        to="/"
-        className={
-          location.pathname === "/" ? "active" : ""
-        }
-      >
-        🏠
-        <span>Home</span>
-      </Link>
-
-      <Link
-        to="/sports"
-        className={
-          location.pathname.startsWith("/sports")
-            ? "active"
-            : ""
-        }
-      >
-        ⚽
-        <span>Sports</span>
-      </Link>
-
-      <Link
-        to="/live"
-        className={
-          location.pathname === "/live"
-            ? "active"
-            : ""
-        }
-      >
-        🔴
-        <span>Live</span>
-      </Link>
-
-      <Link
-        to="/casino"
-        className={
-          location.pathname.startsWith("/casino")
-            ? "active"
-            : ""
-        }
-      >
-        🎰
-        <span>Casino</span>
-      </Link>
-
-      <Link
-        to="/bet-slip"
-        className={
-          location.pathname === "/bet-slip"
-            ? "active"
-            : ""
-        }
-      >
-        <span className="bottom-bet-icon">
-          🎟️
-          {betsCount > 0 && (
-            <span className="selected-count">
-              {betsCount}
-            </span>
-          )}
-        </span>
-
-        <span>Bets</span>
-      </Link>
-    </nav>
-  );
-}
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-function Footer() {
-  return (
-    <footer className="site-footer">
-      <div className="footer-brand">
-        <span className="brand-mark">G</span>
-        <strong>GOLDENBET</strong>
-      </div>
-
-      <div className="footer-column">
-        <strong>Sports</strong>
-
-        <Link to="/sports">Football</Link>
-        <Link to="/sports/Tennis">Tennis</Link>
-        <Link to="/sports/Basketball">
-          Basketball
-        </Link>
-        <Link to="/live">Live Sports</Link>
-      </div>
-
-      <div className="footer-column">
-        <strong>Casino</strong>
-
-        <Link to="/casino">Casino</Link>
-        <Link to="/casino/live">Live Casino</Link>
-        <Link to="/casino/vip">VIP Games</Link>
-      </div>
-
-      <div className="footer-column">
-        <strong>Account</strong>
-
-        <Link to="/profile">Profile</Link>
-        <Link to="/balance">Balance</Link>
-        <Link to="/my-bets">My Bets</Link>
-        <Link to="/settings">Settings</Link>
-      </div>
-
-      <div className="footer-bottom">
-        © {new Date().getFullYear()} GoldenBet
-      </div>
-    </footer>
-  );
-}
-
-/* =========================================================
-   NOT FOUND
-========================================================= */
-
-function NotFound() {
-  return (
-    <main className="page">
-      <div className="page-container">
-        <div className="empty-state">
-          <div className="empty-icon">404</div>
-
-          <h1>Page Not Found</h1>
-
-          <Link to="/" className="btn btn-primary">
-            Go Home
-          </Link>
-        </div>
-      </div>
-    </main>
   );
 }
